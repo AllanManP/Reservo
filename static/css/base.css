@@ -1,0 +1,328 @@
+/* Reset de estilos básicos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.dancing-script{
+  font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
+  font-weight: 100%;
+  font-style: normal;
+}
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+    
+}
+
+.navbar {
+    background-color: #000000;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Separar elementos en los extremos */
+    position: sticky; /* Barra de navegación fija */
+    top: 0;
+    z-index: 1000;
+    transition: top 0.3s ease;
+}
+
+.navbar-client {
+    margin-left: auto; /* Empuja el icono de cliente a la derecha */
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+
+.navbar.fixed {
+    top: 0;
+}
+.content {
+    /*background-color: #EDDCE2;*/
+    background-image: url('');
+    background-size: cover; /* Asegúrate de que la imagen cubra todo el div */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    padding: 20px; /* Ajusta el padding según sea necesario */
+    min-height: calc(100vh - 120px); /* Ajusta el tamaño total menos la altura del navbar y el footer */
+    /* Cambia 120px por la altura real de tu navbar y footer si es diferente */
+}
+
+.navbar-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.navbar-logo {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin: auto 15px 10px;
+    transform: translateY(8px);
+}
+
+.navbar ul {
+    list-style: none;
+}
+
+.navbar ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+.navbar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    color: #830a38;
+}
+
+
+.navbar-client i {
+    font-size: 24px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar-client-info a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar-client-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.navbar-client-dropdown .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.navbar-client-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.navbar-client-info a:hover {
+    text-decoration: underline;
+}
+/* Estilos para el ícono de hamburguesa */
+#menu-toggle {
+    display: none; /* Oculto por defecto */
+    color: #fff;
+    font-size: 1.8em;
+    cursor: pointer;
+}
+
+/* Ocultar el menú en pantallas pequeñas */
+@media only screen and (max-width: 768px) {
+    .navbar ul {
+        display: none; /* Ocultar menú */
+        flex-direction: column; /* Alinea los elementos verticalmente */
+        background-color: #000; /* Fondo del menú desplegable */
+        position: absolute;
+        top: 60px; /* Ajusta según la altura de la barra de navegación */
+        width: 100%;
+        left: 0;
+        padding: 10px 0;
+        z-index: 999;
+    }
+    
+    /* Mostrar el ícono de hamburguesa en pantallas pequeñas */
+    #menu-toggle {
+        display: block;
+        margin-left: auto; /* Alinear el ícono a la derecha */
+    }
+    
+    .navbar ul li {
+        display: block;
+        margin: 10px 0; /* Separación entre los elementos del menú */
+    }
+}
+
+/* Mostrar el menú cuando se activa */
+.navbar ul.show {
+    display: flex;
+}
+
+
+/* Estilos para la cabecera */
+header {
+    background-color: #830a38;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+/* Estilos del pie de página */
+footer {
+    background-color: #830a38;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #830a38;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+.footer-column {
+    flex: 1;
+}
+
+.social-media {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.social-media a {
+    color: #fff;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.social-media p {
+    margin-left: 15px;
+}
+
+.contact-info p {
+    margin: 0;
+}
+
+.footer-content p {
+    margin: 0;
+    padding: 10px 0;
+    font-size: 14px;
+}
+
+footer p {
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    padding: 10px 0;
+}
+
+.fab {
+    transition: color 0.3s;
+}
+
+.fab:hover {
+    color: #830a38;
+}
+
+/* Media queries para pantallas más pequeñas */
+@media only screen and (max-width: 1024px) {
+    .navbar ul li {
+        margin: 0 10px;
+    }
+    
+    .navbar ul li a {
+        font-size: 1em;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-column {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .navbar ul li {
+        margin: 0 8px;
+    }
+
+    .navbar ul li a {
+        font-size: 0.9em;
+    }
+
+    .footer-content {
+        padding: 15px;
+    }
+
+    .footer-content p {
+        font-size: 12px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .navbar {
+        padding: 10px 10px;
+    }
+
+    .navbar ul li {
+        display: block;
+        margin: 10px 0;
+    }
+
+    .navbar ul li a {
+        font-size: 1em;
+        padding: 10px;
+        display: block;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .social-media a {
+        font-size: 20px;
+    }
+
+    .footer-content p {
+        font-size: 12px;
+    }
+}

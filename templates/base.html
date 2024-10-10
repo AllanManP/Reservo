@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Salon Estilista{% endblock %}</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rubik+Glitch+Pop&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1 class="dancing-script">Beauty Hair Anais Studio</h1>
+    </header>
+    
+    <nav class="navbar">
+        <a href="/"> 
+            <img src="./static/img/logo.png" alt="Logo" class="navbar-logo">
+        </a>
+        <i class="fas fa-bars" id="menu-toggle"></i> <!-- Ícono de hamburguesa -->
+        <ul id="navbar-menu">
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/servicios">Servicios</a></li>
+            <li><a href="#reseñas">Reseñas</a></li>
+            <li><a href="/login">Reserva</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+        </ul>
+            <!-- Sección de cliente en la derecha del navbar -->
+    <div class="navbar-client">
+        {% if 'cliente' in session %}
+            <!-- Si el cliente está logueado, muestra su nombre con un enlace a su perfil -->
+            <div class="navbar-client-info">
+                <ul id="navbar-client-menu">
+                    <li><a href="/cliente"><i class="fas fa-user-circle"></i> <!-- Ícono del cliente -->{{ session['cliente']['nombre'] }}</a></li> <!-- Nombre del cliente con enlace a su perfil -->
+                    <li><a href="/salir">Cerrar sesion</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <!-- Si no ha iniciado sesión, muestra la opción de iniciar sesión -->
+            <div class="navbar-client-dropdown">
+                <i class="fas fa-user-circle"></i> <!-- Ícono del cliente -->
+                <div class="dropdown-content">
+                    <a href="{{ url_for('login', next=url_for('cliente')) }}">Iniciar Sesión</a>
+                    
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    </nav>
+
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <div class="social-media">
+                    <a href="https://www.instagram.com/beauty_hair_anais_studio?igsh=MWR6bThnY213dDc1Yg%3D%3D" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/anais.diaz.3950178/" target="_blank">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <p>Contacto: +56 9 1234 5678</p>
+                </div>
+            </div>
+            <div class="footer-column">
+                <div class="contact-info">
+                    <p>Dirección: Calle Falsa 123, Santiago</p>
+                </div>
+            </div>
+        </div>
+        <p>© 2024 Salón Estilista. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById("menu-toggle").addEventListener("click", function() {
+            var menu = document.getElementById("navbar-menu");
+            menu.classList.toggle("show"); // Añade o quita la clase "show"
+        });
+    </script>
+</body>
+</html>

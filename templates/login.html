@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<body>
+    <div class="login">
+        <div class="login__content">
+            <div class="login__img">
+                <img src="{{ url_for('static', filename='img/carrusel1.JPG') }}" alt="">
+            </div>
+
+            <div class="login__forms">
+                <form action="/login" method="POST" class="login__form">
+                    <h1 class="login__title">Iniciar Sesión</h1>
+
+                    <!-- Número de Cliente -->
+                    <div class="login__box">
+                        <i class='bx bx-user login__icon'></i>
+                        <input type="text" id="numero_cliente" name="numero_cliente" placeholder="Número de Cliente" class="login__input" required>
+                    </div>
+
+                    <center><button type="submit" class="login__button">Continuar</button></center>
+
+                    <!-- Nueva opción: Olvidé mi N°Cliente -->
+                    <div class="login__options">
+                        <div class="login__options_l">
+                            <span class="login__account">¿Olvidaste tu N°Cliente?</span>
+                            <hr>
+                            <a href="/recuperar-cliente" class="login__forgot">Olvidé mi N°Cliente</a>
+                        </div>
+                    
+                        <div class="login__options_r">
+                            <span class="login__account">¿Eres nuevo?</span>
+                            <hr>
+                            <a href="/reserva" class="login__signup">Soy nuevo</a>
+                        </div>
+                    </div>
+                    
+                </form>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}

@@ -1,0 +1,258 @@
+#stylist-carousel {
+    text-align: center;
+    margin: 20px auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative; /* Para posicionar correctamente los controles e indicadores */
+}
+
+.carousel-stylist {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 300px;
+}
+
+.carousel-inner-stylist {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel-item-stylist {
+    min-width: 100%;
+    opacity: 0;
+    display: none;
+    text-align: center;
+    transition: opacity 0.5s ease;
+}
+
+.carousel-item-stylist.active {
+    opacity: 1;
+    display: block;
+}
+
+.carousel-item-stylist img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.carousel-item-stylist p {
+    font-size: 1em;
+    margin-bottom: 20px;
+}
+
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2em;
+    color: black;
+    cursor: pointer;
+    user-select: none;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 50%;
+    z-index: 30; /* Asegura que los controles estén encima de otros elementos */
+}
+
+.carousel-control.prev {
+    left: 30%; /* Ajusta la distancia desde el borde izquierdo */
+}
+
+.carousel-control.next {
+    right: 30%; /* Ajusta la distancia desde el borde derecho */
+}
+
+/* Estilo para el contenedor de los indicadores */
+.carousel-indicators {
+    position: absolute;
+    bottom: 10px; /* Ajusta la distancia desde la parte inferior según sea necesario */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px; /* Espacio entre los dots */
+    z-index: 20; /* Asegura que los indicadores estén encima de otros elementos */
+}
+
+/* Estilo para cada indicador */
+.carousel-indicators .dot {
+    height: 12px;
+    width: 12px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: flex;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Estilo para el indicador activo */
+.carousel-indicators .dot.active {
+    background-color: #830a38;
+}
+
+#appointment-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    
+}
+
+.reservation-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+    grid-gap: 20px; /* Espacio entre los elementos */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label{
+    font-size: 1.1em;
+}
+
+
+/* Estilo para los cuadros de texto */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea {
+    padding: 10px;
+    border: 2px solid #575757;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: #f9f9f9;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+    border-color: #830a38; /* Cambia el borde al color principal cuando esté en foco */
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(131, 10, 56, 0.5); /* Resaltar cuadro en foco */
+    outline: none;
+}
+
+/* Ajuste especial para textarea */
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.full-width {
+    grid-column: span 2; /* Hace que el botón ocupe ambas columnas */
+}
+
+button {
+    padding: 10px;
+    background-color: #830a38;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: #a40a48;
+}
+
+.services-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas: acordeón e imagen */
+    grid-gap: 20px;
+    align-items: flex-start;
+}
+
+.accordion {
+    display: flex;
+    flex-direction: column;
+}
+
+.service-image img {
+    width: 100%;
+    height: auto;
+    max-height: 400px; /* Ajustar la altura de la imagen */
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+#services-section {
+    max-width: 800px;
+    margin: auto;
+    background-color: #fff;
+}
+
+.titulo_accordion{
+    padding-bottom: 20px;
+}
+.accordion-item {
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.accordion-header {
+    width: 100%;
+    text-align: left;
+    padding: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #830a38;
+    background-color: #f7f7f7;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.accordion-header:hover {
+    background-color: #f0e0e7;
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 15px;
+    background-color: #f9f9f9;
+    transition: max-height 0.3s ease;
+}
+
+.accordion-content p {
+    padding: 10px 0;
+    margin: 0;
+    font-size: 1em;
+    color: #333;
+}
+
+/* Estado expandido */
+.accordion-item.active .accordion-content {
+    max-height: 200px; /* Ajusta según la cantidad de contenido */
+}
+
+.accordion-item.active .accordion-header {
+    background-color: #830a38;
+    color: #fff;
+}
+

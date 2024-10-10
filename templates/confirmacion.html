@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Confirmación de Reserva{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/confirmacion.css') }}">
+{% endblock %}
+{% block content %}
+<main>
+    <section id="information">
+        <div class="info-container">
+            <h2>Confirmación de Reserva</h2>
+            <p>Cliente: {{ nombre_cliente }}</p>
+            <p>Estilista: {{ nombre_estilista }}</p>
+            <p>Fecha: {{ cita.fecha }}</p>
+            <p>Hora de inicio: {{ cita.hora_inicio }}</p>
+            <p>Hora de fin: {{ cita.hora_final }}</p>
+            <p>Servicio: {{ cita.servicio }}</p>    
+            <a href="/">
+                <button type="btn" >Reservar otra cita</button>
+            </a>
+        </div>
+    </section>
+</main>
+{% endblock %}

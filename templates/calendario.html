@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Calendario de Reserva{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/calendario.css') }}">
+{% endblock %}
+{% block content %}
+<main>
+    <section id="calendar-section">
+        <h2>Selecciona una fecha y hora para tu cita con {{ nom_estilista }}</h2>
+
+        <div>
+            <button id="prev-month">‹</button>
+            <span id="month-year"></span>
+            <button id="next-month">›</button>
+        </div>
+
+        <div id="calendar"></div>
+
+        <form action="/calendario" method="post" class="calendar-form" id="reservation-form">
+            <input type="hidden" id="selected-date" name="fecha" value="">
+            <div id="available-times" class="form-group" style="display: none;">
+                <label for="hora">Hora disponible</label>
+                <ul id="time-slots"></ul>
+                <input type="hidden" id="selected-time" name="hora" value="">
+                <input type="hidden" id="selected-id" name="id_disponibilidad" value="">
+            </div>
+            <button type="submit">Confirmar Reserva</button>
+        </form>        
+        
+    </section>
+</main>
+
+<script>
+    const availability = JSON.parse('{{ disponibilidad|tojson }}');
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
+
+    document.getElementById('prev-month').addEventListener('click', function() {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar();
+    });
+
+    document.getElementById('next-month').addEventListener('click', function() {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendar();
+    });
+
+    function renderCalendar() {
+        const calendar = document.getElementById('calendar');
+        const monthYear = document.getElementById('month-year');
+        monthYear.textContent = `${currentYear}-${('0' + (currentMonth + 1)).slice(-2)}`;
+
+        // Limpiar el calendario
+        calendar.innerHTML = '';
+
+        const firstDay = new Date(currentYear, currentMonth, 1);
+        const lastDay = new Date(currentYear, currentMonth + 1, 0);
+        const daysInMonth = lastDay.getDate();
+
+        // Días antes del primer día del mes
+        for (let i = 0; i < firstDay.getDay(); i++) {
+            const emptyDiv = document.createElement('div');
+            calendar.appendChild(emptyDiv);
+        }
+
+        // Días del mes
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDiv = document.createElement('div');
+            const date = `${currentYear}-${('0' + (currentMonth + 1)).slice(-2)}-${('0' + day).slice(-2)}`;
+            dayDiv.innerText = day;
+
+            // Si el día es anterior al actual, se tacha
+            const dateObject = new Date(currentYear, currentMonth, day);
+            if (dateObject < today) {
+                dayDiv.style.textDecoration = 'line-through';
+                dayDiv.style.color = '#ccc';
+            } else if (availability[date]) {
+                dayDiv.classList.add('available');
+                dayDiv.addEventListener('click', function() {
+                    showAvailableTimes(date);
+                });
+            } else {
+                dayDiv.style.cursor = 'not-allowed';
+                dayDiv.style.color = '#999';
+            }
+
+            calendar.appendChild(dayDiv);
+        }
+    }
+
+    function showAvailableTimes(date) {
+        const timeSlots = document.getElementById('time-slots');
+        timeSlots.innerHTML = '';  // Limpiar los slots de tiempo
+        document.getElementById('selected-date').value = date;  // Establecer la fecha seleccionada
+        
+        // Quitar la clase 'selected' de cualquier fecha previamente seleccionada
+        const previousSelected = document.querySelector('.calendar-day.selected');
+        if (previousSelected) {
+            previousSelected.classList.remove('selected');
+        }
+        
+        // Aplicar la clase 'selected' a la fecha actual
+        const selectedDateDiv = Array.from(document.querySelectorAll('#calendar div')).find(div => {
+            const day = div.innerText;
+            return day == new Date(date).getDate() && div.classList.contains('available');
+        });
+        if (selectedDateDiv) {
+            selectedDateDiv.classList.add('selected');
+        }
+        
+        const availableTimesSection = document.getElementById('available-times');
+        availableTimesSection.style.display = 'block';
+        
+        if (availability[date]) {
+            availability[date].forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = item.hora;  // Usar la hora
+                li.classList.add('available');
+                li.dataset.id = item._id;  // Almacenar el ID en un atributo de datos
+                li.addEventListener('click', function() {
+                    selectTime(item.hora, item._id);  // Pasar tanto la hora como el ID
+                });
+                timeSlots.appendChild(li);
+            });
+        }
+    }
+
+    function selectTime(time, id) {
+        document.getElementById('selected-time').value = time;  // Establecer la hora seleccionada
+        document.getElementById('selected-id').value = id;  // Establecer el ID de la disponibilidad seleccionada
+        console.log(id)
+        // Quitar la clase 'selected' de cualquier hora previamente seleccionada
+        const previousSelectedTime = document.querySelector('#time-slots li.selected');
+        if (previousSelectedTime) {
+            previousSelectedTime.classList.remove('selected');
+        }
+        
+        // Aplicar la clase 'selected' a la hora actual
+        const selectedTimeLi = Array.from(document.querySelectorAll('#time-slots li')).find(li => li.innerText == time);
+        if (selectedTimeLi) {
+            selectedTimeLi.classList.add('selected');
+        }
+    }
+    
+
+    // Renderiza el calendario inicial
+    renderCalendar();
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Registro de Usuario{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/registro.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<body>
+
+    <div class="register">
+        <div class="register__content">
+            <div class="register__img">
+                <img src="assets/img/img-register.svg" alt="">
+            </div>
+
+            <div class="register__forms">
+                <form action="/registro" class="register__form" id="register-form" onsubmit="return validateForm()">
+                <h1 class="register__title">Crear una cuenta</h1>
+
+                <!-- Nombre Completo -->
+                <div class="register__box">
+                    <i class='bx bx-user register__icon'></i>
+                    <input type="text" id="nombre" placeholder="Nombre Completo" name="nombre" class="register__input">
+                    
+                </div>
+                <small id="nombreError" class="error-message"></small>
+
+                <!-- Contraseña -->
+                <div class="register__box">
+                    <i class='bx bx-lock register__icon'></i>
+                    <input type="password" id="contraseña" placeholder="Contraseña" name="contraseña" class="register__input">
+                    
+                </div>
+                <small id="contraseñaError" class="error-message"></small>
+
+                <!-- Correo Electrónico -->
+                <div class="register__box">
+                    <i class='bx bx-at register__icon'></i>
+                    <input type="email" id="correo" placeholder="Correo Electrónico" name="correo" class="register__input">
+                    
+                </div>
+                <small id="correoError" class="error-message"></small>
+
+                <!-- Dirección -->
+                <div class="register__box">
+                    <i class='bx bx-home register__icon'></i>
+                    <input type="text" id="direccion" placeholder="Dirección" name="direccion" class="register__input">
+                    
+                </div>
+                <small id="direccionError" class="error-message"></small>
+
+                <!-- Número de Teléfono -->
+                <div class="register__box">
+                    <i class='bx bx-phone register__icon'></i>
+                    <input type="tel" id="telefono" placeholder="Número de Teléfono (+56)" name="telefono" class="register__input">
+                    
+                </div>
+                <small id="telefonoError" class="error-message"></small>
+
+                <center><button type="submit" id="registerBtn" class="register__button" disabled>Registrar</button>
+                </center>
+                <div>
+                    <span class="register__account">¿Ya tienes una cuenta?</span>
+                    <span href="/login" class="register__signin" id="sign-in">Inicia sesión</span>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/registro.js') }}"></script>
+    
+</body>
+
+{% endblock %}

@@ -1,0 +1,222 @@
+
+/* ===== VARIABLES CSS ===== */
+:root {
+    --first-color: #830a38;
+    --first-color-dark: #830a38;
+    --first-color-light: #A49EAC;
+    --first-color-lighten: #F2F2F2;
+    --body-font: 'Open Sans', sans-serif;
+    --h1-font-size: 1.5rem;
+    --normal-font-size: .938rem;
+    --small-font-size: .813rem;
+}
+
+
+@media screen and (min-width: 768px) {
+    :root {
+        --normal-font-size: 1rem;
+        --small-font-size: .875rem;
+    }
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    color: var(--first-color-dark);
+}
+
+/* ===== REGISTER ===== */
+.register {
+    display: grid;
+    grid-template-columns: 100%;
+    height: 100vh;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+}
+
+
+.register__content {
+    display: grid;
+}
+
+.register__img {
+    justify-self: center;
+}
+
+.register__img img {
+    width: 310px;
+    margin-top: 1.5rem;
+}
+
+
+.register__forms {
+    position: relative;
+    height: 500px;
+}
+
+
+.register__form {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+    background-color: var(--first-color-lighten);
+    padding: 2rem 1rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(35, 0, 77, .2);
+    animation-duration: .4s;
+    animation-name: animate-register;
+    
+}
+
+
+@keyframes animate-register {
+    0% {
+        transform: scale(1, 1);
+    }
+    50% {
+        transform: scale(1.1, 1.1);
+    }
+    100% {
+        transform: scale(1, 1);
+    }
+}
+
+.register__title {
+    font-size: var(--h1-font-size);
+    margin-bottom: 2rem;
+}
+
+.register__box {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: .15rem;
+    padding: 1.125rem 1rem;
+    background-color: #FFF;
+    margin-top: 2rem;
+    border-radius: .5rem;
+
+
+}
+
+
+.register__icon {
+    font-size: 1.5rem;
+    color: var(--first-color);
+}
+
+.register__input {
+    border: 2px solid transparent; /* Establece el borde inicial como transparente */
+    outline: none;
+    font-size: var(--normal-font-size);
+    font-weight: 700;
+    color: var(--first-color-dark);
+    width: 100%; /* Asegura que los inputs ocupen el 100% de la columna disponible */
+    transition: border-color 0.3s ease; /* Transición suave al cambiar el borde */
+}
+
+
+/* También puedes agregar el efecto al contenedor si prefieres resaltar todo el campo */
+.register__box:focus-within {
+    border: 2px solid var(--first-color-dark); /* Resalta todo el contenedor cuando algún campo dentro tiene foco */
+    box-shadow: 0 0 5px rgba(131, 10, 56, 0.5);
+}
+
+.register__input::placeholder {
+    font-size: var(--normal-font-size);
+    font-family: var(--body-font);
+    color: var(--first-color-light);
+}
+
+.register__button {
+    display: block;
+    padding: 1rem;
+    margin: 2rem 0;
+    background-color: var(--first-color);
+    color: #FFF;
+    font-weight: 600;
+    text-align: center;
+    border-radius: .5rem;
+    transition: .3s;
+}
+
+
+.register__button:hover {
+    background-color: var(--first-color-dark);
+}
+
+.register__account, .register__signin {
+    font-weight: 600;
+    font-size: var(--small-font-size);
+}
+
+
+.register__account {
+    color: var(--first-color-dark);
+}
+
+.register__signin {
+    color: var(--first-color);
+    cursor: pointer;
+}
+
+
+@media screen and (min-width: 800px) {
+    .register__forms {
+        width: 500px;
+        height: 700px; 
+        justify-self: center;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .register {
+        height: 150vh;
+        overflow: hidden;
+    }
+
+    .register__content {
+        grid-template-columns: repeat(2, max-content);
+        justify-content: center;
+        align-items: center;
+        margin-left: 10rem;
+    }
+
+    .register__img {
+        display: flex;
+        width: 200px;
+        height: 900px;
+        background-color: var(--first-color-lighten);
+        border-radius: 1rem;
+        padding-left: 1rem;
+    }
+
+    .register__img img {
+        width: 390px;
+        margin-top: 0;
+    }
+
+    .register__form {
+        left: -11rem;
+    }
+
+    .register__form {
+        bottom: -2rem;
+    }
+}
+
+.error-message {
+    color: red; /* O el color que desees */
+    display: none; /* Ocultar por defecto */
+    font-size: 12px; /* Tamaño de fuente opcional */
+    margin-top: 5px; /* Espaciado superior para separar del input */
+    text-align: left; /* Alinear texto a la izquierda */
+    position: absolute; /* Posición relativa para ajustarlo en relación al input */
+    left: 25px; /* Alinear a la izquierda del contorno del input */
+    width: 100%; /* Asegurar que los mensajes no afecten la altura del contenedor */
+    
+}
+

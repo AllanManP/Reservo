@@ -1,0 +1,55 @@
+CREATE TABLE `disponibilidad` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `estilista_id` int DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `hora_inicio` time DEFAULT NULL,
+  `hora_fin` time DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `estilista_id` (`estilista_id`),
+  CONSTRAINT `disponibilidad_ibfk_1` FOREIGN KEY (`estilista_id`) REFERENCES `estilistas` (`id`)
+)
+
+DELIMITER $$
+
+CREATE PROCEDURE generar_disponibilidad(
+    IN estilista_id INT,
+    IN fecha_inicio DATE,
+    IN fecha_fin DATE,
+    IN hora_inicio TIME,
+    IN hora_fin TIME
+)
+BEGIN
+    DECLARE fecha_actual DATE;
+    DECLARE hora_actual TIME;
+
+    SET fecha_actual = fecha_inicio;
+
+    -- Iterar sobre cada día entre la fecha de inicio y la fecha de fin
+    WHILE fecha_actual <= fecha_fin DO
+
+        -- Establecer la hora actual al inicio de la jornada laboral
+        SET hora_actual = hora_inicio;
+
+        -- Iterar sobre las horas disponibles del día
+        WHILE hora_actual < hora_fin DO
+            -- Insertar la disponibilidad para la franja horaria actual
+            INSERT INTO disponibilidad (estilista_id, fecha, hora_inicio, hora_fin)
+            VALUES (estilista_id, fecha_actual, hora_actual, ADDTIME(hora_actual, '01:00:00'));
+
+            -- Avanzar a la siguiente hora
+            SET hora_actual = ADDTIME(hora_actual, '01:00:00');
+        END WHILE;
+
+        -- Avanzar al siguiente día
+        SET fecha_actual = DATE_ADD(fecha_actual, INTERVAL 1 DAY);
+    END WHILE;
+END $$
+
+DELIMITER ;
+
+
+
+CALL generar_disponibilidad(1, '2024-09-30', '2024-10-10', '09:00:00', '20:00:00');
+
+
+

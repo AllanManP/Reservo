@@ -1,0 +1,80 @@
+CREATE TABLE `cita` (
+  `idcita` int NOT NULL AUTO_INCREMENT,
+  `idclientes` varchar(6) NOT NULL,
+  `servicio` varchar(45) NOT NULL,
+  `fecha` date NOT NULL,
+  `hora_inicio` time DEFAULT NULL,
+  `hora_fin` time DEFAULT NULL,
+  `idestilista` int NOT NULL,
+  PRIMARY KEY (`idcita`),
+  KEY `idestilista_idx` (`idestilista`),
+  KEY `idusuario_idx` (`idclientes`),
+  CONSTRAINT `idestilista` FOREIGN KEY (`idestilista`) REFERENCES `estilistas` (`id`)
+)
+
+DELIMITER $$
+
+CREATE TRIGGER actualizar_disponibilidad 
+AFTER INSERT ON cita
+FOR EACH ROW
+BEGIN
+    DECLARE hora_inicio_disp TIME;
+    DECLARE hora_fin_disp TIME;
+
+    -- Buscar la disponibilidad correspondiente al estilista y fecha de la cita
+    SELECT hora_inicio, hora_fin 
+    INTO hora_inicio_disp, hora_fin_disp
+    FROM disponibilidad
+    WHERE estilista_id = NEW.idestilista 
+      AND fecha = NEW.fecha
+      AND hora_inicio <= NEW.hora_inicio 
+      AND hora_fin >= NEW.hora_fin
+    LIMIT 1;
+
+    -- Verificar si se encontró una disponibilidad válida
+    IF hora_inicio_disp IS NOT NULL AND hora_fin_disp IS NOT NULL THEN
+    
+        -- Si la cita cubre toda la disponibilidad, elimina esa fila
+        IF hora_inicio_disp = NEW.hora_inicio AND hora_fin_disp = NEW.hora_fin THEN
+            DELETE FROM disponibilidad 
+            WHERE estilista_id = NEW.idestilista 
+              AND fecha = NEW.fecha 
+              AND hora_inicio = hora_inicio_disp 
+              AND hora_fin = hora_fin_disp;
+
+        -- Si la cita está al principio del rango de disponibilidad, ajusta la hora de inicio
+        ELSEIF hora_inicio_disp = NEW.hora_inicio THEN
+            UPDATE disponibilidad 
+            SET hora_inicio = NEW.hora_fin 
+            WHERE estilista_id = NEW.idestilista 
+              AND fecha = NEW.fecha 
+              AND hora_inicio = hora_inicio_disp;
+
+        -- Si la cita está al final del rango de disponibilidad, ajusta la hora de fin
+        ELSEIF hora_fin_disp = NEW.hora_fin THEN
+            UPDATE disponibilidad 
+            SET hora_fin = NEW.hora_inicio 
+            WHERE estilista_id = NEW.idestilista 
+              AND fecha = NEW.fecha 
+              AND hora_fin = hora_fin_disp;
+
+        -- Si la cita está en el medio del rango de disponibilidad, dividir el rango en dos
+        ELSE
+            -- Crear nueva disponibilidad antes de la cita
+            INSERT INTO disponibilidad (estilista_id, fecha, hora_inicio, hora_fin)
+            VALUES (NEW.idestilista, NEW.fecha, hora_inicio_disp, NEW.hora_inicio);
+
+            -- Actualizar la disponibilidad actual después de la cita
+            UPDATE disponibilidad 
+            SET hora_inicio = NEW.hora_fin 
+            WHERE estilista_id = NEW.idestilista 
+              AND fecha = NEW.fecha 
+              AND hora_inicio = hora_inicio_disp 
+              AND hora_fin = hora_fin_disp;
+        END IF;
+    
+    END IF;
+
+END$$
+
+DELIMITER ;

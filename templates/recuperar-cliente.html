@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<body>
+    <div class="login">
+        <div class="login__content">
+            <div class="login__img">
+                <img src="{{ url_for('static', filename='img/carrusel1.JPG') }}" alt="">
+            </div>
+
+            <div class="login__forms">
+                <form action="/recuperar-cliente" method="POST" class="login__form">
+                    <h1 class="login__title">Recuperar N°Cliente</h1>
+
+                    <!-- Número de Cliente -->
+                    <div class="login__box">
+                        <i class='bx bx-user login__icon'></i>
+                        <input type="text" id="correo_cliente" name="correo_cliente" placeholder="Ingrese Correo" class="login__input" required>
+                    </div>
+
+                    <center><button type="submit" class="login__button">Continuar</button></center>
+                    
+                </form>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}

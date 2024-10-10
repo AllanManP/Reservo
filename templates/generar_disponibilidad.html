@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Disponibilidad{% endblock %}
+
+{% block content %}
+<section id="create-disponibilidad-section">
+    <h2>Crear Disponibilidad</h2>
+    <form method="POST" action="/crear_disponibilidad">
+        <label for="estilista_id">ID del Estilista:</label>
+        <input type="text" id="estilista_id" name="estilista_id" required>
+
+        <label for="fecha">Fecha (YYYY-MM-DD):</label>
+        <input type="date" id="fecha" name="fecha" required>
+
+        <label for="hora_inicio">Hora de Inicio:</label>
+        <input type="time" id="hora_inicio" name="hora_inicio" required>
+
+        <label for="hora_fin">Hora de Fin:</label>
+        <input type="time" id="hora_fin" name="hora_fin" required>
+
+        <button type="submit">Crear Disponibilidad</button>
+    </form>
+</section>
+{% endblock %}

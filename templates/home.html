@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Salon Estilista{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+    <main>
+        <!-- Carrusel de Fotos -->
+        <section id="photo-carousel">
+            
+            <div class="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="./static/img/carrusel1.JPG" alt="Trabajo 1" id="img_carrusel">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel11.JPG" alt="Trabajo 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel3.jpg" alt="Trabajo 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel4.jpg" alt="Trabajo 4">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel5.jpg" alt="Trabajo 5">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel6.jpg" alt="Trabajo 6">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel7.jpg" alt="Trabajo 7">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel8.jpg" alt="Trabajo 8">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel9.jpg" alt="Trabajo 9">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./static/img/carrusel10.jpg" alt="Trabajo 10">
+                    </div>
+         
+                </div>
+                <a class="carousel-control prev" onclick="prevSlide()">&#10094;</a>
+                <a class="carousel-control next" onclick="nextSlide()">&#10095;</a>
+            </div>
+            <div class="carousel-indicators">
+                <!-- Los puntos se generarán aquí -->
+            </div>
+            
+        </section>
+
+        <section id="information">
+            <div class="info-container">
+                <h2>Salon de belleza ubicado en Quinta normal</h2>
+                <p>Ubicado en quinta normal, a pasos del metro Blanqueado. Nuestro salón es el destino ideal para quienes buscan una experiencia excepcional en peluquería y cuidado del cabello. Ofrecemos una amplia gama de servicios especializados, desde tratamientos capilares rejuvenecedores, hasta cortes y decoraciones. a la vanguardia de las tendencias. Nuestro equipo de estilistas altamente capacitados utiliza técnicas avanzadas y productos de la más alta calidad para asegurar resultados impecables. Descubre por qué nuestras clientas siempre vuelven por más y permítenos ayudarte a realzar tu belleza natural con un toque de sofisticación. </p>
+                  
+                <a href="/login">
+                <button type="submit" >Reservar Cita</button>
+                </a>
+            </div>
+        </section>
+
+    </main>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/informacion.js') }}"></script>
+
+{% endblock %}

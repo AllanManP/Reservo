@@ -1,0 +1,141 @@
+/* Estilos generales */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    padding: 50px;
+}
+
+/* Sección de bienvenida */
+#welcome-section {
+    background-color: #830a38;
+    padding: 50px;
+    text-align: center;
+    color: #fff;
+}
+
+#welcome-section h1 {
+    font-size: 3em;
+    margin: 0;
+}
+
+/* Sección de servicios */
+#services-section {
+    padding: 50px;
+    text-align: center;
+}
+
+.service-item {
+    opacity: 0;
+    transform: translateY(100px);
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    margin-bottom: 50px;
+}
+
+.service-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.service-item img {
+    max-width: 100%;
+    height: 400px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.service-item h3 {
+    margin: 0;
+    font-size: 2em;
+}
+
+.service-item p {
+    font-size: 1.2em;
+}
+
+/* Estilos responsivos */
+@media only screen and (max-width: 1024px) {
+    main {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    #welcome-section {
+        padding: 40px;
+    }
+
+    #welcome-section h1 {
+        font-size: 2.5em;
+    }
+
+    #services-section {
+        padding: 40px;
+    }
+
+    .service-item img {
+        height: 350px;
+    }
+
+    .service-item h3 {
+        font-size: 1.8em;
+    }
+
+    .service-item p {
+        font-size: 1.1em;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    main {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    #welcome-section {
+        padding: 30px;
+    }
+
+    #welcome-section h1 {
+        font-size: 2em;
+    }
+
+    #services-section {
+        padding: 30px;
+    }
+
+    .service-item img {
+        height: 300px;
+    }
+
+    .service-item h3 {
+        font-size: 1.6em;
+    }
+
+    .service-item p {
+        font-size: 1em;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    #welcome-section {
+        padding: 20px;
+    }
+
+    #welcome-section h1 {
+        font-size: 1.5em;
+    }
+
+    .service-item img {
+        height: 250px;
+    }
+
+    .service-item h3 {
+        font-size: 1.4em;
+    }
+
+    .service-item p {
+        font-size: 0.9em;
+    }
+}

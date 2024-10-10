@@ -1,0 +1,111 @@
+/* Estilos base para el formulario del cliente */
+.cliente-form {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.cliente-form h1 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.cliente-form p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #555;
+}
+
+
+.cliente-form .form-group {
+    margin-bottom: 15px;
+}
+
+.cliente-form label {
+    font-weight: bold;
+    color: #333;
+}
+
+.cliente-form input,
+.cliente-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.cliente-form input:focus,
+.cliente-form textarea:focus{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #830a38;
+    border-radius: 5px;
+    font-size: 16px;
+    box-shadow: 0 0 5px rgba(131, 10, 56, 0.5); /* Resaltar cuadro en foco */
+    outline: none;
+}
+
+.cliente-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.cliente-form .btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #a40a48;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.cliente-form .btn:hover {
+    background-color: #830a38;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .cliente-form {
+        padding: 10px;
+    }
+
+    .cliente-form input,
+    .cliente-form textarea {
+        font-size: 14px;
+    }
+
+    .cliente-form .btn {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cliente-form {
+        padding: 5px;
+    }
+
+    .cliente-form label {
+        font-size: 14px;
+    }
+
+    .cliente-form input,
+    .cliente-form textarea {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .cliente-form .btn {
+        font-size: 12px;
+        padding: 8px;
+    }
+}

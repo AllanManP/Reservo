@@ -1,0 +1,204 @@
+/* Estilos generales */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f3f3f3;
+}
+
+.login__content {
+  display: flex;
+  width: 80%;
+  max-width: 900px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Asegura que la imagen no sobresalga */
+}
+
+.login__img {
+  flex: 1; /* Ocupa la mitad del espacio */
+}
+
+.login__img img {
+  width: 100%;
+  height: auto; /* Mantiene la proporción de la imagen */
+}
+
+.login__forms {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1; /* Ocupa la otra mitad del espacio */
+}
+
+.login__title {
+  font-size: 30px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #a40a48;
+}
+
+.login__box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px; /* Menos espaciado */
+  border-bottom: 2px solid #a40a48;
+}
+
+.login__icon {
+  color: #a40a48;
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.login__input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 15px; /* Ajusta el padding */
+  font-size: 18px; /* Ajusta el tamaño de fuente */
+}
+
+.login__button {
+  background-color: #a40a48;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.login__button:hover {
+  background-color: #830a38;
+}
+
+.login__account {
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.login__signup {
+  color: #a40a48;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* Contenedor de las opciones */
+.login__options {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+/* Opciones alineadas a la izquierda */
+.login__options_l {
+  text-align: left;
+  width: 50%; /* Ocupa el 50% del ancho */
+}
+
+/* Opciones alineadas a la derecha */
+.login__options_r {
+  text-align: right;
+  width: 50%; /* Ocupa el 50% del ancho */
+}
+
+/* Estilos de los enlaces */
+.login__forgot, .login__signup {
+  color: #a40a48;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+/* Media Queries para pantallas más pequeñas */
+@media only screen and (max-width: 1024px) {
+  .login__content {
+    flex-direction: row;
+    width: 85%; /* Reduce el ancho del contenedor */
+  }
+
+  .login__img {
+    flex: 0.5; /* Reduce el tamaño de la imagen a la mitad del espacio */
+  }
+
+  .login__img img {
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen se ajuste sin deformarse */
+  }
+
+  .login__forms {
+    padding: 20px; /* Reduce el padding del formulario */
+    flex: 1.5; /* Aumenta el tamaño del formulario */
+  }
+
+  .login__title {
+    font-size: 24px; /* Ajuste del tamaño del título */
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .login__content {
+    flex-direction: column;
+    width: 95%; /* Más ancho en pantallas pequeñas */
+  }
+
+  .login__title {
+    font-size: 24px; /* Ajuste del tamaño del título */
+  }
+
+  .login__img {
+    display: none; /* Oculta la imagen en pantallas pequeñas */
+  }
+
+  .login__input {
+    padding: 12px; /* Ajuste del padding */
+    font-size: 16px; /* Tamaño de fuente más pequeño */
+  }
+
+  .login__button {
+    font-size: 18px; /* Tamaño de botón más pequeño */
+    padding: 8px 16px; /* Ajusta el padding del botón */
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .login {
+    height: auto; /* Permite que la altura crezca según el contenido */
+    padding-top: 20px; /* Añade espacio superior */
+    padding-bottom: 20px; /* Añade espacio inferior */
+  }
+
+  .login__content {
+    width: 100%; /* Toma todo el ancho en pantallas móviles */
+  }
+
+  .login__forms {
+    padding: 15px; /* Reduce el padding en pantallas muy pequeñas */
+  }
+
+  .login__title {
+    font-size: 22px; /* Tamaño del título más reducido */
+  }
+
+  .login__input {
+    padding: 10px; /* Menos padding */
+    font-size: 14px; /* Fuente más pequeña para inputs */
+  }
+
+  .login__button {
+    font-size: 16px; /* Tamaño de botón más pequeño */
+    padding: 8px 14px; /* Ajuste del padding */
+  }
+}
