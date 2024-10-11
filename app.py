@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 
 from datetime import datetime, timedelta
 
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -37,6 +37,7 @@ def salir():
     
 def cerrar_sesion():
     session.pop('cliente', None)
+    session.pop('admin', None)
 
 @app.route('/cliente')
 def cliente():
@@ -483,6 +484,63 @@ def eliminar_disponibilidad(id_disponibilidad):
 
 
 #Administrador
+
+def validate_login(username, password):
+    # Buscar los detalles del administrador con base en el nombre de usuario
+    admin = app.db.admin.find_one({"correo": username})
+    
+    if not admin:
+        return False, "Usuario o contraseña incorrectos."
+    
+    # Comparar la contraseña (aquí texto plano, pero se debería usar hash en un escenario real)
+    if password != admin['pass']:  # Idealmente usar check_password_hash para contraseñas encriptadas
+        return False, "Usuario o contraseña incorrectos."
+    
+    return True, admin
+
+@app.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
+    error = None
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # Validar credenciales
+        valid, result = validate_login(username, password)
+        
+        if not valid:
+            error = result  # Credenciales incorrectas
+        else:
+            # Almacenar la información del usuario en la sesión
+            session['admin'] = {
+                '_id': str(result['_id']),
+                'correo': result['correo'],
+                'rol': result['rol'],
+                'idestilista': result['idestilista']
+            }
+            
+            # Redireccionar según el rol del usuario
+            if result['rol'] == 'admin':
+                return redirect(url_for('admin_dashboard'))
+            else:
+                return redirect(url_for('stylist_dashboard'))
+    
+    return render_template('admin_login.html', error=error)
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    if 'admin' not in session or session['admin']['rol'] != 'admin':
+        return redirect(url_for('admin_login'))
+    return "¡Bienvenido, Administrador! Tienes acceso total."
+
+# Ruta para el panel de estilistas
+@app.route('/stylist/dashboard')
+def stylist_dashboard():
+    if 'admin' not in session or session['admin']['rol'] != 'estilista':
+        return redirect(url_for('admin_login'))
+    return "¡Bienvenido, Estilista! Tienes acceso restringido."
+
+
 @app.route('/admin/generar_disponibilidad', methods=['GET', 'POST'])
 def generar_disponibilidad():
     return render_template('generar_disponibilidad.html')

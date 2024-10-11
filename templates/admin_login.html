@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <h2>Inicio de Sesión para Administradores</h2>
+    <form method="POST" action="{{ url_for('admin_login') }}">
+        <label for="username">Usuario:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="password">Contraseña:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <input type="submit" value="Iniciar Sesión">
+    </form>
+    <a href="/salir">salir</a>
+    {% if error %}
+    <p style="color:red;">{{ error }}</p>
+    {% endif %}
+</main>
+{% endblock %}
