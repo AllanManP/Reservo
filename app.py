@@ -504,7 +504,6 @@ def admin_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
         # Validar credenciales
         valid, result = validate_login(username, password)
         
@@ -540,6 +539,10 @@ def stylist_dashboard():
         return redirect(url_for('admin_login'))
     return "¡Bienvenido, Estilista! Tienes acceso restringido."
 
+@app.route('/admin_salir')
+def admin_salir():
+    cerrar_sesion()
+    return render_template('admin_login.html')
 
 @app.route('/admin/generar_disponibilidad', methods=['GET', 'POST'])
 def generar_disponibilidad():

@@ -1,0 +1,4 @@
+Primero creamos y reemplazamos el venv actual
+Luego activamos el venv creado con ".\venv\Scripts\activate"
+Instalamos todas las dependencias "pip install requirements.txt"
+Para activar el servidor debemos ejecutar "python app.py"

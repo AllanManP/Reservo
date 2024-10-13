@@ -6,20 +6,33 @@
 {% endblock %}
 
 {% block content %}
-<main>
-    <h2>Inicio de Sesión para Administradores</h2>
-    <form method="POST" action="{{ url_for('admin_login') }}">
-        <label for="username">Usuario:</label><br>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label for="password">Contraseña:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <input type="submit" value="Iniciar Sesión">
-    </form>
-    <a href="/salir">salir</a>
-    {% if error %}
-    <p style="color:red;">{{ error }}</p>
-    {% endif %}
-</main>
+<body>
+    <div class="login">
+        <div class="login__content">
+            <div class="login__img">
+                <img src="{{ url_for('static', filename='img/carrusel1.JPG') }}" alt="">
+            </div>
+            <div class="login__forms">
+                <form action="{{ url_for('admin_login') }}" method="POST" class="login__form">
+                    <h1 class="login__title">Iniciar Sesión</h1>
+                    <div class="login__box">
+                        <i class='bx bx-user login__icon'></i>
+                        <label for="username">Usuario:</label>
+                        <input type="text" class="login__input" id="username" name="username" required>
+                    </div>
+                    <div class="login__box">
+                        <i class='bx bx-user login__icon'></i>
+                        <label for="password">Contraseña:</label><br>
+                        <input type="password" class="login__input" id="password" name="password" required>
+                    </div>
+                    <center><button type="submit" class="login__button">Continuar</button></center>                    
+                </form>
+                <a href="/admin_salir">salir</a>
+                {% if error %}
+                <p style="color:red;">{{ error }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
 {% endblock %}
