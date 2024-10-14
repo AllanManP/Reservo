@@ -32,15 +32,18 @@ body{
 	filter: blur(50px);
 	z-index: -1;
 }
-.contact-box{
-	max-width: 850px;
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	background-color: #fff;
-	box-shadow: 0px 0px 19px 5px rgba(0,0,0,0.19);
+.contact-box {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;  /* Permite que se ajusten en pantallas pequeñas */
+    gap: 20px;  /* Espacio entre el mapa y el formulario */
+    padding: 20px;  /* Espaciado interno */
+    border: 1px solid #ccc;  /* Borde de la caja */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra suave */
+    border-radius: 10px;  /* Bordes redondeados */
+    background-color: #fff;  /* Color de fondo blanco */
+    max-width: 1200px;  /* Ancho máximo de la caja */
+    margin: 0 auto;  /* Centra la caja horizontalmente */
 }
 
 .left{
@@ -49,8 +52,9 @@ body{
 	height: 100%;
 }
 
-.right{
-	padding: 25px 40px;
+.right {
+    flex: 1;  /* El formulario ocupará el mismo espacio que el mapa */
+    width: 48%;  /* Ajusta el ancho si es necesario */
 }
 
 h2{
@@ -89,11 +93,12 @@ h2:after{
 textarea{
 	min-height: 150px;
 }
-.mapa{
-    position:absolute;
-    border: 50px solid rgba(0, 0, 0, 0);
-    width: 30%;
-    height: 85%;
+/* Estilo para el mapa */
+.mapa {
+    flex: 1;  /* El mapa ocupará una parte proporcional */
+    width: 48%;  /* Puedes ajustar este ancho si lo necesitas */
+    height: 450px;
+    border: 0;
 
 }
 .btn{
@@ -124,4 +129,5 @@ textarea{
 	.left{
 		height: 200px;
 	}
+
 }

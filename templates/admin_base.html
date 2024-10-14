@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel de Administración{% endblock %}</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rubik+Glitch+Pop&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1 class="dancing-script">Beauty Hair Anais Studio - Panel de Administración</h1>
+    </header>
+    
+    <nav class="navbar">
+        <a href="/"> 
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="navbar-logo">
+        </a>
+        <i class="fas fa-bars" id="menu-toggle"></i> <!-- Ícono de hamburguesa -->
+        <ul id="navbar-menu">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="/admin_servicios">Servicios</a></li>
+
+            <!-- Mostrar elementos según el rol del usuario -->
+            {% if session['admin']['rol'] == 'admin' %}
+                <li><a href="/reseñas">Reseñas</a></li>
+                <li><a href="/reserva">Reserva</a></li>
+                <li><a href="/contacto">Contacto</a></li>
+                <li><a href="/admin_estilistas">Estilistas</a></li>
+            {% elif session['admin']['rol'] == 'estilista' %}
+                <li><a href="/citas">Citas</a></li>
+            {% endif %}
+        </ul>
+
+        <div class="navbar-client">
+            <!-- Mostrar opciones de cliente -->
+            <ul id="navbar-client-menu">
+                <li><a href="/cliente"><i class="fas fa-user-circle"></i>{{ session['admin']['correo'] }}</a></li>
+                <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <div class="social-media">
+                    <a href="https://www.instagram.com/beauty_hair_anais_studio" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/anais.diaz.3950178" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <p>Contacto: +56 9 1234 5678</p>
+                </div>
+            </div>
+            <div class="footer-column">
+                <div class="contact-info">
+                    <p>Dirección: Calle Falsa 123, Santiago</p>
+                </div>
+            </div>
+        </div>
+        <p>© 2024 Salón Estilista. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById("menu-toggle").addEventListener("click", function() {
+            var menu = document.getElementById("navbar-menu");
+            menu.classList.toggle("show");
+        });
+    </script>
+</body>
+</html>

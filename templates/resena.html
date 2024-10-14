@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Reseñas{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reseña.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="reviews-container">
+    <h1 class="titulo">Deja tu Reseña</h1>
+
+    <!-- Formulario para enviar una reseña -->
+    <form method="POST" action="/enviar_resena">
+        <div class="form-group">
+            <label for="rating">Selecciona tu calificación:</label>
+            <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5" required />
+                <label for="star5" title="5 estrellas">★</label>
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4" title="4 estrellas">★</label>
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3" title="3 estrellas">★</label>
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2" title="2 estrellas">★</label>
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1" title="1 estrella">★</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="comment">Escribe tu reseña:</label>
+            <textarea id="comment" name="comment" class="field" required placeholder="Escribe tu comentario aquí..."></textarea>
+        </div>
+        <div class="form-group full-width">
+            <button type="submit" class="btn">Enviar Reseña</button>
+        </div>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Sección donde se mostrarán las reseñas -->
+    <div class="reviews-list">
+        <h2>Reseñas de los clientes:</h2>
+        {% for review in reviews %}
+            <div class="review">
+                
+                <div class="rating-display">
+                    {{ '★' * review['rating'] }}{{ '☆' * (5 - review['rating']) }}
+                </div>
+                <p>{{ review['nombre'] }}</p>
+                <p>{{ review['comment'] }}</p>
+                <p>{{ review['creacion'] }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<br>
+<br>
+<br>
+
+
+{% endblock %}

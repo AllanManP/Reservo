@@ -1,0 +1,45 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Agregar Estilista{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/agregar_estilista.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <section id="add-stylist">
+        <div class="form-container">
+            <h2>Agregar Nueva Estilista</h2>
+            <form action="{{ url_for('añadir_estilista') }}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="foto">Foto</label>
+                    <input type="file" id="foto" name="foto" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" id="telefono" name="telefono" required>
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo Electrónico</label>
+                    <input type="email" id="correo" name="correo" required>
+                </div>
+                <div class="form-group">
+                    <label for="activo">Activo</label>
+                    <select id="activo" name="activo">
+                        <option value="1">Sí</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Agregar Estilista</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+{% endblock %}

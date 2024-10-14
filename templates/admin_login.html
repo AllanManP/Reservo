@@ -2,37 +2,32 @@
 {% block title %}Iniciar Sesión{% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_login.css') }}">
 {% endblock %}
 
 {% block content %}
-<body>
-    <div class="login">
-        <div class="login__content">
-            <div class="login__img">
-                <img src="{{ url_for('static', filename='img/carrusel1.JPG') }}" alt="">
+<main class="login">
+    <div class="login__content">
+        <h2 class="login__title">Inicio de Sesión para Administradores</h2>
+        <form method="POST" action="{{ url_for('admin_login') }}" class="login__forms">
+            <div class="login__box">
+                <label for="username" class="login__icon">Usuario:</label>
+                <input type="text" id="username" name="username" required class="login__input" placeholder="Ingresa tu usuario">
             </div>
-            <div class="login__forms">
-                <form action="{{ url_for('admin_login') }}" method="POST" class="login__form">
-                    <h1 class="login__title">Iniciar Sesión</h1>
-                    <div class="login__box">
-                        <i class='bx bx-user login__icon'></i>
-                        <label for="username">Usuario:</label>
-                        <input type="text" class="login__input" id="username" name="username" required>
-                    </div>
-                    <div class="login__box">
-                        <i class='bx bx-user login__icon'></i>
-                        <label for="password">Contraseña:</label><br>
-                        <input type="password" class="login__input" id="password" name="password" required>
-                    </div>
-                    <center><button type="submit" class="login__button">Continuar</button></center>                    
-                </form>
-                <a href="/admin_salir">salir</a>
-                {% if error %}
-                <p style="color:red;">{{ error }}</p>
-                {% endif %}
+
+            <div class="login__box">
+                <label for="password" class="login__icon">Contraseña:</label>
+                <input type="password" id="password" name="password" required class="login__input" placeholder="Ingresa tu contraseña">
             </div>
-        </div>
+
+            <input type="submit" value="Iniciar Sesión" class="login__button">
+        </form>
+
+        <a href="/salir" class="login__forgot">Salir</a>
+
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% endif %}
     </div>
-</body>
+</main>
 {% endblock %}

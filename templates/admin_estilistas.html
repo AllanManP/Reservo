@@ -1,0 +1,54 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Gestión de Estilistas{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_estilistas.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <section id="stylist-management">
+        <h2>Gestión de Estilistas</h2>
+        
+        <table class="stylist-table">
+            <thead>
+                <tr>
+                    <th>Foto</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Estado</th> <!-- Nueva columna para el estado -->
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estilista in estilistas %}
+                <tr>
+                    <td><img src="{{ estilista.foto_url }}" alt="Foto de {{ estilista.nombre }}" class="stylist-photo"></td>
+                    <td>{{ estilista.nombre }}</td>
+                    <td>{{ estilista.telefono }}</td>
+                    <td>{{ estilista.correo }}</td>
+                    <td>
+                        <!-- Muestra si el estilista está activo o inactivo -->
+                        {% if estilista.activo == 1 %}
+                            Activo
+                        {% else %}
+                            Inactivo
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('modificar_estilista', id=estilista.id) }}" class="btn-modify">Modificar</a>
+                        <a href="{{ url_for('eliminar_estilista', id=estilista.id) }}" class="btn-delete">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="add-new">
+            <a href="{{ url_for('añadir_estilista') }}" class="btn-add-new">Agregar Nueva Estilista</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -12,6 +12,10 @@ from email.mime.multipart import MIMEMultipart
 from pymongo import MongoClient
 import pytz
 
+from werkzeug.utils import secure_filename
+import os
+
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar la sesión
 
@@ -472,11 +476,91 @@ def eliminar_disponibilidad(id_disponibilidad):
 
 
 
-    
+#----------------------------------------
+# Reseña
 
 
+@app.route('/resena', methods=['GET'])
+def resena():
+    reviews = list(app.db.reviews.find())
+    print(reviews)  # Depuración
+    return render_template('resena.html', reviews=reviews)
 
 
+@app.route('/enviar_resena', methods=['POST'])
+def enviar_resena():
+    if 'cliente' in session:
+        try:
+            rating = int(request.form['rating'])
+            comment = request.form['comment']
+            nombre=session['cliente']['nombre']
+            # Aquí puedes guardar la reseña en la base de datos o en una lista
+            nueva_resena = {'rating': rating, 'comment': comment,'nombre':nombre}
+
+            # Supongamos que tienes una lista para almacenar las reseñas
+            #reviews = app.db.reviews
+            app.db.reviews.insert_one({
+                'rating': rating, 
+                'comment': comment,
+                'nombre':nombre,
+                'creacion': datetime.now().strftime('%d-%m-%Y'),
+            })
+            # Renderiza la página con las nuevas reseñas
+            return redirect(url_for('resena'))
+        except KeyError:
+            flash("Faltan datos en el formulario", "error")
+            return redirect(url_for('resena'))
+    else:
+        flash("Debes iniciar sesión para enviar una reseña.", "error")
+        return redirect(url_for('resena'))
+
+@app.route('/contacto', methods=['GET', 'POST'])
+def contacto():
+    if request.method == 'POST':
+        try:
+            # Imprimir los datos del formulario para depurar
+            print(request.form)  # Esto mostrará los datos recibidos en la consola
+
+            # Acceder a los datos del formulario
+            nombre = request.form['nombre']
+            email = request.form['email']
+            telefono = request.form['telefono']
+            mensaje = request.form['mensaje']
+
+            # Enviar el correo
+            enviar_correo_contacto(nombre,email,telefono,mensaje)
+
+            return render_template('contacto_mail.html')  # Muestra una confirmación
+        except KeyError as e:
+            print(f"KeyError: {e}")  # Para saber cuál clave está causando el problema
+            return f"Faltan datos en el formulario: {e}", 400  # Indica qué dato falta
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")  # Captura otros errores
+            return "Ocurrió un error al enviar el correo", 500
+    else:
+        # Si es un GET, simplemente muestra el formulario
+        return render_template('contacto.html')
+
+
+def enviar_correo_contacto(nombre,email,telefono,mensaje):
+    correo_remitente = "allan.manriquez19@gmail.com"
+    contraseña_remitente = "nqlr qoyx dhey ykcc"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
+
+    # Crear el asunto y el cuerpo del correo
+    asunto = "Nuevo mensaje de contacto"
+    cuerpo = f"""Nombre: {nombre}\nEmail: {email}\nTeléfono: {telefono}\nMensaje: {mensaje}"""
+
+    # Crear un objeto MIMEText
+    msg = MIMEMultipart()
+    msg['From'] = correo_remitente
+    msg['To'] = correo_remitente
+    msg['Subject'] = asunto
+    msg.attach(MIMEText(cuerpo, 'plain'))
+
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()  # Inicia la conexión segura
+        server.login(correo_remitente, contraseña_remitente)  # Inicia sesión en tu cuenta
+        server.sendmail(correo_remitente, correo_remitente, msg.as_string())  # Envía el correo
 
 
 
@@ -496,6 +580,7 @@ def validate_login(username, password):
     if password != admin['pass']:  # Idealmente usar check_password_hash para contraseñas encriptadas
         return False, "Usuario o contraseña incorrectos."
     
+
     return True, admin
 
 @app.route('/admin_login', methods=['GET', 'POST'])
@@ -504,6 +589,7 @@ def admin_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        
         # Validar credenciales
         valid, result = validate_login(username, password)
         
@@ -520,11 +606,24 @@ def admin_login():
             
             # Redireccionar según el rol del usuario
             if result['rol'] == 'admin':
-                return redirect(url_for('admin_dashboard'))
+                return redirect(url_for('admin_inicio'))
             else:
-                return redirect(url_for('stylist_dashboard'))
+                return redirect(url_for('admin_inicio'))
     
     return render_template('admin_login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('admin', None)  # Elimina la sesión del administrador
+    return redirect(url_for('admin_login'))  # Redirige a la página de inicio de sesión
+
+@app.route('/admin/inicio')
+def admin_inicio():
+    # Verifica si el usuario está autenticado
+    if 'admin' in session:
+        return render_template('admin_inicio.html')
+    return redirect(url_for('admin_login'))  # Redirige si no hay sesión
+
 
 @app.route('/admin/dashboard')
 def admin_dashboard():
@@ -539,10 +638,6 @@ def stylist_dashboard():
         return redirect(url_for('admin_login'))
     return "¡Bienvenido, Estilista! Tienes acceso restringido."
 
-@app.route('/admin_salir')
-def admin_salir():
-    cerrar_sesion()
-    return render_template('admin_login.html')
 
 @app.route('/admin/generar_disponibilidad', methods=['GET', 'POST'])
 def generar_disponibilidad():
@@ -583,6 +678,101 @@ def crear_disponibilidad():
 
     return render_template('generar_disponibilidad.html')
 
+
+@app.route('/admin_servicios')
+def admin_servicios():
+    return render_template('admin_servicios.html')
+
+@app.route('/admin_estilistas')
+def admin_estilistas():
+    estilistas = app.db.estilistas.find()
+    lista_estilistas = []
+    for estilista in estilistas:
+        # No se intenta acceder con ['telefono']['$numberLong'], simplemente se usa 'telefono' directamente
+        estilista['telefono'] = str(estilista['telefono'])  # Convertimos a cadena si es necesario
+        lista_estilistas.append(estilista)
+    return render_template('admin_estilistas.html', estilistas=lista_estilistas)
+
+@app.route('/admin/añadir_estilista', methods=['GET', 'POST'])
+def añadir_estilista():
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        nombre = request.form['nombre']
+        telefono = request.form['telefono']
+        correo = request.form['correo']
+        activo = int(request.form['activo'])  # Convertir a entero
+        foto = request.files['foto']  # Obtenemos el archivo de la foto
+        
+        # Guardar la foto en una carpeta (por ejemplo, dentro de 'static/img')
+        if foto:
+            foto_filename = secure_filename(foto.filename)
+            foto.save(os.path.join('static/img', foto_filename))
+            foto_url = f'./static/img/{foto_filename}'
+        else:
+            foto_url = None
+        
+        # Obtener el siguiente ID numérico
+        total_estilistas = app.db.estilistas.count_documents({})
+        nuevo_id = total_estilistas + 1  # Establecemos el nuevo ID
+        
+        # Crear el objeto estilista para guardar en MongoDB
+        estilista = {
+            'id': nuevo_id,  # Agregamos el nuevo ID
+            'nombre': nombre,
+            'telefono': telefono,
+            'correo': correo,
+            'activo': activo,
+            'foto_url': foto_url,
+            'created_at': datetime.now().strftime('%d-%m-%Y %H:%M'),
+            'updated_at': datetime.now().strftime('%d-%m-%Y %H:%M')
+        }
+        
+        # Guardar en la base de datos
+        app.db.estilistas.insert_one(estilista)
+        
+        # Redirigir al listado de estilistas o a una página de confirmación
+        return redirect(url_for('admin_estilistas'))
+
+    # Si es una solicitud GET, mostramos el formulario
+    return render_template('agregar_estilista.html')
+
+
+@app.route('/admin_modificar_estilista/<int:id>', methods=['GET', 'POST'])
+def modificar_estilista(id):
+    estilista = app.db.estilistas.find_one({'id': id})  # Obtiene el estilista de la base de datos
+    
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        telefono = request.form['telefono']
+        correo = request.form['correo']
+        activo = request.form['activo']
+        
+        # Manejo de la foto si se sube una nueva
+        if 'foto' in request.files:
+            foto = request.files['foto']
+            if foto.filename != '':
+                # Aquí guardas la nueva foto (por ejemplo, en una ruta específica)
+                foto.save(os.path.join('static/img/estilistas', foto.filename))
+                # Actualiza la ruta de la foto en la base de datos si es necesario
+
+        # Actualiza los datos del estilista en la base de datos
+        app.db.estilistas.update_one({'id': id}, {'$set': {
+            'nombre': nombre,
+            'telefono': telefono,
+            'correo': correo,
+            'activo': int(activo),
+            # 'foto_url': 'ruta/de/la/nueva/foto' si se cambia la foto
+        }})
+
+        return redirect(url_for('admin_estilistas'))
+
+    return render_template('admin_modificar_estilista.html', estilista=estilista)
+
+
+@app.route('/admin/eliminar_estilista/<id>', methods=['POST'])
+def eliminar_estilista(id):
+    # Lógica para eliminar estilista
+    pass
 
 
 if __name__ == '__main__':

@@ -1,0 +1,60 @@
+/* Contenedor principal */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh; /* Altura mínima para separarlo del footer */
+    padding: 20px;
+    background-color: #f7f9fc; /* Color de fondo suave */
+    text-align: center;
+}
+
+/* Estilo del título */
+.container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Estilo del párrafo */
+.container p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: #555;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Botón de volver al inicio */
+.button-home {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 1rem;
+    background-color: #007bff; /* Color azul moderno */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover para el botón */
+.button-home:hover {
+    background-color: #0056b3; /* Un azul más oscuro al hacer hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 600px) {
+    .container h1 {
+        font-size: 2rem;
+    }
+    .container p {
+        font-size: 1rem;
+    }
+    .button-home {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+}

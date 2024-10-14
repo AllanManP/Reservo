@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Reserva de Citas{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/confirmacion.css') }}">
+{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <h1>Â¡Gracias por contactarnos!</h1>
+        <p>Hemos recibido tu mensaje. Nos pondremos en contacto contigo lo antes posible.</p>
+        <a href="/" class="button-home">Volver al Inicio</a>
+    </div>
+
+{% endblock %}

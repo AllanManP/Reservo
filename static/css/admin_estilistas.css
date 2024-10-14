@@ -1,0 +1,80 @@
+/* Tabla de estilistas */
+.stylist-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.stylist-table thead {
+    background-color: #f2f2f2;
+}
+
+.stylist-table th, 
+.stylist-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.stylist-table th {
+    font-weight: bold;
+}
+
+.stylist-table .stylist-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.stylist-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Botones de acciones */
+.btn-add,
+.btn-modify,
+.btn-delete {
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    margin: 0 5px;
+}
+
+.btn-add {
+    background-color: #4CAF50;
+}
+
+.btn-modify {
+    background-color: #FFC107;
+}
+
+.btn-delete {
+    background-color: rgb(200, 35, 51);
+}
+
+.btn-delete:hover {
+    background-color: darkred; /* Color de fondo al pasar el ratón */
+}
+
+.btn-add-new {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn-add-new:hover {
+    background-color: #45a049;
+}
+
+.add-new {
+    text-align: center;
+    margin: 30px 0;
+}
