@@ -11,6 +11,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
     {% block css %}{% endblock %}
 </head>
 <body>
@@ -30,9 +31,9 @@
             <!-- Mostrar elementos según el rol del usuario -->
             {% if session['admin']['rol'] == 'admin' %}
                 <li><a href="/reseñas">Reseñas</a></li>
-                <li><a href="/reserva">Reserva</a></li>
+                <li><a href="/admin/reservas">Reserva</a></li>
                 <li><a href="/contacto">Contacto</a></li>
-                <li><a href="/admin_estilistas">Estilistas</a></li>
+                <li><a href="/admin/estilistas">Estilistas</a></li>
             {% elif session['admin']['rol'] == 'estilista' %}
                 <li><a href="/citas">Citas</a></li>
             {% endif %}

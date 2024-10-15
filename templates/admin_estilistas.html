@@ -10,7 +10,7 @@
 <main>
     <section id="stylist-management">
         <h2>Gestión de Estilistas</h2>
-        
+
         <table class="stylist-table">
             <thead>
                 <tr>
@@ -18,7 +18,7 @@
                     <th>Nombre</th>
                     <th>Teléfono</th>
                     <th>Correo</th>
-                    <th>Estado</th> <!-- Nueva columna para el estado -->
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -30,7 +30,6 @@
                     <td>{{ estilista.telefono }}</td>
                     <td>{{ estilista.correo }}</td>
                     <td>
-                        <!-- Muestra si el estilista está activo o inactivo -->
                         {% if estilista.activo == 1 %}
                             Activo
                         {% else %}
@@ -39,7 +38,11 @@
                     </td>
                     <td>
                         <a href="{{ url_for('modificar_estilista', id=estilista.id) }}" class="btn-modify">Modificar</a>
-                        <a href="{{ url_for('eliminar_estilista', id=estilista.id) }}" class="btn-delete">Eliminar</a>
+
+                        <!-- Formulario para eliminar estilista con confirmación -->
+                        <form action="{{ url_for('eliminar_estilista', id=estilista._id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este estilista?');">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}

@@ -20,7 +20,8 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar la sesión
 
 
-cliente=MongoClient("mongodb+srv://allanmanriquez19:dTuYRiRENX7t8Msg@reservo.uuj9k.mongodb.net/")
+cliente = MongoClient("mongodb+srv://allanmanriquez19:dTuYRiRENX7t8Msg@reservo.uuj9k.mongodb.net/")
+
 app.db=cliente.reservo
 
 
@@ -41,6 +42,7 @@ def salir():
     
 def cerrar_sesion():
     session.pop('cliente', None)
+    session.pop('estilista', None)
     session.pop('admin', None)
 
 @app.route('/cliente')
@@ -580,10 +582,9 @@ def validate_login(username, password):
     if password != admin['pass']:  # Idealmente usar check_password_hash para contraseñas encriptadas
         return False, "Usuario o contraseña incorrectos."
     
-
     return True, admin
 
-@app.route('/admin_login', methods=['GET', 'POST'])
+@app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     error = None
     if request.method == 'POST':
@@ -597,24 +598,26 @@ def admin_login():
             error = result  # Credenciales incorrectas
         else:
             # Almacenar la información del usuario en la sesión
+            
             session['admin'] = {
                 '_id': str(result['_id']),
                 'correo': result['correo'],
                 'rol': result['rol'],
                 'idestilista': result['idestilista']
             }
-            
             # Redireccionar según el rol del usuario
             if result['rol'] == 'admin':
-                return redirect(url_for('admin_inicio'))
-            else:
-                return redirect(url_for('admin_inicio'))
+                return redirect(url_for('admin_inicio'))  # Redirigir a la página de inicio de administradores
+            elif result['rol'] == 'estilista':
+                
+                return redirect(url_for('admin_inicio'))  # Redirigir a la página de inicio de estilistas
     
     return render_template('admin_login.html', error=error)
 
+
 @app.route('/logout')
 def logout():
-    session.pop('admin', None)  # Elimina la sesión del administrador
+    cerrar_sesion()  # Elimina la sesión del administrador
     return redirect(url_for('admin_login'))  # Redirige a la página de inicio de sesión
 
 @app.route('/admin/inicio')
@@ -641,138 +644,219 @@ def stylist_dashboard():
 
 @app.route('/admin/generar_disponibilidad', methods=['GET', 'POST'])
 def generar_disponibilidad():
-    return render_template('generar_disponibilidad.html')
+    if 'admin' not in session or session['admin']['rol'] != 'admin':
+        return redirect(url_for('admin_login'))
+    else:
+        return render_template('generar_disponibilidad.html')
 
 
 @app.route('/crear_disponibilidad', methods=['GET', 'POST'])
 def crear_disponibilidad():
-    if request.method == 'POST':
-        estilista_id = request.form['estilista_id']
-        fecha_str = request.form['fecha']
-        hora_inicio_str = request.form['hora_inicio']
-        hora_fin_str = request.form['hora_fin']
+    if 'admin' not in session or session['admin']['rol'] != 'admin':
+        return redirect(url_for('admin_login'))
+    else:
+        if request.method == 'POST':
+            estilista_id = request.form['estilista_id']
+            fecha_str = request.form['fecha']
+            hora_inicio_str = request.form['hora_inicio']
+            hora_fin_str = request.form['hora_fin']
 
-        # Convertir las fechas y horas en objetos datetime
-        fecha = datetime.strptime(fecha_str, '%Y-%m-%d')
-        hora_inicio = datetime.strptime(hora_inicio_str, '%H:%M').time()
-        hora_fin = datetime.strptime(hora_fin_str, '%H:%M').time()
+            # Convertir las fechas y horas en objetos datetime
+            fecha = datetime.strptime(fecha_str, '%Y-%m-%d')
+            hora_inicio = datetime.strptime(hora_inicio_str, '%H:%M').time()
+            hora_fin = datetime.strptime(hora_fin_str, '%H:%M').time()
 
-        # Crear una lista de las horas disponibles entre hora_inicio y hora_fin
-        horas_disponibles = []
-        hora_actual = datetime.combine(fecha, hora_inicio)
+            # Crear una lista de las horas disponibles entre hora_inicio y hora_fin
+            horas_disponibles = []
+            hora_actual = datetime.combine(fecha, hora_inicio)
 
-        while hora_actual.time() < hora_fin:
-            horas_disponibles.append(hora_actual.time().strftime('%H:%M'))
-            hora_actual += timedelta(hours=1)  # Incrementar por horas completas
+            while hora_actual.time() < hora_fin:
+                horas_disponibles.append(hora_actual.time().strftime('%H:%M'))
+                hora_actual += timedelta(hours=1)  # Incrementar por horas completas
 
-        # Insertar las horas disponibles en la colección 'disponibilidad' en MongoDB
-        for hora in horas_disponibles:
-            app.db.disponibilidad.insert_one({
-                "estilista_id": estilista_id,
-                "fecha": fecha,
-                "hora": hora
-            })
+            # Insertar las horas disponibles en la colección 'disponibilidad' en MongoDB
+            for hora in horas_disponibles:
+                app.db.disponibilidad.insert_one({
+                    "estilista_id": estilista_id,
+                    "fecha": fecha,
+                    "hora": hora
+                })
 
-        # Redirigir a una página de confirmación o a otra página
-        return redirect(url_for('generar_disponibilidad'))
+            # Redirigir a una página de confirmación o a otra página
+            return redirect(url_for('generar_disponibilidad'))
 
-    return render_template('generar_disponibilidad.html')
+        return render_template('generar_disponibilidad.html')
 
 
-@app.route('/admin_servicios')
+@app.route('/admin/servicios')
 def admin_servicios():
     return render_template('admin_servicios.html')
 
-@app.route('/admin_estilistas')
+@app.route('/admin/estilistas')
 def admin_estilistas():
-    estilistas = app.db.estilistas.find()
-    lista_estilistas = []
-    for estilista in estilistas:
-        # No se intenta acceder con ['telefono']['$numberLong'], simplemente se usa 'telefono' directamente
-        estilista['telefono'] = str(estilista['telefono'])  # Convertimos a cadena si es necesario
-        lista_estilistas.append(estilista)
-    return render_template('admin_estilistas.html', estilistas=lista_estilistas)
+    if 'admin' not in session or session['admin']['rol'] != 'admin':
+        return redirect(url_for('admin_login'))
+    else:
+        estilistas = app.db.estilistas.find()
+        lista_estilistas = []
+        for estilista in estilistas:
+            # No se intenta acceder con ['telefono']['$numberLong'], simplemente se usa 'telefono' directamente
+            estilista['telefono'] = str(estilista['telefono'])  # Convertimos a cadena si es necesario
+            lista_estilistas.append(estilista)
+        return render_template('admin_estilistas.html', estilistas=lista_estilistas)
 
 @app.route('/admin/añadir_estilista', methods=['GET', 'POST'])
 def añadir_estilista():
-    if request.method == 'POST':
-        # Obtener los datos del formulario
-        nombre = request.form['nombre']
-        telefono = request.form['telefono']
-        correo = request.form['correo']
-        activo = int(request.form['activo'])  # Convertir a entero
-        foto = request.files['foto']  # Obtenemos el archivo de la foto
-        
-        # Guardar la foto en una carpeta (por ejemplo, dentro de 'static/img')
-        if foto:
-            foto_filename = secure_filename(foto.filename)
-            foto.save(os.path.join('static/img', foto_filename))
-            foto_url = f'./static/img/{foto_filename}'
-        else:
-            foto_url = None
-        
-        # Obtener el siguiente ID numérico
-        total_estilistas = app.db.estilistas.count_documents({})
-        nuevo_id = total_estilistas + 1  # Establecemos el nuevo ID
-        
-        # Crear el objeto estilista para guardar en MongoDB
-        estilista = {
-            'id': nuevo_id,  # Agregamos el nuevo ID
-            'nombre': nombre,
-            'telefono': telefono,
-            'correo': correo,
-            'activo': activo,
-            'foto_url': foto_url,
-            'created_at': datetime.now().strftime('%d-%m-%Y %H:%M'),
-            'updated_at': datetime.now().strftime('%d-%m-%Y %H:%M')
-        }
-        
-        # Guardar en la base de datos
-        app.db.estilistas.insert_one(estilista)
-        
-        # Redirigir al listado de estilistas o a una página de confirmación
-        return redirect(url_for('admin_estilistas'))
+    if 'admin' not in session or session['admin']['rol'] != 'admin':
+        return redirect(url_for('admin_login'))
+    else:
+        if request.method == 'POST':
+            # Obtener los datos del formulario
+            nombre = request.form['nombre']
+            telefono = request.form['telefono']
+            correo = request.form['correo']
+            contrasena = request.form['contrasena']
+            activo = int(request.form['activo'])  # Convertir a entero
+            foto = request.files['foto']  # Obtenemos el archivo de la foto
+            rol = request.form['rol']  # Aquí corregimos el acceso al campo 'rol'
+            
+            # Guardar la foto en una carpeta (por ejemplo, dentro de 'static/img')
+            if foto:
+                foto_filename = secure_filename(foto.filename)
+                foto.save(os.path.join('static/img', foto_filename))
+                foto_url = f'./static/img/{foto_filename}'
+            else:
+                foto_url = None
+            
+            # Obtener el siguiente ID numérico
+            total_estilistas = app.db.estilistas.count_documents({})
+            nuevo_id = total_estilistas + 1  # Establecemos el nuevo ID
+            
+            # Crear el objeto estilista para guardar en MongoDB
+            estilista = {
+                'id': nuevo_id,  # Agregamos el nuevo ID
+                'nombre': nombre,
+                'telefono': telefono,
+                'correo': correo,
+                'activo': activo,
+                'foto_url': foto_url,
+                'created_at': datetime.now().strftime('%d-%m-%Y %H:%M'),
+                'updated_at': datetime.now().strftime('%d-%m-%Y %H:%M')
+            }
+            
+            estilista_admin = {
+                '_id': nuevo_id,
+                'idestilista': nuevo_id,
+                'pass': contrasena,
+                'rol': rol,  # Aquí también corregimos el uso de 'rol'
+                'correo': correo
+            }
+            
+            # Guardar en la base de datos
+            app.db.estilistas.insert_one(estilista)
+            app.db.admin.insert_one(estilista_admin)
+            
+            # Redirigir al listado de estilistas o a una página de confirmación
+            return redirect(url_for('admin_estilistas'))
 
-    # Si es una solicitud GET, mostramos el formulario
-    return render_template('agregar_estilista.html')
+        # Si es una solicitud GET, mostramos el formulario
+        return render_template('agregar_estilista.html')
 
 
-@app.route('/admin_modificar_estilista/<int:id>', methods=['GET', 'POST'])
+
+@app.route('/admin/modificar_estilista/<int:id>', methods=['GET', 'POST'])
 def modificar_estilista(id):
-    estilista = app.db.estilistas.find_one({'id': id})  # Obtiene el estilista de la base de datos
-    
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        telefono = request.form['telefono']
-        correo = request.form['correo']
-        activo = request.form['activo']
+    if 'admin' not in session or session['admin']['rol'] != 'admin':
+        return redirect(url_for('admin_login'))
+    else:
+        estilista = app.db.estilistas.find_one({'id': id})  # Obtiene el estilista de la base de datos
         
-        # Manejo de la foto si se sube una nueva
-        if 'foto' in request.files:
-            foto = request.files['foto']
-            if foto.filename != '':
-                # Aquí guardas la nueva foto (por ejemplo, en una ruta específica)
-                foto.save(os.path.join('static/img/estilistas', foto.filename))
-                # Actualiza la ruta de la foto en la base de datos si es necesario
+        if request.method == 'POST':
+            nombre = request.form['nombre']
+            telefono = request.form['telefono']
+            correo = request.form['correo']
+            activo = request.form['activo']
+            
+            # Manejo de la foto si se sube una nueva
+            if 'foto' in request.files:
+                foto = request.files['foto']
+                if foto.filename != '':
+                    # Aquí guardas la nueva foto (por ejemplo, en una ruta específica)
+                    foto.save(os.path.join('static/img/estilistas', foto.filename))
+                    # Actualiza la ruta de la foto en la base de datos si es necesario
 
-        # Actualiza los datos del estilista en la base de datos
-        app.db.estilistas.update_one({'id': id}, {'$set': {
-            'nombre': nombre,
-            'telefono': telefono,
-            'correo': correo,
-            'activo': int(activo),
-            # 'foto_url': 'ruta/de/la/nueva/foto' si se cambia la foto
-        }})
+            # Actualiza los datos del estilista en la base de datos
+            app.db.estilistas.update_one({'id': id}, {'$set': {
+                'nombre': nombre,
+                'telefono': telefono,
+                'correo': correo,
+                'activo': int(activo),
+                # 'foto_url': 'ruta/de/la/nueva/foto' si se cambia la foto
+            }})
 
-        return redirect(url_for('admin_estilistas'))
+            return redirect(url_for('admin_estilistas'))
 
-    return render_template('admin_modificar_estilista.html', estilista=estilista)
+        return render_template('admin_modificar_estilista.html', estilista=estilista)
 
 
 @app.route('/admin/eliminar_estilista/<id>', methods=['POST'])
 def eliminar_estilista(id):
-    # Lógica para eliminar estilista
-    pass
+    if 'admin' not in session or session['admin']['rol'] != 'admin':
+        return redirect(url_for('admin_login'))
+    else:
+        # Buscar el estilista en la colección 'estilistas' usando su _id
+        estilista = app.db.estilistas.find_one({"_id": ObjectId(id)})
+
+        if estilista:
+            # Obtener el campo 'id' numérico del estilista
+            idestilista = estilista['id']
+            
+            # Eliminar al estilista en la colección 'admin' usando el id numérico
+            resultado_admin = app.db.admin.delete_one({"idestilista": idestilista})
+
+            # Eliminar al estilista en la colección 'estilistas' usando el ObjectId
+            resultado_estilista = app.db.estilistas.delete_one({"_id": ObjectId(id)})
+
+            if resultado_estilista.deleted_count > 0:
+                print("Estilista eliminado con éxito.")
+                flash('Estilista eliminado con éxito.', 'success')
+            else:
+                print("No se encontró ningún estilista con ese ID.")
+                flash('No se encontró ningún estilista con ese ID.', 'error')
+
+        else:
+            print("No se encontró ningún estilista con ese ID.")
+            flash('No se encontró ningún estilista con ese ID.', 'error')
+
+        return redirect(url_for('admin_estilistas'))
+
+@app.route('/admin/reservas', methods=['GET', 'POST'])
+def admin_reservas():
+    if 'admin' not in session or session['admin']['rol'] != 'admin':
+        return redirect(url_for('admin_login'))
+    else:              
+        estilistas = list(app.db.estilistas.find())
+        return render_template('admin_reservas.html',reserva=None,estilista=estilistas)
+    
+@app.route('/admin/lista_reservas', methods=['GET', 'POST'])
+def lista_reservas():
+    if request.method == 'POST':
+            estilista_id = request.form.get('estilista_id')
+            fecha = request.form.get('fecha')
+            estilistas = list(app.db.estilistas.find())
+            # Convertir fecha a formato datetime para buscar en MongoDB
+            fecha_datetime = datetime.strptime(fecha, '%Y-%m-%d')
+
+            # Consultar citas del estilista en la fecha seleccionada
+            reservas = app.db.cita.find({
+                'idestilista': int(estilista_id),
+                'fecha': fecha
+            })
+            lista_reservas = list(reservas)  # Convertir cursor a lista
+            lista_reservas.sort(key=lambda x: (x['fecha'], x['hora_inicio']))
+            print(lista_reservas)  # Para depuración
+
+            return render_template('admin_reservas.html', reserva=lista_reservas,estilista=estilistas)
 
 
 if __name__ == '__main__':

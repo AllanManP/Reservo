@@ -1,0 +1,74 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Agregar Estilista{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reserva.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+<div class="container mt-5">
+    <h1>Ver Citas del Estilista</h1>
+
+    <!-- Formulario para ingresar el estilista_id y la fecha -->
+    <form id="formCitas" class="mb-4" action="/admin/lista_reservas" method="POST">
+        <div class="mb-3">
+            <label for="estilista_id" class="form-label">Estilista</label>
+            <select type="number" class="form-control" id="estilista_id" name="estilista_id" placeholder="Ingrese ID del Estilista" required>
+                {% for estilista in estilista %}
+                    <option value="{{ estilista.id }}">{{ estilista.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha</label>
+            <input type="date" class="form-control" id="fecha" name="fecha" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Ver Citas</button>
+    </form>
+    <!-- Acordeón donde se mostrarán las citas -->
+    <div class="accordion">
+        {% if reserva is not none %}
+            {% if reserva | length > 0 %}
+                {% for reservas in reserva %}
+                    <div class="accordion-item">
+                        <button type="button" class="accordion-header" onclick="toggleAccordion(event, '{{ reservas._id }}')">{{ reservas.hora_inicio }}</button>
+                        <div class="accordion-content">
+                            <p>{{ reservas.servicio }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay citas disponibles para el estilista seleccionado en esta fecha.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+</main>
+<!-- Script para manejar la lógica -->
+<script>
+    // Función para abrir y cerrar el acordeón
+    function toggleAccordion(event, _id) {
+        const item = event.target.parentElement;
+
+        // Cerrar otros items del acordeón
+        const allItems = document.querySelectorAll('.accordion-item');
+        allItems.forEach(i => {
+            if (i !== item) {
+                i.classList.remove('active');
+                i.querySelector('.accordion-content').style.maxHeight = null;
+            }
+        });
+
+        // Alternar el item clicado
+        item.classList.toggle("active");
+        const content = item.querySelector('.accordion-content');
+        content.style.maxHeight = item.classList.contains("active") ? content.scrollHeight + "px" : null;
+
+        // Guardar el servicio seleccionado en el campo oculto (si es necesario)
+        document.getElementById('selected-cita').value = _id;
+    }
+</script>
+
+{% endblock %}
