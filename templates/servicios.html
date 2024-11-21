@@ -15,35 +15,13 @@
 
     <!-- Sección de Servicios -->
     <section id="services-section">
+        {% for servicio in servicios %}
         <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/balayage.jpg') }}" alt="Balayage">
-            <h3>Balayage</h3>
-            <p>El Balayage es una técnica de coloración que consiste en hacer un barrido del color de manera degradada desde la raíz hasta las puntas, proporcionando un efecto natural y luminoso.</p>
+            <img src="{{ servicio.img_url }}" alt="{{ servicio.nombre }}">
+            <h3>{{ servicio.nombre }}</h3>
+            <p>{{ servicio.descripcion }}</p>
         </div>
-
-        <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/babylight.jpg') }}" alt="Babylight">
-            <h3>Babylight</h3>
-            <p>Las Babylights son mechas finas que simulan los reflejos naturales del cabello infantil, aportando luz y suavidad al cabello.</p>
-        </div>
-
-        <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/cortes.jpg') }}" alt="Cortes">
-            <h3>Cortes</h3>
-            <p>Ofrecemos cortes modernos y personalizados que se adaptan a la forma de tu rostro y a tu estilo personal.</p>
-        </div>
-
-        <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/color.jpg') }}" alt="Cambios de color">
-            <h3>Cambios de color</h3>
-            <p>Transforma tu look con un cambio completo de color, realizado por expertos en tendencias de coloración capilar.</p>
-        </div>
-
-        <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/canas.jpg') }}" alt="Cobertura de canas">
-            <h3>Cobertura de canas</h3>
-            <p>Ofrecemos servicios de cobertura total de canas para un acabado natural y duradero.</p>
-        </div>
+        {% endfor %}
     </section>
 
 </main>

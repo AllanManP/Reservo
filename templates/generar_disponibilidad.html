@@ -1,24 +1,56 @@
-{% extends "base.html" %}
+{% extends "admin_base.html" %}
 
 {% block title %}Crear Disponibilidad{% endblock %}
-
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/generar_disp.css') }}">
+{% endblock %}
 {% block content %}
-<section id="create-disponibilidad-section">
-    <h2>Crear Disponibilidad</h2>
-    <form method="POST" action="/crear_disponibilidad">
-        <label for="estilista_id">ID del Estilista:</label>
-        <input type="text" id="estilista_id" name="estilista_id" required>
+<div class="container">
+    <div class="dispo_box">
+        <section id="create-disponibilidad-section" class="dispo_box-item">
+            <h2>Crear Disponibilidad</h2>
+            <form method="POST" action="/generar_disponibilidad">
+                
+                <!-- Campo ID del Estilista -->
+                <div class="form-group">
+                    <label for="estilista_id">ID del Estilista:</label>
+                    {% if session['estilista'] %}
+                        {% if session['estilista']['rol'] == 'estilista' %}
+                            <input type="text" id="estilista_id" name="estilista_id" 
+                                   value="{{ session['estilista']['idestilista'] }}" 
+                                   placeholder="{{ session['estilista']['idestilista'] }}" readonly required>
+                        {% endif %}
+                    {% elif session['admin'] %}
+                        {% if session['admin']['rol'] == 'admin' %}
+                            <input type="text" id="estilista_id" name="estilista_id" required>
+                        {% endif %}
+                    {% endif %}
+                </div>
 
-        <label for="fecha">Fecha (YYYY-MM-DD):</label>
-        <input type="date" id="fecha" name="fecha" required>
+                <!-- Campo Fecha -->
+                <div class="form-group">
+                    <label for="fecha">Fecha (YYYY-MM-DD):</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
 
-        <label for="hora_inicio">Hora de Inicio:</label>
-        <input type="time" id="hora_inicio" name="hora_inicio" required>
+                <!-- Campo Hora de Inicio -->
+                <div class="form-group">
+                    <label for="hora_inicio">Hora de Inicio:</label>
+                    <input type="time" id="hora_inicio" name="hora_inicio" required>
+                </div>
 
-        <label for="hora_fin">Hora de Fin:</label>
-        <input type="time" id="hora_fin" name="hora_fin" required>
+                <!-- Campo Hora de Fin -->
+                <div class="form-group">
+                    <label for="hora_fin">Hora de Fin:</label>
+                    <input type="time" id="hora_fin" name="hora_fin" required>
+                </div>
 
-        <button type="submit">Crear Disponibilidad</button>
-    </form>
-</section>
+                <!-- Botón Crear Disponibilidad -->
+                <div class="form-group">
+                    <button type="submit">Crear Disponibilidad</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
 {% endblock %}

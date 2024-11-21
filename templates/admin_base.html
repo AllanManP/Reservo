@@ -25,26 +25,42 @@
         </a>
         <i class="fas fa-bars" id="menu-toggle"></i> <!-- Ícono de hamburguesa -->
         <ul id="navbar-menu">
-            <li><a href="#">Inicio</a></li>
-            <li><a href="/admin_servicios">Servicios</a></li>
-
+            <li><a href="/">Inicio</a></li>
+            
             <!-- Mostrar elementos según el rol del usuario -->
+            {% if session['admin'] %}
             {% if session['admin']['rol'] == 'admin' %}
-                <li><a href="/reseñas">Reseñas</a></li>
-                <li><a href="/admin/reservas">Reserva</a></li>
-                <li><a href="/contacto">Contacto</a></li>
-                <li><a href="/admin/estilistas">Estilistas</a></li>
-            {% elif session['admin']['rol'] == 'estilista' %}
-                <li><a href="/citas">Citas</a></li>
+                    <li><a href="/admin_servicios">Servicios</a></li>
+                    <li><a href="/admin/reservas">Reserva</a></li>
+                    <li><a href="/admin/estilistas">Estilistas</a></li>
+                    <li><a href="/admin/generar_disponibilidad">Generar disponibilidad</a></li>
+                    <li><a href="/resena">Reseñas</a></li>
+                {% endif %}
+            {% endif %}
+            {% if session['estilista'] %}
+                {% if session['estilista']['rol'] == 'estilista' %}
+                    <li><a href="/estilista_reservas">Citas</a></li>
+                    <li><a href="/estilista/crear_disponibilidad">Generar disponibilidad</a></li>
+                {% endif %}
             {% endif %}
         </ul>
 
         <div class="navbar-client">
-            <!-- Mostrar opciones de cliente -->
-            <ul id="navbar-client-menu">
-                <li><a href="/cliente"><i class="fas fa-user-circle"></i>{{ session['admin']['correo'] }}</a></li>
-                <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
-            </ul>
+            <div class="navbar-client-dropdown">
+                <i class="fas fa-user-circle"></i> <!-- Ícono del cliente -->
+                <div class="dropdown-content">
+                    <ul id="navbar-client-menu">
+                        {% if session['admin'] %}
+                            <li><a href="/cliente">{{ session['admin']['correo'] }}</a></li>
+                            <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
+                        {% endif %}
+                        {% if session['estilista'] %}
+                            <li><a href="/cliente">{{ session['estilista']['correo'] }}</a></li>
+                            <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
         </div>
     </nav>
 

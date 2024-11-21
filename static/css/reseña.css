@@ -93,3 +93,55 @@ textarea {
 .flash-messages{
     color: red;
 }
+
+@media only screen and (max-width: 822px) {
+    .reviews-container {
+        max-width: 100%; /* Usar todo el ancho de la pantalla */
+        padding: 15px;
+    }
+
+    .titulo {
+        font-size: 1.5rem; /* Reducir el tamaño del título */
+    }
+
+    .rating label {
+        font-size: 1.5rem; /* Reducir tamaño de estrellas */
+        margin-right: 3px; /* Menor separación */
+    }
+
+    textarea {
+        height: 80px; /* Reducir altura del área de texto */
+    }
+
+    .btn {
+        font-size: 14px; /* Reducir tamaño de fuente en el botón */
+        padding: 8px;
+    }
+
+    .review {
+        padding: 5px 0; /* Reducir el espaciado en reseñas */
+    }
+
+    .rating-display {
+        font-size: 1.2rem; /* Reducir tamaño de las estrellas */
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .titulo {
+        font-size: 1.2rem; /* Aún más pequeño para pantallas pequeñas */
+    }
+
+    .btn {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .rating label {
+        font-size: 1.2rem;
+    }
+
+    textarea {
+        height: 60px;
+    }
+}

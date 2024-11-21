@@ -46,3 +46,4 @@ function currentStylistIndicator(index) {
 // Inicialización: mostrar el primer estilista
 showStylist(currentStylistIndex);
 
+

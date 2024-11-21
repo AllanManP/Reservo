@@ -1,0 +1,157 @@
+/*===== VARIABLES CSS =====*/
+:root {
+    --first-color: #830a38; /* Color principal */
+    --first-color-dark: #6a0c28; /* Color oscuro */
+    --first-color-light: #A49EAC; /* Color claro */
+    --form-bg-color: #fff; /* Color de fondo del formulario */
+    --label-color: #6a0c28; /* Color de las etiquetas */
+    --button-color: #830a38; /* Color del botón */
+    --button-hover-color: #6a0c28; /* Color del botón al pasar el mouse */
+    --background-color: #F2F2F2; /* Color de fondo general */
+}
+
+/*===== MAIN =====*/
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: var(--background-color);
+}
+
+/*===== FORM =====*/
+form {
+    background-color: var(--form-bg-color);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/*===== INPUT DE ARCHIVO =====*/
+.file-input {
+    display: none; /* Oculta el input original */
+}
+
+.file-label {
+    display: inline-flex; /* Alinea el ícono y el texto horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    padding: 0.75rem; /* Espaciado interno */
+    background-color:#28a745; /* Color de fondo */
+    color: #FFFFFF; /* Color del texto */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de puntero */
+    transition: background-color 0.3s ease; /* Transición para el hover */
+}
+
+/* Estilo para el ícono */
+.file-label svg {
+    margin-right: 0.5rem; /* Espacio entre el ícono y el texto */
+    fill: #FFFFFF; /* Color del ícono */
+    width: 1.2rem; /* Tamaño del ícono */
+    height: 1.2rem; /* Tamaño del ícono */
+}
+
+/* Efecto hover */
+.file-label:hover {
+    background-color: var(--first-color-dark); /* Color de fondo en hover */
+}
+
+/*===== TITULO =====*/
+h2 {
+    color: var(--first-color-dark);
+    margin-bottom: 0.01rem;
+    text-align: center;
+}
+
+/*===== FORM GROUP =====*/
+.form-group {
+    margin-bottom: 0.75rem; /* Espacio reducido entre inputs */
+}
+
+/*===== LABEL =====*/
+label {
+    font-weight: 700;
+    color: var(--label-color);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/*===== INPUTS =====*/
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ccc;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    border-color: var(--first-color);
+    box-shadow: 0 0 5px rgba(131, 10, 56, 0.5);
+}
+
+/*===== BOTÓN =====*/
+button[type="submit"] {
+    background-color: var(--button-color);
+    color: #FFFFFF;
+    padding: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--button-hover-color);
+}
+
+/*===== MEDIA QUERIES =====*/
+@media screen and (min-width: 576px) {
+    form {
+        width: 400px;
+    }
+}
+
+/*===== Monto Final del Servicio =====*/
+#valor {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ccc;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #f9f9f9; /* Fondo más claro */
+    font-size: 1rem; /* Tamaño de texto más legible */
+}
+
+/* Efecto de enfoque */
+#valor:focus {
+    border-color: var(--first-color); /* Borde de color principal */
+    box-shadow: 0 0 8px rgba(131, 10, 56, 0.5); /* Sombra sutil al enfocarse */
+    background-color: #fff; /* Cambiar el fondo al enfocarse */
+}
+
+/* Estilo de etiqueta */
+label[for="valor"] {
+    font-weight: 700;
+    color: var(--label-color);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem; /* Aumentar el tamaño de la etiqueta */
+}
+
+/* Estilo del campo input al recibir interacción */
+#valor:hover {
+    border-color: var(--first-color-dark); /* Cambiar borde al pasar el mouse */
+    background-color: #f1f1f1; /* Fondo ligeramente más oscuro al pasar el mouse */
+}
+

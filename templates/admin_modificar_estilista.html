@@ -30,10 +30,21 @@
                     <input type="email" id="correo" name="correo" value="{{ estilista.correo }}" required>
                 </div>
                 <div class="form-group">
+                    <label for="contrasena">Contraseña</label>
+                    <input type="password" id="contrasena" name="contrasena" value="{{ estilista.pass }}" required>
+                </div>
+                <div class="form-group">
                     <label for="activo">Activo</label>
                     <select id="activo" name="activo">
                         <option value="1" {% if estilista.activo == 1 %}selected{% endif %}>Sí</option>
                         <option value="0" {% if estilista.activo == 0 %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rol">Rol</label>
+                    <select id="rol" name="rol">
+                        <option value="admin" {% if estilista.rol == 'admin' %}selected{% endif %}>Admin</option>
+                        <option value="estilista" {% if estilista.rol == 'estilista' %}selected{% endif %}>Estilista</option>
                     </select>
                 </div>
                 <div class="form-group">

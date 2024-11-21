@@ -1,6 +1,11 @@
+/* Estilos base */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
-/* Estilos para la sección de información */
-/* Estilos iniciales para la sección de información */
+/* Información general */
 #information {
     padding: 20px;
     margin: 20px auto;
@@ -10,16 +15,15 @@
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    opacity: 0; /* Inicialmente invisible */
-    transform: translateY(50px); /* Inicialmente desplazada */
-    transition: opacity 1s ease-out, transform 1s ease-out; /* Transición suave */
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
 }
 
 #information.visible {
-    opacity: 1; /* Visible cuando se desplaza a ella */
-    transform: translateY(0); /* Desplazada a su posición original */
+    opacity: 1;
+    transform: translateY(0);
 }
-
 
 .info-container h2 {
     font-size: 1.5em;
@@ -30,6 +34,7 @@
 .info-container p {
     font-size: 1.1em;
     margin-bottom: 20px;
+    text-align: justify;
 }
 
 .info-container button {
@@ -43,25 +48,21 @@
     transition: background-color 0.3s ease;
 }
 
-.info-form button:hover {
-    background-color: #830a38;
+.info-container button:hover {
+    background-color: #a12e50;
 }
 
-
-
-
-/* Estilos para el carrusel de fotos */
+/* Carrusel */
 #photo-carousel {
     padding: 20px;
     margin: 20px auto;
     width: 90%;
-    max-height: 850px;
     max-width: 800px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    position: relative; /* Asegura que los puntos se posicionen correctamente dentro del carrusel */
+    position: relative;
 }
 
 .carousel {
@@ -86,58 +87,111 @@
 
 .carousel-item.active {
     opacity: 1;
-    position: relative; /* Asegura que la imagen activa esté encima */
+    position: relative;
 }
 
 .carousel img {
     width: 100%;
-    height: 700px;
+    height: 500px; /* Ajustar automáticamente al contenedor */
     border-radius: 10px;
     object-fit: cover;
 }
 
+/* Botones del carrusel */
 .carousel-control {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 2em;
+    font-size: 1.5em;
     color: #830a38;
     cursor: pointer;
     user-select: none;
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 50%;
-}
-.carousel-control.prev {
-    left: 10px;
-    opacity: 0;
-    height: 100%;
-}
-.carousel-control.next {
-    right: 10px;
-    opacity: 0;
-    height: 100%;
+    z-index: 1;
 }
 
-/* Estilos para los puntos del carrusel */
+.carousel-control.prev {
+    left: 10px;
+}
+
+.carousel-control.next {
+    right: 10px;
+}
+
+/* Indicadores del carrusel */
 .carousel-indicators {
     position: absolute;
-    bottom: 40px; /* Ajusta la posición vertical */
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 5px; /* Espacio entre los puntos */
+    gap: 5px;
 }
 
 .carousel-indicator {
-    width: 12px; /* Tamaño del punto */
+    width: 12px;
     height: 12px;
-    background-color: #bbb; /* Color de los puntos inactivos */
+    background-color: #bbb;
     border-radius: 50%;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .carousel-indicator.active {
-    background-color: #830a38; /* Color del punto activo */
+    background-color: #830a38;
+}
+
+/* Media queries para pantallas más pequeñas */
+@media (max-width: 768px) {
+    #information {
+        width: 95%;
+    }
+
+    .info-container h2 {
+        font-size: 1.2em;
+    }
+
+    .info-container p {
+        font-size: 1em;
+    }
+
+    .carousel img {
+        height: 500px; /* Ajusta el alto en pantallas más pequeñas */
+    }
+
+    .carousel-control {
+        font-size: 1.2em;
+    }
+
+    .carousel-indicators {
+        bottom: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    #information {
+        padding: 15px;
+    }
+
+    .info-container h2 {
+        font-size: 1em;
+    }
+
+    .info-container p {
+        font-size: 0.9em;
+    }
+
+    .carousel img {
+        height: 300px; /* Ajusta el alto aún más en pantallas pequeñas */
+    }
+
+    .carousel-control {
+        font-size: 1em;
+    }
+
+    .carousel-indicators {
+        bottom: 3px;
+    }
 }

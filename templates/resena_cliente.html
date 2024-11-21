@@ -1,4 +1,4 @@
-{% extends "admin_base.html" %}
+{% extends "base.html" %}
 {% block title %}Reseñas{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/reseña.css') }}">
@@ -48,36 +48,40 @@
     <div class="reviews-list">
         <h2>Reseñas de los clientes:</h2>
         {% for review in reviews %}
-            <div class="review">
-                <div class="rating-display">
-                    {{ '★' * review['rating'] }}{{ '☆' * (5 - review['rating']) }}
-                </div>
-                <p>{{ review['nombre'] }}</p>
-                <p>{{ review['comment'] }}</p>
-                <p>{{ review['creacion'] }}</p>
-                
-                <!-- Mostrar la respuesta del administrador si existe -->
-                <!-- Mostrar la respuesta del administrador si existe -->
-                {% if review['respuesta'] %}
-                    <div class="admin-response">
-                        <strong>Respuesta del administrador:</strong>
-                        <p>{{ review['respuesta'] }}</p>
-                    </div>
-                {% elif session.get('admin') and session['admin']['rol'] == 'admin' %}
-                    <!-- Formulario para que el admin responda si no hay respuesta aún -->
-                    <form method="POST" action="{{ url_for('responder_resena', resena_id=review['_id']) }}">
-                        {% if session['admin'] %}
-                    {% if session['admin']['rol'] == 'admin' %}
-                    <div class="form-group">
-                        <label for="respuesta">Responder:</label>
-                        <textarea id="respuesta" name="respuesta" class="field" required placeholder="Escribe tu respuesta aquí..."></textarea>
-                        {% endif %}
-                    </div>
-                    <button type="submit" class="btn">Responder</button>
-                    {% endif %}
-                    </form>
+    <div class="review">
+        <div class="rating-display">
+            {{ '★' * review['rating'] }}{{ '☆' * (5 - review['rating']) }}
+        </div>
+        <p>{{ review['nombre'] }}</p>
+        <p>{{ review['comment'] }}</p>
+        <p>{{ review['creacion'] }}</p>
+        
+        <!-- Mostrar la respuesta del administrador si existe -->
+        <!-- Mostrar la respuesta del administrador si existe -->
+        {% if review['respuesta'] %}
+            <div class="admin-response">
+                <strong>Respuesta del administrador:</strong>
+                <p>{{ review['respuesta'] }}</p>
+            </div>
+        {% elif session.get('admin') and session['admin']['rol'] == 'admin' %}
+            <!-- Formulario para que el admin responda si no hay respuesta aún -->
+            <form method="POST" action="{{ url_for('responder_resena', resena_id=review['_id']) }}">
+                {% if session['admin'] %}
+            {% if session['admin']['rol'] == 'admin' %}
+            <div class="form-group">
+                <label for="respuesta">Responder:</label>
+                <textarea id="respuesta" name="respuesta" class="field" required placeholder="Escribe tu respuesta aquí..."></textarea>
                 {% endif %}
             </div>
-        {% endfor %}
-    </div>
+            <button type="submit" class="btn">Responder</button>
+            {% endif %}
+        </form>
+    {% endif %}
+</div>
+{% endfor %}
+<br>
+<br>
+<br>
+
+
 {% endblock %}

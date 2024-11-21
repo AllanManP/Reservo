@@ -3,7 +3,7 @@
 {% block title %}Agregar Estilista{% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/reserva.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_reservas.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
     <form id="formCitas" class="mb-4" action="/admin/lista_reservas" method="POST">
         <div class="mb-3">
             <label for="estilista_id" class="form-label">Estilista</label>
-            <select type="number" class="form-control" id="estilista_id" name="estilista_id" placeholder="Ingrese ID del Estilista" required>
+            <select class="form-control" id="estilista_id" name="estilista_id" required>
                 {% for estilista in estilista %}
                     <option value="{{ estilista.id }}">{{ estilista.nombre }}</option>
                 {% endfor %}
@@ -27,6 +27,7 @@
         </div>
         <button type="submit" class="btn btn-primary">Ver Citas</button>
     </form>
+
     <!-- Acordeón donde se mostrarán las citas -->
     <div class="accordion">
         {% if reserva is not none %}
@@ -35,7 +36,13 @@
                     <div class="accordion-item">
                         <button type="button" class="accordion-header" onclick="toggleAccordion(event, '{{ reservas._id }}')">{{ reservas.hora_inicio }}</button>
                         <div class="accordion-content">
-                            <p>{{ reservas.servicio }}</p>
+                            <p>tipo de servicio: {{ reservas.servicio }}</p>
+                            <p>Cliente: {{ reservas.cliente.nombre }}</p>
+                            <p>Correo: {{ reservas.cliente.email }}</p>
+                            <p>Servicio: {{ reservas.servicio }}</p>
+                            <p>Hora de inicio: {{ reservas.hora_inicio }}</p>
+                            <p>Hora de termino: {{ reservas.hora_final }}</p>
+                            <p>Comentarios: {{ reservas.comentarios }}</p>
                         </div>
                     </div>
                 {% endfor %}
@@ -46,6 +53,7 @@
     </div>
 </div>
 </main>
+
 <!-- Script para manejar la lógica -->
 <script>
     // Función para abrir y cerrar el acordeón

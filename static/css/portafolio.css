@@ -1,0 +1,149 @@
+/* Diseño básico del portafolio */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em; /* Reducir tamaño de título */
+}
+
+.portafolio {
+    display: grid; /* Activa el sistema de grid */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Define columnas flexibles */
+    gap: 20px; /* Espacio entre las tarjetas */
+    padding: 20px; /* Espaciado interno */
+    max-width: 1200px; /* Ancho máximo del contenedor */
+    margin: 0 auto; /* Centra el contenedor */
+    justify-items: center; /* Asegura que las tarjetas estén centradas en sus columnas */
+    align-items: start; /* Alinea las tarjetas en la parte superior de las filas */
+}
+
+
+/* Vista principal de las tarjetas */
+.portafolio-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Asegura que los contenidos estén distribuidos */
+    width: 250px; /* Ancho fijo para todas las tarjetas */
+    height: 350px; /* Altura fija para todas las tarjetas */
+    padding: 10px;
+}
+.portafolio-item:hover {
+    transform: scale(1.02); /* Reducir efecto hover */
+}
+.portafolio-item .resultado-imagen {
+    width: 100%;
+    height: 60%; /* Ocupa el 60% de la tarjeta */
+    object-fit: cover; /* Recorta para llenar el espacio sin deformar */
+    border-bottom: 1px solid #ddd; /* Línea para separar visualmente */
+}
+
+.portafolio-detalles {
+    padding: 10px;
+    text-align: center;
+    height: 40%; /* Ocupa el 40% restante */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly; /* Espaciado uniforme */
+}
+
+
+.portafolio-detalles h2 {
+    font-size: 1em;
+    margin: 10px 0;
+}
+
+.leer-mas-btn {
+    margin-top: auto; /* Mueve el botón hacia el final del contenedor */
+    padding: 5px 10px;
+    font-size: 0.9em;
+    background-color: #a40a48;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.leer-mas-btn:hover {
+    background-color: #7e0838;
+}
+
+
+
+/* Estilo para el estilista */
+.portafolio-detalles .estilista {
+    font-size: 0.9em; /* Reducir tamaño de fuente */
+    color: #555; /* Color más neutro para diferenciarlo del cliente */
+    margin-top: 8px; /* Reducir espacio superior */
+    font-style: italic;
+}
+
+.portafolio-detalles .fecha {
+    margin-top: 3px; /* Reducir espacio superior */
+    font-size: 0.8em; /* Reducir tamaño de fuente */
+    color: #999;
+}
+
+
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+}
+
+.modal-content img {
+    width: 70%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.modal-content h2 {
+    margin-top: 20px;
+    color: #a40a48;
+}
+
+.modal-content p {
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em;
+    color: #333;
+    cursor: pointer;
+}
+

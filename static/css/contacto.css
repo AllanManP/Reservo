@@ -1,70 +1,72 @@
-*{
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
-	font-family: 'Quicksand', sans-serif;
+/* Estilos generales */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Quicksand', sans-serif;
 }
 
-body{
-	height: 100vh;
-	width: 100%;
+body {
+    height: 100vh;
+    width: 100%;
 }
 
-.container{
-	position: relative;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 20px 100px;
+.container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 100px;
 }
 
-.container:after{
-	content: '';
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	left: 0;
-	top: 0;
-	background: url("img/bg.jpg") no-repeat center;
-	background-size: cover;
-	filter: blur(50px);
-	z-index: -1;
+.container:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: url("img/bg.jpg") no-repeat center;
+    background-size: cover;
+    filter: blur(50px);
+    z-index: -1;
 }
+
 .contact-box {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;  /* Permite que se ajusten en pantallas pequeñas */
-    gap: 20px;  /* Espacio entre el mapa y el formulario */
-    padding: 20px;  /* Espaciado interno */
-    border: 1px solid #ccc;  /* Borde de la caja */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra suave */
-    border-radius: 10px;  /* Bordes redondeados */
-    background-color: #fff;  /* Color de fondo blanco */
-    max-width: 1200px;  /* Ancho máximo de la caja */
-    margin: 0 auto;  /* Centra la caja horizontalmente */
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
+    width: 100%;
+    margin: 0 auto;
 }
 
-.left{
-	background: url("img/bg.jpg") no-repeat center;
-	background-size: cover;
-	height: 100%;
+.left {
+    background: url("img/bg.jpg") no-repeat center;
+    background-size: cover;
+    height: 100%;
 }
 
 .right {
-    flex: 1;  /* El formulario ocupará el mismo espacio que el mapa */
-    width: 48%;  /* Ajusta el ancho si es necesario */
+    flex: 1;
+    width: 48%;
 }
 
-h2{
-	position: relative;
-	padding: 0 0 10px;
-	margin-bottom: 10px;
+h2 {
+    position: relative;
+    padding: 0 0 10px;
+    margin-bottom: 10px;
 }
 
-h2:after{
-	content: '';
+h2:after {
+    content: '';
     position: absolute;
     left: 50%;
     bottom: 0;
@@ -75,59 +77,65 @@ h2:after{
     background-color: #830a38;
 }
 
-.field{
-	width: 100%;
-	border: 2px solid rgba(0, 0, 0, 0);
-	outline: none;
-	background-color: rgba(230, 230, 230, 0.6);
-	padding: 0.5rem 1rem;
-	font-size: 1.1rem;
-	margin-bottom: 22px;
-	transition: .3s;
+.field {
+    width: 100%;
+    border: 2px solid rgba(0, 0, 0, 0);
+    outline: none;
+    background-color: rgba(230, 230, 230, 0.6);
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 22px;
+    transition: .3s;
 }
 
-.field:hover{
-	background-color: rgba(0, 0, 0, 0.1);
+.field:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
-textarea{
-	min-height: 150px;
+textarea {
+    min-height: 150px;
 }
-/* Estilo para el mapa */
+
 .mapa {
-    flex: 1;  /* El mapa ocupará una parte proporcional */
-    width: 48%;  /* Puedes ajustar este ancho si lo necesitas */
+    flex: 1;
+    width: 48%;
     height: 450px;
     border: 0;
-
-}
-.btn{
-	width: 100%;
-	padding: 0.5rem 1rem;
-	background-color: #cc2e78;
-	color: #fff;
-	font-size: 1.1rem;
-	border: none;
-	outline: none;
-	cursor: pointer;
-	transition: .3s;
 }
 
-.btn:hover{
-    background-color:#830a38;
+.btn {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: #cc2e78;
+    color: #fff;
+    font-size: 1.1rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: .3s;
 }
 
-.field:focus{
-    border: 2px solid rgba(30,85,250,0.47);
+.btn:hover {
+    background-color: #830a38;
+}
+
+.field:focus {
+    border: 2px solid rgba(30, 85, 250, 0.47);
     background-color: #fff;
 }
 
-@media screen and (max-width: 880px){
-	.contact-box{
-		grid-template-columns: 1fr;
-	}
-	.left{
-		height: 200px;
-	}
+/* Estilos responsivos */
+@media (max-width: 850px) {
+    .contact-box {
+        flex-direction: column; /* Cambiar a una columna */
+    }
 
+    .right {
+        width: 100%; /* Ocupa el ancho completo */
+    }
+
+    .mapa {
+        width: 100%; /* Ocupa el ancho completo */
+        height: 300px; /* Ajustar altura del mapa para pantallas pequeñas */
+    }
 }

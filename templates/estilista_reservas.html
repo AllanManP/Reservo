@@ -1,0 +1,135 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Ver Citas del Estilista{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_reservas.css') }}">
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet' />
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container mt-5">
+        <h1>Ver Citas del Estilista</h1>
+
+        <!-- Calendario -->
+        <div id="calendar" ></div>
+
+        <!-- Formulario para ingresar el estilista_id y la fecha -->
+        <form id="formCitas" class="mb-4" action="/estilista/lista_reservas" method="POST">
+            <input type="hidden" name="fecha" id="hiddenFecha"> <!-- Campo oculto para enviar la fecha -->
+            <button type="submit" class="btn btn-primary">Ver Citas</button>
+        </form>
+
+        <div class="accordion">
+            {% if reserva is not none %}
+                {% if reserva | length > 0 %}
+                <h1 id="selected-date-title">Citas del {{fecha_seleccionada}}</h1>
+                    {% for reservas in reserva %}
+                        <div class="accordion-item" id="{{ reservas._id }}">
+                            <button type="button" class="accordion-header" onclick="toggleAccordion(event, '{{ reservas._id }}')">
+                                {{ reservas.hora_inicio }}
+                            </button>
+                            <div class="accordion-content">
+                                <p>Tipo de servicio: {{ reservas.servicio }}</p>
+                                <p>Cliente: {{ reservas.cliente.nombre if reservas.cliente else 'No disponible' }}</p>
+                                <p>Correo: {{ reservas.cliente.email if reservas.cliente else 'No disponible' }}</p>
+                                <p>Hora de inicio: {{ reservas.hora_inicio }}</p>
+                                <p>Hora de término: {{ reservas.hora_final }}</p>
+                                <p>Comentarios: {{ reservas.comentarios }}</p>
+                                <div class="form-group">
+                                    <!-- Botón Finalizar -->
+                                    <form action="{{ url_for('finalizar_cita', id=reservas._id) }}" method="GET" style="display:inline;">
+                                        <button type="submit" class="btn-finalizar">Finalizar</button>
+                                    </form>
+                                    <!-- Botón Eliminar -->
+                                    <form action="{{ url_for('eliminar_cita', id=reservas._id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="separator" style="border-top: 1px solid #ccc; margin: 10px 0;"></div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay citas disponibles para el estilista seleccionado en esta fecha.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+        
+
+    </div>
+</main>
+
+<!-- Scripts de FullCalendar -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+    
+        var fechasReservadas = {{ fechas_ocupadas | tojson }}; // Fechas ocupadas en formato JSON
+        
+        // Convierte fechas ocupadas en eventos para FullCalendar
+        var eventosReservados = fechasReservadas.map(fecha => ({
+            title: '', // Sin título para que solo aparezca el color
+            start: fecha,
+            display: 'background', // Muestra el evento como fondo del día
+            color: '#28a745' // Color verde para indicar ocupación
+        }));
+    
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            selectable: true,
+            events: eventosReservados, // Agregar eventos reservados como fondo
+            dateClick: function(info) {
+                document.getElementById('hiddenFecha').value = info.dateStr;
+                highlightSelectedDate(info.dateStr);
+            }
+        });
+    
+        calendar.render();
+    
+        function highlightSelectedDate(dateStr) {
+            // Remueve la clase de selección de cualquier fecha previamente seleccionada
+            document.querySelectorAll('.fc-daygrid-day').forEach(day => {
+                day.classList.remove('selected-date');
+            });
+        
+            // Agrega la clase de selección a la fecha seleccionada
+            document.querySelectorAll('.fc-daygrid-day').forEach(day => {
+                if (day.getAttribute('data-date') === dateStr) {
+                    day.classList.add('selected-date');
+                }
+            });
+        }        
+    });
+    
+    
+
+    function toggleAccordion(event, id) {
+        const allItems = document.querySelectorAll('.accordion-item');
+        const item = document.getElementById(id);
+        const content = item.querySelector('.accordion-content');
+    
+        // Cierra todos los items excepto el clicado
+        allItems.forEach(i => {
+            const iContent = i.querySelector('.accordion-content');
+            if (i !== item) {
+                i.classList.remove("active");
+                iContent.style.maxHeight = null;
+            }
+        });
+    
+        // Alterna el estado del item clicado
+        if (item.classList.contains("active")) {
+            item.classList.remove("active");
+            content.style.maxHeight = null; // Cerrar si ya está activo
+        } else {
+            item.classList.add("active");
+            content.style.maxHeight = content.scrollHeight + "px"; // Abrir
+        }
+    } 
+
+  
+</script>
+{% endblock %}

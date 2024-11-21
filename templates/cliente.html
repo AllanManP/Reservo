@@ -12,7 +12,26 @@
     <p><strong>Dirección:</strong> {{ cliente['direccion'] }}</p>
     <p><strong>Comentarios:</strong> {{ cliente['comentarios'] }}</p>
     <a href="/modificar-cliente">
-        <button class="btn">modifcar mis datos</button>
+        <button class="btn">Modificar mis datos</button>
     </a>
+</div>
+
+<div class="citas-finalizadas">
+    <h2>Mis Citas Finalizadas</h2>
+    {% if citas %}
+        <ul>
+        {% for cita in citas %}
+            <li>
+                <img src="{{ cita['foto_resultado'] }}" alt="Resultado" class="foto-resultado">
+                <p><strong>Estilista:</strong> {{ cita['Nombre Estilista'] }}</p>
+                <p><strong>Servicio:</strong> {{ cita['servicio'] }}</p>
+                <p><strong>Fecha:</strong> {{ cita['fecha'] }}</p>
+                <p><strong>Hora:</strong> {{ cita['hora_inicio'] }} - {{ cita['hora_final'] }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tienes citas finalizadas registradas.</p>
+    {% endif %}
 </div>
 {% endblock %}

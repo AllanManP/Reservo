@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Portafolio{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portafolio.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <section class="portafolio">
+        {% for cita in citas %}
+        <div class="portafolio-item">
+            <img src="{{ cita['foto_resultado'] }}" alt="Resultado" class="resultado-imagen">
+            <div class="portafolio-detalles">
+                <h2>{{ cita['nombre'] }}</h2>
+                <button class="leer-mas-btn" onclick="verMas({{ loop.index0 }})">Ver más</button>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="modal-{{ loop.index0 }}" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="cerrarModal({{ loop.index0 }})">&times;</span>
+                <img src="{{ cita['foto_resultado'] }}" alt="Resultado completo" class="modal-imagen">
+                <h2>{{ cita['nombre'] }}</h2>
+                <p><strong>Estilista:</strong> {{ cita['Nombre Estilista'] }}</p>
+                <p><strong>Servicio:</strong> {{ cita['servicio'] }}</p>
+                <p><strong>Fecha:</strong> {{ cita['fecha'] }}</p>
+                <p><strong>Hora:</strong> {{ cita['hora_inicio'] }} - {{ cita['hora_final'] }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+</main>
+<script src="{{ url_for('static', filename='js/portafolio.js') }}"></script>
+{% endblock %}

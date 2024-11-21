@@ -24,6 +24,9 @@
                 <input type="hidden" id="selected-time" name="hora" value="">
                 <input type="hidden" id="selected-id" name="id_disponibilidad" value="">
             </div>
+            {% if sin_disponibilidad %}
+                <p></p>
+            {% endif %}
             <button type="submit">Confirmar Reserva</button>
         </form>        
         
@@ -31,6 +34,18 @@
 </main>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('reservation-form');
+    const errorMessage = document.createElement('p');
+    errorMessage.style.color = 'red';
+    errorMessage.innerText = 'El estilista seleccionado no tiene disponibilidad.';
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    if (Object.keys(availability).length === 0) {
+        form.insertBefore(errorMessage, submitButton);
+        submitButton.disabled = true;
+    }
+});
     const availability = JSON.parse('{{ disponibilidad|tojson }}');
     const today = new Date();
     let currentMonth = today.getMonth();

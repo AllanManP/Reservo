@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BHAS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/datos_negocio.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard - Información de Reservas</h1>
+
+        <!-- Gráfico de Citas por Estilista -->
+        <div class="chart-container">
+            <h2>Citas por Estilista</h2>
+            <canvas id="estilistasChart"></canvas>
+        </div>
+
+        <!-- Tabla de Clientes con Más Citas -->
+        <div class="table-container">
+            <h2>Clientes con Más Citas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente ID</th>
+                        <th>Cantidad de Citas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in top_clientes_data %}
+                        <tr>
+                            <td>{{ cliente.cliente_id }}</td>
+                            <td>{{ cliente.cantidad }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script>
+        // Datos de los estilistas para el gráfico
+        const estilistasData = {{ estilistas_data | tojson }};
+        const estilistasNames = estilistasData.map(item => item.nombre);
+        const citasData = estilistasData.map(item => item.citas);
+
+        // Gráfico de Citas por Estilista
+        const ctx = document.getElementById('estilistasChart').getContext('2d');
+        const estilistasChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: estilistasNames,
+                datasets: [{
+                    label: 'Citas por Estilista',
+                    data: citasData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

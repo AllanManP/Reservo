@@ -1,7 +1,7 @@
 {% extends "admin_base.html" %}
 {% block title %}Servicios de nuestro Salón{% endblock %}
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/servicios.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_servicios.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -13,58 +13,42 @@
         <p>Ofrecemos una amplia gama de servicios de alta calidad para cuidar tu cabello.</p>
     </section>
 
+     <!-- Mostrar mensajes flash -->
+     {% with messages = get_flashed_messages(with_categories=true) %}
+     {% if messages %}
+       <ul class="flashes">
+         {% for category, message in messages %}
+           <li class="{{ category }}">{{ message }}</li>
+         {% endfor %}
+       </ul>
+     {% endif %}
+   {% endwith %}
+
     <!-- Sección de Servicios -->
     <section id="services-section">
+        {% for servicio in servicios %}
         <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/balayage.jpg') }}" alt="Balayage">
-            <h3>Balayage</h3>
-            <p>El Balayage es una técnica de decoloración que consiste en hacer un barrido del color de manera degradada desde la raíz hasta las puntas, proporcionando un efecto natural y luminoso.</p>
+            <div class="service-controls">
+                <!-- Botón de edición -->
+                <button class="edit-btn" onclick="modificarServicio('{{ servicio._id }}')">✏️</button>
+                <!-- Botón de eliminación -->
+                <button class="delete-btn" onclick="eliminarServicio('{{ servicio._id }}')">❌</button>
+            </div>
+            <img src="{{ servicio.img_url }}" alt="{{ servicio.nombre }}">
+            <h3>{{ servicio.nombre }}</h3>
+            <p>{{ servicio.descripcion }}</p>
         </div>
-
-        <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/babylight.jpg') }}" alt="Babylight">
-            <h3>Babylight</h3>
-            <p>Las Babylights son mechas finas que simulan los reflejos naturales del cabello infantil, aportando luz y suavidad al cabello.</p>
-        </div>
-
-        <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/cortes.jpg') }}" alt="Cortes">
-            <h3>Cortes</h3>
-            <p>Ofrecemos cortes modernos y personalizados que se adaptan a la forma de tu rostro y a tu estilo personal.</p>
-        </div>
-
-        <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/color.jpg') }}" alt="Cambios de color">
-            <h3>Cambios de color</h3>
-            <p>Transforma tu look con un cambio completo de color, realizado por expertos en tendencias de coloración capilar.</p>
-        </div>
-
-        <div class="service-item">
-            <img src="{{ url_for('static', filename='img/cortes/canas.jpg') }}" alt="Cobertura de canas">
-            <h3>Cobertura de canas</h3>
-            <p>Ofrecemos servicios de cobertura total de canas para un acabado natural y duradero.</p>
-        </div>
+        {% endfor %}
     </section>
 
+    <!-- Botón Agregar Servicio -->
+    <div class="add-service-button">
+        <a href="{{ url_for('agregar_servicio') }}" class="btn agregar-btn">Agregar Servicio</a>
+    </div>
+
 </main>
-<script>
-    // Función para detectar cuándo los elementos entran en la vista
-    function handleScroll() {
-        const serviceItems = document.querySelectorAll('.service-item');
-        const windowHeight = window.innerHeight;
 
-        serviceItems.forEach(item => {
-            const itemTop = item.getBoundingClientRect().top;
-            
-            // Si el elemento está en la vista, añadir la clase 'visible'
-            if (itemTop < windowHeight - 100) {
-                item.classList.add('visible');
-            }
-        });
-    }
-
-    // Ejecutar la función cuando la página se carga y cuando el usuario hace scroll
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('load', handleScroll);
-</script>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin_servicios.js') }}"></script>
+{% endblock %}
 {% endblock %}

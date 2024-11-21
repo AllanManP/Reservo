@@ -109,3 +109,79 @@
         padding: 8px;
     }
 }
+
+.citas-finalizadas {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.citas-finalizadas h2 {
+    color: #333;
+}
+
+.citas-finalizadas ul {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Ajustar columnas con menor ancho */
+    gap: 5px; /* Espacio más pequeño entre las tarjetas */
+    padding: 0;
+    margin: 0;
+    list-style-type: none; /* Eliminar los puntos de la lista */
+}
+
+.citas-finalizadas li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 4px; /* Menor padding interno */
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: auto; /* Altura fija para todas las tarjetas */
+    max-width: 400px; /* Limitar el ancho máximo */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.citas-finalizadas .foto-resultado {
+    width: 100%; /* Ajusta la imagen al ancho del contenedor */
+    height: auto; /* Mantiene la proporción original de la imagen */
+    object-fit: contain; /* Asegura que la imagen no se recorte */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-bottom: 8px; /* Espaciado inferior */
+}
+
+.citas-finalizadas p {
+    font-size: 15px; /* Texto más pequeño */
+    color: #555;
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+/* Títulos dentro de las tarjetas */
+.citas-finalizadas h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin: 5px 0;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .citas-finalizadas ul {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajustar tamaño de columnas en pantallas pequeñas */
+        gap: 8px;
+    }
+
+    .citas-finalizadas li {
+        height: 200px; /* Reducir altura en pantallas pequeñas */
+    }
+
+    .citas-finalizadas p {
+        font-size: 11px; /* Texto más pequeño en pantallas pequeñas */
+    }
+}
+
+

@@ -72,36 +72,17 @@
                     <div class="services-container">
                         <!-- Columna de Acordeón -->
                         <div class="accordion">
-                            <div class="accordion-item">
-                                <button type="button" class="accordion-header" onclick="toggleAccordion(event, 'balayage')">Balayage</button>
-                                <div class="accordion-content">
-                                    <p>El Balayage es una técnica de coloración que consiste en hacer un barrido del color de manera degradada desde la raíz hasta las puntas, proporcionando un efecto natural y luminoso.</p>
+                            <!--Aqui debe ir el for de servicios-->
+                            {% for servicio in servicios %}
+                            <div id="servicio-data" data-servicio='{{ servicio | tojson }}'></div>
+                                <div class="accordion-item">
+                                    <button type="button" class="accordion-header" onclick="toggleAccordion(event, '{{ servicio.nombre }}')">{{ servicio.nombre }}</button>
+                                    <div class="accordion-content">
+                                        <p>{{ servicio.descripcion }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="accordion-item">
-                                <button type="button" class="accordion-header" onclick="toggleAccordion(event, 'babylight')">Babylight</button>
-                                <div class="accordion-content">
-                                    <p>Las Babylights son mechas finas que simulan los reflejos naturales del cabello infantil, aportando luz y suavidad al cabello.</p>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <button type="button" class="accordion-header" onclick="toggleAccordion(event, 'cortes')">Cortes</button>
-                                <div class="accordion-content">
-                                    <p>Ofrecemos cortes modernos y personalizados que se adaptan a la forma de tu rostro y a tu estilo personal.</p>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <button type="button" class="accordion-header" onclick="toggleAccordion(event, 'color')">Cambios de color</button>
-                                <div class="accordion-content">
-                                    <p>Transforma tu look con un cambio completo de color, realizado por expertos en tendencias de coloración capilar.</p>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <button type="button" class="accordion-header" onclick="toggleAccordion(event, 'canas')">Cobertura de canas</button>
-                                <div class="accordion-content">
-                                    <p>Ofrecemos servicios de cobertura total de canas para un acabado natural y duradero.</p>
-                                </div>
-                            </div>
+                            {% endfor %}
+                            
                             <input type="hidden" id="selected-service" name="service">
                         </div>
                         
@@ -123,6 +104,7 @@
 
 <script src="{{ url_for('static', filename='js/estilistas.js') }}"></script>
 <script>
+    const servicios = {{ servicios | tojson }};
     function toggleAccordion(event, service) {
         const item = event.target.parentElement;
 
@@ -141,17 +123,16 @@
         content.style.maxHeight = item.classList.contains("active") ? content.scrollHeight + "px" : null;
 
         // Actualizar la imagen del servicio
+        const images = {};
+
+        servicios.forEach(servicio => {
+            images[servicio.nombre] = servicio.img_url;
+        });
         const serviceImage = document.getElementById('service-image');
-        let images = {
-            balayage: "{{ url_for('static', filename='img/cortes/balayage.jpg') }}",
-            babylight: "{{ url_for('static', filename='img/cortes/babylight.jpg') }}",
-            cortes: "{{ url_for('static', filename='img/cortes/cortes.jpg') }}",
-            color: "{{ url_for('static', filename='img/cortes/color.jpg') }}",
-            canas: "{{ url_for('static', filename='img/cortes/canas.jpg') }}"
-        };
 
         serviceImage.src = images[service];
         serviceImage.style.display = 'block';
+        
 
         // Guardar el servicio seleccionado en el campo oculto
         document.getElementById('selected-service').value = service;

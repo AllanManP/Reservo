@@ -1,0 +1,68 @@
+.container {
+    position: relative;
+    width: 100%;
+    max-width: 600px; /* Define un ancho máximo más pequeño para centrar el contenedor */
+    height: auto; /* Ajusta la altura al contenido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px; /* Ajuste de padding para adaptarse al tamaño más pequeño */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+}
+
+.dispo_box {
+    display: flex;
+    flex-direction: column; /* Para mantener los elementos en una sola columna */
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
+    width: 100%; /* Toma el 100% del ancho definido por .container */
+}
+
+
+/* Para que los elementos de la caja se adapten en pantallas pequeñas */
+.dispo_box-item {
+    flex: 1 1 45%;  /* Ocupa aproximadamente la mitad del espacio */
+    min-width: 200px;  /* Ancho mínimo para pantallas pequeñas */
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos adicionales para formularios y botones en .dispo_box */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input, 
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-group button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-group button:hover {
+    background-color: #45a049;
+}

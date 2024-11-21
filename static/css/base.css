@@ -16,7 +16,6 @@ body {
     background-color: #f4f4f9;
     color: #333;
     line-height: 1.6;
-    
 }
 
 .navbar {
@@ -82,31 +81,34 @@ body {
     text-decoration: none;
     font-size: 1.2em;
     transition: color 0.3s ease;
+    
+}
+
+#navbar-client-menu li a{
+    color: #830a38;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    border: 0;
 }
 
 .navbar ul li a:hover {
     color: #830a38;
 }
 
+/* Ícono de usuario */
+.navbar-client {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
 .navbar-client i {
     font-size: 24px;
-    margin-right: 10px;
+    color: white;
     cursor: pointer;
 }
 
-.navbar-client-info a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-.navbar-client-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.navbar-client-dropdown .dropdown-content {
+.dropdown-content {
     display: none;
     position: absolute;
     right: 0;
@@ -114,57 +116,60 @@ body {
     min-width: 160px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
     z-index: 1;
-}
-
-.navbar-client-dropdown:hover .dropdown-content {
-    display: block;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 .dropdown-content a {
-    color: black;
+    color: #333;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    transition: background-color 0.3s ease;
 }
 
 .dropdown-content a:hover {
     background-color: #ddd;
 }
 
-.navbar-client-info a:hover {
-    text-decoration: underline;
+/* Mostrar el menú al hacer clic */
+.navbar-client:hover .dropdown-content {
+    display: block;
 }
-/* Estilos para el ícono de hamburguesa */
+
+/* Ícono de menú hamburguesa */
 #menu-toggle {
-    display: none; /* Oculto por defecto */
-    color: #fff;
+    display: none;
     font-size: 1.8em;
+    color: white;
     cursor: pointer;
 }
 
-/* Ocultar el menú en pantallas pequeñas */
-@media only screen and (max-width: 768px) {
-    .navbar ul {
-        display: none; /* Ocultar menú */
-        flex-direction: column; /* Alinea los elementos verticalmente */
-        background-color: #000; /* Fondo del menú desplegable */
+@media only screen and (max-width: 822px) {
+    #menu-toggle {
+        display: block;
+    }
+    .navbar-logo {
+        display: none;
+    }
+    #navbar-menu {
+        display: none;
+        flex-direction: column;
+        background-color: #000;
         position: absolute;
-        top: 60px; /* Ajusta según la altura de la barra de navegación */
+        top: 60px;
         width: 100%;
         left: 0;
         padding: 10px 0;
-        z-index: 999;
     }
-    
-    /* Mostrar el ícono de hamburguesa en pantallas pequeñas */
-    #menu-toggle {
-        display: block;
-        margin-left: auto; /* Alinear el ícono a la derecha */
+
+    #navbar-menu.show {
+        display: flex;
     }
-    
-    .navbar ul li {
-        display: block;
-        margin: 10px 0; /* Separación entre los elementos del menú */
+
+    #navbar-menu li {
+        text-align: center;
+        margin: 10px 0;
     }
 }
 

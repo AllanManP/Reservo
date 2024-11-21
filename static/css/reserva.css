@@ -256,3 +256,44 @@ button:hover {
     color: #fff;
 }
 
+@media (max-width: 860px) {
+    .carousel-control {
+        top: 50%; /* Ajustar posición vertical */
+        transform: translateY(-50%);
+        font-size: 1.5em; /* Reducir tamaño */
+        padding: 5px; /* Espaciado menor */
+    }
+
+    .carousel-control.prev {
+        left: 5%; /* Mover más cerca del borde */
+    }
+
+    .carousel-control.next {
+        right: 5%;
+    }
+    .carousel-stylist {
+        height: auto; /* Permite que se ajuste automáticamente */
+    }
+
+    .carousel-item-stylist img {
+        width: 150px; /* Reducir tamaño */
+        height: 150px;
+    }
+
+    .reservation-form {
+        grid-template-columns: 1fr; /* Una sola columna */
+    }
+
+    .form-group {
+        grid-column: span 1; /* Asegura que cada campo ocupe toda la fila */
+    }
+    
+    .services-container {
+        grid-template-columns: 1fr; /* Una sola columna */
+    }
+
+    .accordion {
+        margin-bottom: 20px; /* Separar el acordeón de la imagen */
+    }
+    
+}
