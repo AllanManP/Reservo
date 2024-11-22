@@ -4,6 +4,13 @@ main {
     background-color: #fff;
 }
 
+#calendar {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
 .calendar-container {
     max-width: 800px;
     margin: 0 auto;
@@ -122,12 +129,12 @@ main {
     background-color: #830a38;
     color: #fff;
 }
-
+/*
 .fc-daygrid-day.fc-day-with-event {
     background-color: #28a745 !important;
     color: white !important;
 }
-
+*/
 .selected-date {
     background-color: #ff006f !important;
 }
@@ -168,4 +175,13 @@ main {
     .accordion-content p {
         font-size: 0.85em;
     }
+}
+
+.fc-daygrid-day[data-date]:not(.selected-date) {
+    position: relative;
+}
+
+.fc-daygrid-day[data-date].selected-date {
+    background-color: #007bff !important; /* Azul para la fecha seleccionada */
+    color: white !important;
 }

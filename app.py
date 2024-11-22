@@ -1,6 +1,6 @@
 
 from bson import ObjectId
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash
 
 from datetime import datetime, timedelta
 
@@ -145,8 +145,8 @@ def recuperar():
     return render_template('recuperar-cliente.html')
 
 def recuperar(correo_destinatario, cliente_id):
-    correo_remitente = "allan.manriquez19@gmail.com"
-    contraseña_remitente = "syqx botg qudw mkkm"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
+    correo_remitente = "bhanais.studio@gmail.com"
+    contraseña_remitente = "yfrx psyz nosf uirf"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
 
     # Crear el asunto y el cuerpo del correo
     asunto = "Recuperación N° Cliente"
@@ -286,8 +286,8 @@ def reserva():
 
 
 def enviar_correo_agradecimiento(correo_destinatario, nombre, cliente_id):
-    correo_remitente = "allan.manriquez19@gmail.com"
-    contraseña_remitente = "syqx botg qudw mkkm"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
+    correo_remitente = "bhanais.studio@gmail.com"
+    contraseña_remitente = "yfrx psyz nosf uirf"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
 
     # Crear el asunto y el cuerpo del correo
     asunto = "Gracias por Registrarte"
@@ -317,8 +317,8 @@ def enviar_correo_agradecimiento(correo_destinatario, nombre, cliente_id):
         server.sendmail(correo_remitente, correo_destinatario, msg.as_string())  # Envía el correo
 
 def enviar_correo_aviso(correo_destinatario, nombre):
-    correo_remitente = "allan.manriquez19@gmail.com"
-    contraseña_remitente = "syqx botg qudw mkkm"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
+    correo_remitente = "bhanais.studio@gmail.com"
+    contraseña_remitente = "yfrx psyz nosf uirf"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
 
     # Crear el asunto y el cuerpo del correo
     asunto = "¡Hemos cancelado su cita!"
@@ -431,8 +431,6 @@ def calendario():
     )
 
 
-
-
 @app.route('/confirmacion')
 def confirmacion():
     idcita = request.args.get('idcita')
@@ -487,8 +485,8 @@ def confirmacion():
 
 
 def enviar_correo_confirmacion(correo_destinatario, nombre, fecha,hora):
-    correo_remitente = "allan.manriquez19@gmail.com"
-    contraseña_remitente = "syqx botg qudw mkkm"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
+    correo_remitente = "bhanais.studio@gmail.com"
+    contraseña_remitente = "yfrx psyz nosf uirf"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
 
     # Crear el asunto y el cuerpo del correo
     asunto = "Cita agendada"
@@ -638,8 +636,8 @@ def contacto():
 
 
 def enviar_correo_contacto(nombre,email,telefono,mensaje):
-    correo_remitente = "allan.manriquez19@gmail.com"
-    contraseña_remitente = "syqx botg qudw mkkm"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
+    correo_remitente = "bhanais.studio@gmail.com"
+    contraseña_remitente = "yfrx psyz nosf uirf"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
 
     # Crear el asunto y el cuerpo del correo
     asunto = "Nuevo mensaje de contacto"
@@ -750,14 +748,16 @@ def generar_disponibilidad_admin():
     if 'admin' not in session or session['admin']['rol'] != 'admin':
         return redirect(url_for('admin_login'))
     else:
-        return render_template('generar_disponibilidad.html')
+        estilistas = list(app.db.estilistas.find())
+        return render_template('generar_disponibilidad.html', estilista=estilistas)
 
 @app.route('/estilista/crear_disponibilidad', methods=['GET', 'POST'])
 def generar_disponibilidad_estilista():
     if 'estilista' not in session or session['estilista']['rol'] != 'estilista':
         return redirect(url_for('admin_login'))
     else:
-        return render_template('generar_disponibilidad.html')
+        estilistas = list(app.db.estilistas.find())
+        return render_template('generar_disponibilidad.html', estilista=estilistas)
 
 @app.route('/generar_disponibilidad', methods=['GET', 'POST'])
 def generar_disponibilidad():
@@ -960,7 +960,6 @@ def admin_estilistas():
         estilistas = app.db.estilistas.find()
         lista_estilistas = []
         for estilista in estilistas:
-            # No se intenta acceder con ['telefono']['$numberLong'], simplemente se usa 'telefono' directamente
             estilista['telefono'] = str(estilista['telefono'])  # Convertimos a cadena si es necesario
             lista_estilistas.append(estilista)
         return render_template('admin_estilistas.html', estilistas=lista_estilistas)
@@ -984,7 +983,7 @@ def añadir_estilista():
             if foto:
                 foto_filename = secure_filename(foto.filename)
                 foto.save(os.path.join('static/img', foto_filename))
-                foto_url = f'./static/img/{foto_filename}'
+                foto_url = f'/static/img/{foto_filename}'
             else:
                 foto_url = None
             
@@ -1102,41 +1101,82 @@ def eliminar_estilista(id):
 def admin_reservas():
     if 'admin' not in session or session['admin']['rol'] != 'admin':
         return redirect(url_for('admin_login'))
-    else:              
+    else:
+        # Obtener todos los estilistas
         estilistas = list(app.db.estilistas.find())
-        return render_template('admin_reservas.html',reserva=None,estilista=estilistas)
-    
+        
+        # Verificar si hay estilistas disponibles
+        if estilistas:
+            primer_estilista_id = estilistas[0]['_id']  # Obtener el ID del primer estilista
+        else:
+            primer_estilista_id = None
+        
+        # Pasar el ID del primer estilista a la función
+        fechas_ocupadas = obtener_todas_fechas_ocupadas()
+        
+        return render_template(
+            'admin_reservas.html',
+            reserva=None,
+            estilista=estilistas,
+            fechas_ocupadas=fechas_ocupadas
+        )
+
+
+@app.route('/admin/get_fechas_ocupadas', methods=['GET'])
+def get_fechas_ocupadas():
+    estilista_id = request.args.get('estilista_id')
+    if not estilista_id:
+        return jsonify({"error": "ID del estilista no proporcionado"}), 400
+
+    # Llamar a la función que obtiene las fechas ocupadas
+    fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
+    return jsonify({"fechas_ocupadas": fechas_ocupadas})
+
 @app.route('/admin/lista_reservas', methods=['GET', 'POST'])
 def lista_reservas():
+    estilista_id = request.args.get('estilista_id')
+    fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
+
     if request.method == 'POST':
         estilista_id = request.form.get('estilista_id')
         fecha = request.form.get('fecha')
         estilistas = list(app.db.estilistas.find())
-        # Convertir fecha a formato datetime para buscar en MongoDB
-        fecha_datetime = datetime.strptime(fecha, '%Y-%m-%d')
 
+        if not fecha or not estilista_id:
+            return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
         # Consultar citas del estilista en la fecha seleccionada
         reservas = app.db.cita.find({
             'idestilista': int(estilista_id),
             'fecha': fecha
-        })
+        })  # 
         lista_reservas = list(reservas)  # Convertir cursor a lista
         lista_reservas.sort(key=lambda x: (x['fecha'], x['hora_inicio']))
-        print(lista_reservas)  # Para depuración
 
-        # Inicializamos una lista para almacenar la información de las reservas y clientes
-        reservas_con_clientes = []
-
-        # Recorremos las reservas para obtener la información del cliente
+        # Obtener información de clientes y estilistas asociada
+        reservas_con_info = []
         for reserva in lista_reservas:
             cliente_info = app.db.clientes.find_one({"id": reserva['cliente_id']})
+            estilista_info = app.db.estilistas.find_one({"id": reserva['idestilista']})
+            
             if cliente_info:
-                # Agregamos la información del cliente a cada reserva
                 reserva['cliente'] = cliente_info
-                reservas_con_clientes.append(reserva)
+            if estilista_info:
+                reserva['estilista'] = estilista_info
+            reservas_con_info.append(reserva)
 
-        # Pasamos la lista de reservas con la información del cliente a la plantilla
-        return render_template('admin_reservas.html', reserva=reservas_con_clientes, estilista=estilistas)
+        return render_template(
+            'admin_reservas.html',
+            reserva=reservas_con_info,
+            estilista=estilistas,
+            fechas_ocupadas=fechas_ocupadas or []  # Evita errores al ser None
+        )
+
+    estilistas = list(app.db.estilistas.find())
+    
+    return render_template('admin_reservas.html', reserva=None, estilista=estilistas, fechas_ocupadas=fechas_ocupadas)
+
+
+
 
 
 #------------------------------------------------
@@ -1145,16 +1185,18 @@ def lista_reservas():
 #Estilista
 @app.route('/estilista_reservas', methods=['GET'])
 def reservas():
-    fechas_ocupadas = obtener_fechas_ocupadas()  
+    estilista_id = session.get('estilista', {}).get('idestilista')
+    fechas_ocupadas = obtener_fechas_ocupadas()  # Obtener fechas ocupadas 
     return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
 
 @app.route('/estilista/lista_reservas', methods=['GET', 'POST'])
 def lista_reservas_estilista():
+    estilista_id = session.get('estilista', {}).get('idestilista')
     fechas_ocupadas = obtener_fechas_ocupadas()  # Obtener fechas ocupadas
     
     if request.method == 'POST':
         fecha_seleccionada = request.form.get('fecha')
-        estilista_id = session.get('estilista', {}).get('idestilista')
+        
 
         if not fecha_seleccionada or not estilista_id:
             return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
@@ -1178,10 +1220,31 @@ def lista_reservas_estilista():
 
     return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
 
-def obtener_fechas_ocupadas():
-    # Obtener todas las citas y devolver una lista de fechas ocupadas
-    citas = app.db.cita.find()
 
+
+def obtener_fechas_ocupadas(estilista_id):
+    
+    # Filtrar citas por el ID del estilista
+    citas = app.db.cita.find({'id': estilista_id})
+    
+    fechas_ocupadas = []
+    for cita in citas:
+        # Convertir la fecha a un objeto datetime si es necesario
+        if isinstance(cita['fecha'], str):
+            fecha_obj = datetime.strptime(cita['fecha'], '%Y-%m-%d')
+        else:
+            fecha_obj = cita['fecha']
+
+        # Convertir la fecha al formato requerido y añadirla a la lista
+        fechas_ocupadas.append(fecha_obj.strftime('%Y-%m-%d'))
+
+    return fechas_ocupadas
+
+def obtener_todas_fechas_ocupadas():
+    
+    # Filtrar citas por el ID del estilista
+    citas = app.db.cita.find()
+    
     fechas_ocupadas = []
     for cita in citas:
         if isinstance(cita['fecha'], str):
@@ -1189,6 +1252,7 @@ def obtener_fechas_ocupadas():
         else:
             fecha_obj = cita['fecha']
 
+        # Convertir la fecha al formato requerido y añadirla a la lista
         fechas_ocupadas.append(fecha_obj.strftime('%Y-%m-%d'))
 
     return fechas_ocupadas

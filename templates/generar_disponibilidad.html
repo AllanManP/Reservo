@@ -14,17 +14,27 @@
                 <!-- Campo ID del Estilista -->
                 <div class="form-group">
                     <label for="estilista_id">ID del Estilista:</label>
+
                     {% if session['estilista'] %}
                         {% if session['estilista']['rol'] == 'estilista' %}
-                            <input type="text" id="estilista_id" name="estilista_id" 
-                                   value="{{ session['estilista']['idestilista'] }}" 
-                                   placeholder="{{ session['estilista']['idestilista'] }}" readonly required>
+                        <select class="form-control" id="estilista_id" name="estilista_id" required>
+                            {% for estilista in estilista %}
+                                {% if session['estilista']['idestilista'] == estilista.id %}
+                                    <option value="{{ estilista.id }}">{{ estilista.nombre }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                         {% endif %}
                     {% elif session['admin'] %}
                         {% if session['admin']['rol'] == 'admin' %}
-                            <input type="text" id="estilista_id" name="estilista_id" required>
+                            <select class="form-control" id="estilista_id" name="estilista_id" required>
+                                {% for estilista in estilista %}
+                                    <option value="{{ estilista.id }}">{{ estilista.nombre }}</option>
+                                {% endfor %}
+                            </select>
                         {% endif %}
                     {% endif %}
+
                 </div>
 
                 <!-- Campo Fecha -->
