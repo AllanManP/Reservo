@@ -1,74 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - BHAS</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/datos_negocio.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <div class="container">
-        <h1>Dashboard - Información de Reservas</h1>
+{% extends "admin_base.html" %}
 
-        <!-- Gráfico de Citas por Estilista -->
-        <div class="chart-container">
-            <h2>Citas por Estilista</h2>
-            <canvas id="estilistasChart"></canvas>
-        </div>
+{% block title %}Datos de Negocio{% endblock %}
 
-        <!-- Tabla de Clientes con Más Citas -->
-        <div class="table-container">
-            <h2>Clientes con Más Citas</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Cliente ID</th>
-                        <th>Cantidad de Citas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cliente in top_clientes_data %}
-                        <tr>
-                            <td>{{ cliente.cliente_id }}</td>
-                            <td>{{ cliente.cantidad }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datos_negocio.css') }}">
+{% endblock %}
 
+{% block content %}
+<div class="container">
+    <h1>Dashboard - Información de Negocio</h1>
+    <br><hr>
+    <h1>Suma de Montos Finales</h1>
+    <center><p>Total de monto final: ${{ total_monto_final }}</p></center>
+    
+    <br><hr>
+    <!-- Tabla de Clientes con Más Citas -->
+    <div class="table-container">
+        <h2>Clientes con Más Citas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente ID</th>
+                    <th>Nombre</th>
+                    <th>Cantidad de Citas</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                {% for cliente in top_clientes_data %}
+                
+                <tr>
+                    <td>{{ cliente.cliente_id }}</td>
+                    <td>{{ cliente.nombre_cliente }}</td>
+                    <td>{{ cliente.cantidad }}</td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
     </div>
+    <br><hr>
+    <!-- Tabla de Servicios Más Requeridos -->
+<table class="table">
+    <thead>
+        <h2>Servicios más solicitados</h2>
+      <tr>
+        <th>Servicio</th>
+        <th>Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for servicio in servicios_data %}
+        <tr>
+          <td>{{ servicio.nombre_servicio }}</td>
+          <td>{{ servicio.cantidad }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
-    <script>
-        // Datos de los estilistas para el gráfico
-        const estilistasData = {{ estilistas_data | tojson }};
-        const estilistasNames = estilistasData.map(item => item.nombre);
-        const citasData = estilistasData.map(item => item.citas);
+ 
+  
+  
+  
 
-        // Gráfico de Citas por Estilista
-        const ctx = document.getElementById('estilistasChart').getContext('2d');
-        const estilistasChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: estilistasNames,
-                datasets: [{
-                    label: 'Citas por Estilista',
-                    data: citasData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+  
+</div>
+
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+    // Datos para el gráfico
+    const estilistasData = {{ estilistas_data | tojson }};
+    const estilistasNames = estilistasData.map(e => e.nombre);
+    const citasData = estilistasData.map(e => e.citas);
+
+    // Generar el gráfico de citas por estilista
+    const ctx = document.getElementById('estilistasChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: estilistasNames,
+            datasets: [{
+                label: 'Citas por Estilista',
+                data: citasData,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
-        });
-    </script>
-</body>
-</html>
+        }
+    });
+</script>
+{% endblock %}
+
+

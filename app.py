@@ -1550,28 +1550,84 @@ def portafolio():
 #------------------------------------------------
 # DATOS DE NEGOCIO
 #------------------------------------------------
-from collections import Counter
 
-@app.route('/datos_negocio')
-def dashboard():
-    # Obtener citas y estilistas
-    citas = app.db.cita.find()  # Asumimos que tienes una colección 'cita'
-    estilistas = app.db.estilistas.find()  # Colección de estilistas
 
-    # Contar la cantidad de citas por estilista
-    citas_por_estilista = Counter(cita['idestilista'] for cita in citas)
+@app.route('/admin/datos_negocio')
+def datos_negocio():
+    # Citas por estilista
+    estilistas = list(app.db.estilistas.find({}, {"id": 1, "nombre": 1}))
+    citas_por_estilista = app.db.cita.aggregate([
+        {"$group": {"_id": "$idestilista", "citas": {"$sum": 1}}}
+    ])
+    estilistas_data = [
+        {
+            "nombre": next((e["nombre"] for e in estilistas if e["id"] == data["_id"]), "Desconocido"),
+            "citas": data["citas"]
+        }
+        for data in citas_por_estilista
+    ]
+    
+    # Clientes con más citas
+    top_clientes = app.db.cita.aggregate([
+        {"$group": {"_id": "$cliente_id", "cantidad": {"$sum": 1}}},
+        {"$sort": {"cantidad": -1}},
+        {"$limit": 5}
+    ])
 
-    # Obtener los clientes con más citas
-    clientes_citas = Counter(cita['cliente_id'] for cita in citas)
-    top_clientes = clientes_citas.most_common(5)  # Top 5 clientes con más citas
+    # Obtener el nombre de los clientes
+    clientes = {cliente["id"]: cliente["nombre"] for cliente in app.db.clientes.find({}, {"id": 1, "nombre": 1})}
+    
+    # Agregar nombre del cliente a los datos
+    top_clientes_data = [
+        {
+            "cliente_id": cliente["_id"],
+            "cantidad": cliente["cantidad"],
+            "nombre_cliente": clientes.get(cliente["_id"], "Desconocido")  # Obtener nombre del cliente
+        }
+        for cliente in top_clientes
+    ]
+    
+    # Servicios más requeridos
+    servicios_requeridos = app.db.cita.aggregate([
+        {"$group": {"_id": "$servicio", "cantidad": {"$sum": 1}}},
+        {"$sort": {"cantidad": -1}},
+        {"$limit": 5}
+    ])
 
-    # Preparar los datos para los gráficos
-    estilistas_data = [{'nombre': estilista['nombre'], 'citas': citas_por_estilista.get(estilista['_id'], 0)} for estilista in estilistas]
-    top_clientes_data = [{'cliente_id': cliente[0], 'cantidad': cliente[1]} for cliente in top_clientes]
+    # Obtener todos los servicios en un diccionario mapeando el nombre con el id y nombre
+    # Normalizar a minúsculas todos los nombres al construir el diccionario
+    servicios = {servicio["nombre"].lower(): servicio["nombre"] for servicio in app.db.servicios.find({}, {"nombre": 1})}
 
-    return render_template('datos_negocio.html', 
-                           estilistas_data=estilistas_data, 
-                           top_clientes_data=top_clientes_data)
+    
+
+
+    # Mapear los servicios requeridos con sus nombres y cantidades
+    servicios_data = [
+        {
+            "nombre_servicio": servicios.get(servicio["_id"].lower(), "Desconocido"),  # Convertir a minúsculas para buscar
+        "cantidad": servicio["cantidad"]
+        }
+        for servicio in servicios_requeridos
+    ]
+
+
+    # Realizar la agregación para sumar todos los "monto_final"
+    suma_montos = app.db.cita_finalizada.aggregate([
+        {"$group": {"_id": None, "total": {"$sum": "$monto_final"}}}
+    ])
+
+    # Extraer el valor de la suma
+    resultado = next(suma_montos, {"total": 0})  # Si no hay resultados, la suma es 0
+    total_monto_final = resultado["total"]
+
+    return render_template(
+        'datos_negocio.html',
+        estilistas_data=estilistas_data,
+        top_clientes_data=top_clientes_data,
+        servicios_data=servicios_data,
+         total_monto_final=total_monto_final
+    )
+
 
 
 if __name__ == '__main__':

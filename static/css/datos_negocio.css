@@ -1,3 +1,4 @@
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
@@ -13,21 +14,26 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+h1, h2 {
     text-align: center;
+    
 }
 
 .chart-container {
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 }
 
 table {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 40px;
     border-collapse: collapse;
 }
 
-table, th, td {
+table th {
+    background-color: #f8f9fa;
+}
+
+table td {
     border: 1px solid #ddd;
 }
 
