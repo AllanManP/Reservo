@@ -75,20 +75,27 @@ h1 {
 
 
 
-/* Estilo para el estilista */
-.portafolio-detalles .estilista {
-    font-size: 0.9em; /* Reducir tamaño de fuente */
-    color: #555; /* Color más neutro para diferenciarlo del cliente */
-    margin-top: 8px; /* Reducir espacio superior */
-    font-style: italic;
+
+
+/* Estilo para el texto del estilista en el modal */
+.detalle-estilista {
+    font-size:130% !important; /* Ajusta el tamaño de la letra */
+    color: black; /* Color más neutro */
+    font-style: italic; /* Opcional: darle estilo cursivo */
+    margin-top: 10px; /* Ajusta el espacio superior */
 }
 
-.portafolio-detalles .fecha {
+
+.detalle-fecha {
     margin-top: 3px; /* Reducir espacio superior */
     font-size: 0.8em; /* Reducir tamaño de fuente */
-    color: #999;
+    color: black !important;
 }
-
+.detalle-cita{
+    margin-top: 3px; /* Reducir espacio superior */
+    font-size: 0.8em; /* Reducir tamaño de fuente */
+    color: black !important;
+}
 
 
 /* Modal */
