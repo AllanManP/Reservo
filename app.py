@@ -8,8 +8,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+import os
 from pymongo import MongoClient
+
 import pytz
 
 from werkzeug.utils import secure_filename
@@ -19,8 +20,9 @@ import os
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar la sesión
 
-
-cliente = MongoClient("mongodb+srv://allanmanriquez19:dTuYRiRENX7t8Msg@reservo.uuj9k.mongodb.net/")
+mongo_uri = os.getenv("MONGO_URI")
+cliente = MongoClient(mongo_uri)
+#cliente = MongoClient("mongodb+srv://allanmanriquez19:dTuYRiRENX7t8Msg@reservo.uuj9k.mongodb.net/")
 
 app.db=cliente.reservo
 servicios_collection = app.db['servicios']
