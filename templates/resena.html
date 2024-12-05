@@ -34,6 +34,7 @@
             <button type="submit" class="btn">Enviar Reseña</button>
         </div>
     </form>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-messages">
@@ -55,8 +56,7 @@
                 <p>{{ review['nombre'] }}</p>
                 <p>{{ review['comment'] }}</p>
                 <p>{{ review['creacion'] }}</p>
-                
-                <!-- Mostrar la respuesta del administrador si existe -->
+
                 <!-- Mostrar la respuesta del administrador si existe -->
                 {% if review['respuesta'] %}
                     <div class="admin-response">
@@ -66,18 +66,16 @@
                 {% elif session.get('admin') and session['admin']['rol'] == 'admin' %}
                     <!-- Formulario para que el admin responda si no hay respuesta aún -->
                     <form method="POST" action="{{ url_for('responder_resena', resena_id=review['_id']) }}">
-                        {% if session['admin'] %}
-                    {% if session['admin']['rol'] == 'admin' %}
-                    <div class="form-group">
-                        <label for="respuesta">Responder:</label>
-                        <textarea id="respuesta" name="respuesta" class="field" required placeholder="Escribe tu respuesta aquí..."></textarea>
-                        {% endif %}
-                    </div>
-                    <button type="submit" class="btn">Responder</button>
-                    {% endif %}
+                        <div class="form-group">
+                            <label for="respuesta">Responder:</label>
+                            <textarea id="respuesta" name="respuesta" class="field" required placeholder="Escribe tu respuesta aquí..."></textarea>
+                        </div>
+                        <button type="submit" class="btn">Responder</button>
                     </form>
                 {% endif %}
             </div>
         {% endfor %}
     </div>
+</div>
+
 {% endblock %}

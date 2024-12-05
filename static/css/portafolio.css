@@ -49,8 +49,11 @@ h1 {
 }
 
 .portafolio-detalles {
-    padding: 10px;
     text-align: center;
+    flex-grow: 1; /* Permite que el contenido crezca según sea necesario */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente el texto y botón */
 }
 
 .portafolio-detalles h2 {
@@ -59,6 +62,7 @@ h1 {
 }
 
 .leer-mas-btn {
+    margin-top: auto; /* Empuja el botón al fondo */
     padding: 5px 10px;
     font-size: 0.9em;
     background-color: #a40a48;
@@ -68,6 +72,7 @@ h1 {
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
+
 
 .leer-mas-btn:hover {
     background-color: #7e0838;
