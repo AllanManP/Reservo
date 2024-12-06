@@ -787,8 +787,10 @@ def generar_disponibilidad():
                     "fecha": fecha,
                     "hora": hora
                 })
-            return render_template('generar_disponibilidad.html')
-        return render_template('generar_disponibilidad.html')
+            estilistas = list(app.db.estilistas.find())
+            return render_template('generar_disponibilidad.html', estilista=estilistas)
+        estilistas = list(app.db.estilistas.find())
+        return render_template('generar_disponibilidad.html', estilista=estilistas)
 
     elif 'admin' in session and session['admin']['rol'] == 'admin':
         if request.method == 'POST':
