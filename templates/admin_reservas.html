@@ -48,10 +48,10 @@
                                 <p>Hora de término: {{ reservas.hora_final }}</p>
                                 <p>Comentarios: {{ reservas.comentarios }}</p>
                                 <div class="form-group">
-                                    <!-- Botón Finalizar -->
+                                    <!-- Botón Finalizar 
                                     <form action="{{ url_for('finalizar_cita', id=reservas._id) }}" method="GET" style="display:inline;">
                                         <button type="submit" class="btn-finalizar">Finalizar</button>
-                                    </form>
+                                    </form>-->
                                     <!-- Botón Eliminar -->
                                     <form action="{{ url_for('eliminar_cita', id=reservas._id) }}" method="POST" style="display:inline;">
                                         <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
