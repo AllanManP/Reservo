@@ -24,7 +24,7 @@
             </div>
             <div class="mb-3">
                 <label for="fecha" class="form-label">Fecha</label>
-                <input type="hidden" id="hiddenFecha" name="fecha">
+                <input type="hidden" id="hiddenFecha" name="fecha" >
             </div>
             <!-- Calendario -->
         <div id="calendar"></div>
@@ -33,7 +33,7 @@
         <div class="accordion">
             {% if reserva is not none %}
                 {% if reserva | length > 0 %}
-                    <h1 id="selected-date-title">Citas del {{ fecha_seleccionada }}</h1>
+                    <h1 id="selected-date-title">Citas del estilista {{ fecha_seleccionada }}</h1>
                     {% for reservas in reserva %}
                         <div class="accordion-item" id="{{ reservas._id }}">
                             <button type="button" class="accordion-header" onclick="toggleAccordion(event, '{{ reservas._id }}')">
@@ -47,13 +47,12 @@
                                 <p>Hora de inicio: {{ reservas.hora_inicio }}</p>
                                 <p>Hora de término: {{ reservas.hora_final }}</p>
                                 <p>Comentarios: {{ reservas.comentarios }}</p>
-                                <div class="form-group">
-                                    <!-- Botón Finalizar -->
+                               <!-- <div class="form-group">
                                     <form action="{{ url_for('finalizar_cita', id=reservas._id) }}" method="GET" style="display:inline;">
                                         <button type="submit" class="btn-finalizar">Finalizar</button>
                                     </form>
-                                    <!-- Botón Eliminar -->
-                                    <form action="{{ url_for('eliminar_cita', id=reservas._id) }}" method="POST" style="display:inline;">
+                                     Botón Eliminar -->
+                                    <form action="{{ url_for('admin_eliminar_cita', id=reservas._id) }}" method="POST" style="display:inline;">
                                         <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
                                     </form>
                                 </div>

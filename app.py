@@ -15,6 +15,7 @@ import pytz
 
 from werkzeug.utils import secure_filename
 import os
+from bson.objectid import ObjectId
 
 
 app = Flask(__name__)
@@ -1093,7 +1094,6 @@ def eliminar_estilista(id):
 
         return redirect(url_for('admin_estilistas'))
     
-
 #------------------------------------------------
 # ADMIN_RESERVAS
 #------------------------------------------------
@@ -1123,33 +1123,42 @@ def admin_reservas():
         )
 
 
+@app.route('/admin/get_fechas_ocupadas', methods=['GET'])
+def get_fechas_ocupadas():
+    estilista_id = request.args.get('estilista_id')
+    if not estilista_id:
+        return jsonify({"error": "ID del estilista no proporcionado"}), 400
+
+    # Llamar a la función que obtiene las fechas ocupadas
+    fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
+    return jsonify({"fechas_ocupadas": fechas_ocupadas})
+
 @app.route('/admin/lista_reservas', methods=['GET', 'POST'])
 def lista_reservas():
+    estilista_id = request.args.get('estilista_id')
+    fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
+
     if request.method == 'POST':
         estilista_id = request.form.get('estilista_id')
-        fecha = request.form.get('fecha')  # Fecha seleccionada por el usuario
-        
+        fecha = request.form.get('fecha')
         estilistas = list(app.db.estilistas.find())
-        fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
 
-        # Verifica si estilista_id está presente
-        if not estilista_id:
-            return render_template('admin_reservas.html', reserva=None, estilista=estilistas, fechas_ocupadas=fechas_ocupadas)
+        if not fecha or not estilista_id:
+            return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
+        # Consultar citas del estilista en la fecha seleccionada
+        reservas = app.db.cita.find({
+            'idestilista': int(estilista_id),
+            'fecha': fecha
+        })  # 
+        lista_reservas = list(reservas)  # Convertir cursor a lista
+        lista_reservas.sort(key=lambda x: (x['fecha'], x['hora_inicio']))
 
-        # Consulta de reservas
-        filtro = {'idestilista': int(estilista_id)}
-        if fecha:  # Si hay fecha seleccionada, agrega al filtro
-            filtro['fecha'] = fecha
-
-        reservas = list(app.db.cita.find(filtro))  # Consulta con el filtro construido
-        reservas.sort(key=lambda x: (x['fecha'], x['hora_inicio']))  # Ordena las reservas
-
-        # Enriquecer reservas con datos de cliente y estilista
+        # Obtener información de clientes y estilistas asociada
         reservas_con_info = []
-        for reserva in reservas:
+        for reserva in lista_reservas:
             cliente_info = app.db.clientes.find_one({"id": reserva['cliente_id']})
             estilista_info = app.db.estilistas.find_one({"id": reserva['idestilista']})
-
+            
             if cliente_info:
                 reserva['cliente'] = cliente_info
             if estilista_info:
@@ -1160,11 +1169,15 @@ def lista_reservas():
             'admin_reservas.html',
             reserva=reservas_con_info,
             estilista=estilistas,
-            fechas_ocupadas=fechas_ocupadas
+            fechas_ocupadas=fechas_ocupadas or []  # Evita errores al ser None
         )
 
     estilistas = list(app.db.estilistas.find())
-    return render_template('admin_reservas.html', reserva=None, estilista=estilistas)
+    
+    return render_template('admin_reservas.html', reserva=None, estilista=estilistas, fechas_ocupadas=fechas_ocupadas)
+
+
+
 
 
 #------------------------------------------------
@@ -1173,19 +1186,21 @@ def lista_reservas():
 #Estilista
 @app.route('/estilista_reservas', methods=['GET'])
 def reservas():
-    estilista_id = session.get('estilista', {}).get('idestilista')
-    fechas_ocupadas = obtener_fechas_ocupadas()  # Obtener fechas ocupadas 
+    fechas_ocupadas = obtener_todas_fechas_ocupadas()  # Obtener fechas ocupadas 
     return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
 
 @app.route('/estilista/lista_reservas', methods=['GET', 'POST'])
 def lista_reservas_estilista():
     
+    fechas_ocupadas = obtener_todas_fechas_ocupadas()  # Obtener fechas ocupadas
+    
     if request.method == 'POST':
-        if not fecha_seleccionada or not estilista_id:
-            return render_template('admin_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
-        estilista_id = request.form.get('estilista_id')
         fecha_seleccionada = request.form.get('fecha')
-        fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
+        estilista_id = session.get('estilista', {}).get('idestilista')
+
+        if not fecha_seleccionada or not estilista_id:
+            return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
+
 
         # Obtener las reservas para el estilista y la fecha seleccionada
         reservas = app.db.cita.find({
@@ -1203,12 +1218,14 @@ def lista_reservas_estilista():
 
         return render_template('estilista_reservas.html', reserva=lista_reservas, fecha_seleccionada=fecha_seleccionada,fechas_ocupadas=fechas_ocupadas)
 
+    return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
+
 
 
 def obtener_fechas_ocupadas(estilista_id):
     
     # Filtrar citas por el ID del estilista
-    citas = app.db.cita.find({'idestilista': estilista_id})
+    citas = app.db.cita.find({'id': estilista_id})
     
     fechas_ocupadas = []
     for cita in citas:
@@ -1222,6 +1239,7 @@ def obtener_fechas_ocupadas(estilista_id):
         fechas_ocupadas.append(fecha_obj.strftime('%Y-%m-%d'))
 
     return fechas_ocupadas
+
 
 def obtener_todas_fechas_ocupadas():
     
@@ -1281,11 +1299,7 @@ def eliminar_cita(id):
     return redirect(url_for('lista_reservas_estilista'))
 
 
-from bson.objectid import ObjectId
-from flask import request
 
-from bson.objectid import ObjectId
-from flask import request
 
 @app.route('/estilista/finalizar_cita/<id>', methods=['GET'])
 def finalizar_cita(id):
