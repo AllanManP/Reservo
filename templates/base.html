@@ -49,7 +49,6 @@
             
                 <div class="dropdown-content">
                     <a href="{{ url_for('login', next=url_for('cliente')) }}">Iniciar Sesión</a>
-                    
                 </div>
                 {% endif %}
             </div>
@@ -60,7 +59,8 @@
     <div class="content">
         {% block content %}{% endblock %}
     </div>
-    
+    </div>
+    </div>
     <footer>
         <div class="footer-content">
             <div class="footer-column">
