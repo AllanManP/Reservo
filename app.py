@@ -285,8 +285,6 @@ def reserva():
         return redirect(url_for('calendario',nom_estilista=nom_estilista, idestilista=idestilista['id']))
     
     return render_template('reserva.html', estilistas=estilistas,servicios=servicios)
-
-
 def enviar_correo_agradecimiento(correo_destinatario, nombre, cliente_id):
     correo_remitente = "bhanais.studio@gmail.com"
     contraseña_remitente = "yfrx psyz nosf uirf"  # Usa una Contraseña de Aplicación si tienes habilitada la verificación en dos pasos
@@ -349,7 +347,7 @@ def enviar_correo_aviso(correo_destinatario, nombre):
         server.login(correo_remitente, contraseña_remitente)  # Inicia sesión en tu cuenta
         server.sendmail(correo_remitente, correo_destinatario, msg.as_string())  # Envía el correo
 
-        
+
 @app.route('/calendario', methods=['GET', 'POST'])
 def calendario():
     estilista_id = request.args.get('idestilista')
