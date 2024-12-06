@@ -1178,12 +1178,11 @@ def lista_reservas():
 
 
 
-
-
 #------------------------------------------------
 # ESTILISTA_RESERVA
 #------------------------------------------------
 #Estilista
+
 @app.route('/estilista_reservas', methods=['GET'])
 def reservas():
     fechas_ocupadas = obtener_todas_fechas_ocupadas()  # Obtener fechas ocupadas 
@@ -1257,6 +1256,8 @@ def obtener_todas_fechas_ocupadas():
         fechas_ocupadas.append(fecha_obj.strftime('%Y-%m-%d'))
 
     return fechas_ocupadas
+
+
 
 @app.route('/estilista/eliminar_cita/<id>', methods=['POST'])
 def eliminar_cita(id):
