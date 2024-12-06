@@ -349,6 +349,7 @@ def enviar_correo_aviso(correo_destinatario, nombre):
         server.login(correo_remitente, contraseña_remitente)  # Inicia sesión en tu cuenta
         server.sendmail(correo_remitente, correo_destinatario, msg.as_string())  # Envía el correo
 
+        
 @app.route('/calendario', methods=['GET', 'POST'])
 def calendario():
     estilista_id = request.args.get('idestilista')
@@ -368,7 +369,7 @@ def calendario():
     # Debugging: Imprimir los datos recuperados
     #print("Datos de disponibilidad:", disponibilidad_data)
 
-    #sin_disponibilidad = not disponibilidad_data
+    sin_disponibilidad = not disponibilidad_data
         # Puedes manejar este caso de manera apropiada, como enviar un mensaje a la plantilla
 
     disponibilidad = {}
@@ -428,11 +429,9 @@ def calendario():
         'calendario.html',
         disponibilidad=disponibilidad,
         estilista=estilista_id,
-        nom_estilista=nom_estilista
-        #sin_disponibilidad=sin_disponibilidad
+        nom_estilista=nom_estilista,
+        sin_disponibilidad=sin_disponibilidad
     )
-
-
 @app.route('/confirmacion')
 def confirmacion():
     idcita = request.args.get('idcita')
@@ -484,6 +483,7 @@ def confirmacion():
     eliminar_disponibilidad(id_disponibilidad)
     # Renderizar la página de confirmación con los detalles de la cita
     return render_template('confirmacion.html', cita=cita_info,nombre_cliente=nombre_cliente, nombre_estilista=nombre_estilista)
+
 
 def enviar_correo_confirmacion(correo_destinatario, nombre, fecha,hora):
     correo_remitente = "bhanais.studio@gmail.com"
