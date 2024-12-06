@@ -70,22 +70,33 @@
         var fechasReservadas = {{ fechas_ocupadas | tojson }}; // Fechas ocupadas en formato JSON
         
         // Convierte fechas ocupadas en eventos para FullCalendar
-        var eventosReservados = fechasReservadas.map(fecha => ({
+        var eventosReservados = fechasReservadas.map(fecha => {
+        let color;
+        if (fecha === fechaActual) {
+            color = '#ffc107'; // Amarillo para la fecha actual
+        } else if (fecha > fechaActual) {
+            color = '#dc3545'; // Rojo para fechas futuras
+        } else {
+            color = '#28a745'; // Verde para fechas pasadas
+        }
+
+        return {
             title: '', // Sin título para que solo aparezca el color
             start: fecha,
             display: 'background', // Muestra el evento como fondo del día
-            color: '#28a745' // Color verde para indicar ocupación
-        }));
-    
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            selectable: true,
-            events: eventosReservados, // Agregar eventos reservados como fondo
-            dateClick: function(info) {
-                document.getElementById('hiddenFecha').value = info.dateStr;
-                highlightSelectedDate(info.dateStr);
-            }
-        });
+            color: color
+        };
+    });
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        selectable: true,
+        events: eventosReservados, // Agregar eventos reservados como fondo
+        dateClick: function(info) {
+            document.getElementById('hiddenFecha').value = info.dateStr;
+            highlightSelectedDate(info.dateStr);
+        }
+    });
     
         calendar.render();
     
