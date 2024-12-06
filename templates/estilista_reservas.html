@@ -65,12 +65,12 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-    
-        var fechasReservadas = {{ fechas_ocupadas | tojson }}; // Fechas ocupadas en formato JSON
-        
-        // Convierte fechas ocupadas en eventos para FullCalendar
-        var eventosReservados = fechasReservadas.map(fecha => {
+    var calendarEl = document.getElementById('calendar');
+    var fechasReservadas = {{ fechas_ocupadas | tojson }}; // Fechas ocupadas en formato JSON
+    var fechaActual = new Date().toISOString().split('T')[0]; // Obtén la fecha actual en formato YYYY-MM-DD
+
+    // Convierte fechas ocupadas en eventos con colores según los criterios
+    var eventosReservados = fechasReservadas.map(fecha => {
         let color;
         if (fecha === fechaActual) {
             color = '#ffc107'; // Amarillo para la fecha actual
@@ -87,16 +87,16 @@
             color: color
         };
     });
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        selectable: true,
-        events: eventosReservados, // Agregar eventos reservados como fondo
-        dateClick: function(info) {
-            document.getElementById('hiddenFecha').value = info.dateStr;
-            highlightSelectedDate(info.dateStr);
-        }
-    });
+    
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            selectable: true,
+            events: eventosReservados, // Agregar eventos reservados como fondo
+            dateClick: function(info) {
+                document.getElementById('hiddenFecha').value = info.dateStr;
+                highlightSelectedDate(info.dateStr);
+            }
+        });
     
         calendar.render();
     
