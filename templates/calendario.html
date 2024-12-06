@@ -17,16 +17,13 @@
         <div id="calendar"></div>
 
         <form action="/calendario" method="post" class="calendar-form" id="reservation-form">
-            <input type="hidden" id="selected-date" name="fecha" value="" required>
+            <input type="hidden" id="selected-date" name="fecha" value="">
             <div id="available-times" class="form-group" style="display: none;">
                 <label for="hora">Hora disponible</label>
                 <ul id="time-slots"></ul>
-                <input type="hidden" id="selected-time" name="hora" value="" required>
-                <input type="hidden" id="selected-id" name="id_disponibilidad" value="" required>
+                <input type="hidden" id="selected-time" name="hora" value="">
+                <input type="hidden" id="selected-id" name="id_disponibilidad" value="">
             </div>
-            {% if sin_disponibilidad %}
-                <p></p>
-            {% endif %}
             <button type="submit">Confirmar Reserva</button>
         </form>        
         
@@ -34,22 +31,6 @@
 </main>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('reservation-form');
-    const submitButton = form.querySelector('button[type="submit"]');
-
-    // Desactivar el botón de envío inicialmente si no hay fecha seleccionada
-    submitButton.disabled = !document.getElementById('selected-date').value;
-
-    // Verifica si la fecha ha sido seleccionada antes de enviar el formulario
-    form.addEventListener('submit', (event) => {
-        const selectedDate = document.getElementById('selected-date').value;
-        if (!selectedDate) {
-            event.preventDefault(); // Evita que el formulario se envíe
-            alert('Por favor, selecciona una fecha antes de confirmar la reserva.');
-        }
-    });
-
     const availability = JSON.parse('{{ disponibilidad|tojson }}');
     const today = new Date();
     let currentMonth = today.getMonth();
@@ -120,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeSlots = document.getElementById('time-slots');
         timeSlots.innerHTML = '';  // Limpiar los slots de tiempo
         document.getElementById('selected-date').value = date;  // Establecer la fecha seleccionada
-
+        
         // Quitar la clase 'selected' de cualquier fecha previamente seleccionada
         const previousSelected = document.querySelector('.calendar-day.selected');
         if (previousSelected) {
@@ -173,7 +154,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Renderiza el calendario inicial
     renderCalendar();
-});
-
 </script>
 {% endblock %}
