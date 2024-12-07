@@ -146,11 +146,11 @@
 }
 
 .citas-finalizadas .foto-resultado {
-    width: 100%; /* Ajusta la imagen al ancho del contenedor */
-    height: auto; /* Mantiene la proporción original de la imagen */
+    width: 70%; /* Ajusta la imagen al ancho del contenedor */
+    height: 70%; /* Mantiene la proporción original de la imagen */
     object-fit: contain; /* Asegura que la imagen no se recorte */
     border-radius: 5px; /* Bordes redondeados */
-    margin-bottom: 8px; /* Espaciado inferior */
+    margin: 0 auto 8px; /* Espaciado inferior */
 }
 
 .citas-finalizadas p {
