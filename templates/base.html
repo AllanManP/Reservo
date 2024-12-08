@@ -35,7 +35,7 @@
             <!-- Sección de cliente en la derecha del navbar -->
         <div class="navbar-client">
             <div class="navbar-client-dropdown">
-                <i class="fas fa-user-circle"></i> <!-- Ícono del cliente -->
+                <i class="fas fa-user-circle" id="menu-cliente"></i> <!-- Ícono del cliente -->
                 {% if 'cliente' in session %}
                     <!-- Si el cliente está logueado, muestra su nombre con un enlace a su perfil -->
                     <div class="dropdown-content">
@@ -87,6 +87,10 @@
         document.getElementById("menu-toggle").addEventListener("click", function() {
             var menu = document.getElementById("navbar-menu");
             menu.classList.toggle("show"); // Añade o quita la clase "show"
+        });
+        document.getElementById("menu-cliente").addEventListener("click", function() {
+            var menu = document.getElementById("navbar-client-menu");
+            menu.classList.toggle("show");
         });
     </script>
 </body>
