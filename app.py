@@ -21,9 +21,9 @@ from bson.objectid import ObjectId
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar la sesión
 
-#mongo_uri = os.getenv("MONGO_URI")
-#cliente = MongoClient(mongo_uri)
-cliente = MongoClient("mongodb+srv://allanmanriquez19:dTuYRiRENX7t8Msg@reservo.uuj9k.mongodb.net/")
+mongo_uri = os.getenv("MONGO_URI")
+cliente = MongoClient(mongo_uri)
+#cliente = MongoClient("mongodb+srv://allanmanriquez19:dTuYRiRENX7t8Msg@reservo.uuj9k.mongodb.net/")
 
 app.db=cliente.reservo
 servicios_collection = app.db['servicios']
