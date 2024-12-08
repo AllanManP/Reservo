@@ -176,7 +176,7 @@
     }
 
     .citas-finalizadas li {
-        height: 200px; /* Reducir altura en pantallas pequeñas */
+        height: 100%; /* Reducir altura en pantallas pequeñas */
     }
 
     .citas-finalizadas p {
