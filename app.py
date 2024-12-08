@@ -1154,7 +1154,7 @@ def lista_reservas():
         estilistas = list(app.db.estilistas.find())
         fecha_seleccionada = request.form.get('fecha')
         if not fecha or not estilista_id:
-            return render_template('admin_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
+            return render_template('admin_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas,estilista=estilistas)
         # Consultar citas del estilista en la fecha seleccionada
         reservas = app.db.cita.find({
             'idestilista': int(estilista_id),
