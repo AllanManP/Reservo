@@ -36,16 +36,17 @@
                                 <p>Correo: {{ reservas.cliente.email if reservas.cliente else 'No disponible' }}</p>
                                 <p>Hora de inicio: {{ reservas.hora_inicio }}</p>
                                 <p>Hora de término: {{ reservas.hora_final }}</p>
-                                <p>Comentarios: {{ reservas.comentarios }}</p>
                                 <div class="form-group">
-                                    <!-- Botón Finalizar -->
-                                    <form action="{{ url_for('finalizar_cita', id=reservas._id) }}" method="GET" style="display:inline;">
-                                        <button type="submit" class="btn-finalizar">Finalizar</button>
-                                    </form>
-                                    <!-- Botón Eliminar -->
-                                    <form action="{{ url_for('eliminar_cita', id=reservas._id) }}" method="POST" style="display:inline;">
-                                        <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
-                                    </form>
+                                    {% if reservas.estado == 'Pendiente' %}
+                                        <!-- Botón Finalizar -->
+                                        <form action="{{ url_for('finalizar_cita', id=reservas._id) }}" method="GET" style="display:inline;">
+                                            <button type="submit" class="btn-finalizar">Finalizar</button>
+                                        </form>
+                                        <!-- Botón Eliminar -->
+                                        <form action="{{ url_for('eliminar_cita', id=reservas._id) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="separator" style="border-top: 1px solid #ccc; margin: 10px 0;"></div>

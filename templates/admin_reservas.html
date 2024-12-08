@@ -47,17 +47,20 @@
                                 <p>Correo: {{ reservas.cliente.email if reservas.cliente else 'No disponible' }}</p>
                                 <p>Hora de inicio: {{ reservas.hora_inicio }}</p>
                                 <p>Hora de término: {{ reservas.hora_final }}</p>
-                                <p>Comentarios: {{ reservas.comentarios }}</p>
+                                <p>Estado: {{ reservas._id }}</p>
                                 <div class="form-group">
-                                {% if reservas.estilista and reservas.estilista.id == 1 %}
-                                    <form action="{{ url_for('finalizar_cita', id=reservas._id) }}" method="GET" style="display:inline;">
-                                        <button type="submit" class="btn-finalizar">Finalizar</button>
-                                    </form>
-                                {% endif %}
-                                <!-- Botón Eliminar -->
-                                    <form action="{{ url_for('eliminar_cita', id=reservas._id) }}" method="POST" style="display:inline;">
-                                        <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
-                                    </form>
+                                    {% if reservas.estado == 'Pendiente' %}
+                                        <!-- Botón Finalizar (solo si estilista.id == 1) -->
+                                        {% if reservas.estilista and reservas.estilista.id == 1 %}
+                                            <form action="{{ url_for('finalizar_cita', id=reservas._id) }}" method="GET" style="display:inline;">
+                                                <button type="submit" class="btn-finalizar">Finalizar</button>
+                                            </form>
+                                        {% endif %}
+                                        <!-- Botón Eliminar -->
+                                        <form action="{{ url_for('eliminar_cita', id=reservas._id) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="separator" style="border-top: 1px solid #ccc; margin: 10px 0;"></div>

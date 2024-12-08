@@ -1491,19 +1491,19 @@ def finalizar():
             flash('Cita finalizada y guardada exitosamente.', 'success')
             # Actualizar el estado de la cita original en la colección cita
             result = app.db.cita.update_one(
-                {"_id": ObjectId(idcita)},  # Filtrar por el ID de la cita
+                {"idcita": ObjectId(idcita)},  # Filtrar por el ID de la cita
                 {"$set": {"estado": "Finalizada"}}  # Actualizar el estado
             )
 
             # Verificar si la actualización fue exitosa
             if result.modified_count > 0:
-                flash('Cita finalizada y guardada exitosamente.', 'success')
+                print('Cita finalizada y guardada exitosamente.', 'success')
             else:
-                flash('Error al actualizar el estado de la cita.', 'error')
+                print('Error al actualizar el estado de la cita.', 'error')
             if 'estilista' in session and session['estilista']['rol'] == 'estilista':
-                return redirect(url_for('lista_reservas_estilista'))
+                return redirect(url_for('reservas'))
             elif 'admin' in session and session['admin']['rol'] == 'admin':
-                return redirect(url_for('lista_reservas'))
+                return redirect(url_for('admin_reservas'))
             else:
                 # Redirigir a la página de login si no hay sesión válida
                 return redirect(url_for('admin_login'))
@@ -1519,18 +1519,18 @@ def finalizar():
         # Asumiendo que el id de la cita se pasa como parámetro
         if idcita is None:
             flash('El parámetro idcita es necesario.', 'error')
-            return redirect(url_for('lista_reservas_estilista'))
+            return redirect(url_for('reservas'))
         try:
             # Intenta convertir idcita a un entero
             idcita = int(idcita)
         except ValueError:
             flash('El idcita debe ser un número válido.', 'error')
-            return redirect(url_for('lista_reservas_estilista'))
+            return redirect(url_for('reservas'))
         # Buscar la reserva en la base de datos
         reserva = app.db.reservas.find_one({"id": idcita})
         if not reserva:
             flash('Reserva no encontrada.', 'error')
-            return redirect(url_for('lista_reservas_estilista'))
+            return redirect(url_for('reservas'))
 
         # Renderizar el formulario y pasar 'reserva' al template
         return render_template('finalizar_cita.html', reserva=reserva)
@@ -1538,18 +1538,18 @@ def finalizar():
         # Asumiendo que el id de la cita se pasa como parámetro
         if idcita is None:
             flash('El parámetro idcita es necesario.', 'error')
-            return redirect(url_for('lista_reservas'))
+            return redirect(url_for('admin_reservas'))
         try:
             # Intenta convertir idcita a un entero
             idcita = int(idcita)
         except ValueError:
             flash('El idcita debe ser un número válido.', 'error')
-            return redirect(url_for('lista_reservas'))
+            return redirect(url_for('admin_reservas'))
         # Buscar la reserva en la base de datos
         reserva = app.db.reservas.find_one({"id": idcita})
         if not reserva:
             flash('Reserva no encontrada.', 'error')
-            return redirect(url_for('lista_reservas'))
+            return redirect(url_for('admin_reservas'))
 
         # Renderizar el formulario y pasar 'reserva' al template
         return render_template('finalizar_cita.html', reserva=reserva)
