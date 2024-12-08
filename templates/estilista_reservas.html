@@ -47,11 +47,11 @@
                                             <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
                                         </form>
                                     {% elif reservas.estado == 'Finalizada' %}
-                                        <p>Cita finalizada.</p>
+                                    <p style="color: #28a745;">-----Cita finalizada.-----</p>
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="separator" style="border-top: 1px solid #ccc; margin: 10px 0;"></div>
+                            <div class="separator" style="border-top: 0px solid #ccc; margin: 10px 0;"></div>
                         </div>
                     {% endfor %}
                 {% else %}
