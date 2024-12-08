@@ -24,6 +24,7 @@
         <div class="accordion">
             {% if reserva is not none %}
                 {% if reserva | length > 0 %}
+                <h1 id="selected-date-title">Citas del {{fecha_seleccionada}}</h1>
                     {% for reservas in reserva %}
                         <div class="accordion-item" id="{{ reservas._id }}">
                             <button type="button" class="accordion-header" onclick="toggleAccordion(event, '{{ reservas._id }}')">

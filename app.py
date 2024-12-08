@@ -1134,7 +1134,7 @@ def lista_reservas():
         fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
         fecha = request.form.get('fecha')
         estilistas = list(app.db.estilistas.find())
-
+        fecha_seleccionada = request.form.get('fecha')
         if not fecha or not estilista_id:
             return render_template('admin_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
         # Consultar citas del estilista en la fecha seleccionada
@@ -1161,6 +1161,7 @@ def lista_reservas():
             'admin_reservas.html',
             reserva=reservas_con_info,
             estilista=estilistas,
+            fecha_seleccionada=fecha_seleccionada,
             fechas_ocupadas=fechas_ocupadas
         )
 
