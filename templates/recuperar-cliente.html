@@ -26,15 +26,11 @@
                     <center><button type="submit" class="login__button">Continuar</button></center>
                     
                 </form>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <div class="flash-messages">
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ category }}">{{ message }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                {% endwith %}
+                {% if message %}
+                    <div class="flash-messages">
+                        <div class="alert alert-error">{{ message}}</div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

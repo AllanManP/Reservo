@@ -52,6 +52,11 @@
         <div class="add-new">
             <a href="{{ url_for('añadir_estilista') }}" class="btn-add-new">Agregar Nueva Estilista</a>
         </div>
+        {% if message %}
+            <div class="flash-messages">
+                <div class="alert alert-error">{{ message }}</div>
+            </div>
+        {% endif %}
     </section>
 </main>
 {% endblock %}

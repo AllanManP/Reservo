@@ -35,15 +35,11 @@
         </div>
     </form>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+    {% if message %}
+        <div class="flash-messages">
+            <div class="alert alert-error">{{ message }}</div>
+        </div>
+    {% endif %}
 
     <!-- Sección donde se mostrarán las reseñas -->
     <div class="reviews-list">

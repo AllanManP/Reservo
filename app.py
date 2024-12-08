@@ -54,9 +54,9 @@ def cerrar_sesion():
 def cliente():
     # Verificar si el cliente ha iniciado sesión
     if 'cliente' not in session:
-        flash('Debes iniciar sesión primero.', 'error')
-        return redirect(url_for('login'))  # Si no está en sesión, redirigir al login
-
+        message="Debes iniciar sesión primero."
+        return render_template('login.html',message)  # Si no está en sesión, redirigir al login
+    
     # Obtener los datos del cliente desde la sesión
     cliente = session['cliente']
     cliente_id = cliente['id']  # Accedemos al id del cliente desde la sesión
@@ -65,8 +65,8 @@ def cliente():
     cliente_db = app.db.clientes.find_one({"id": cliente_id})
 
     if not cliente_db:
-        flash("Cliente no encontrado.", "error")
-        return redirect(url_for('login'))  # Si no se encuentra el cliente en la base de datos, redirigir al login
+        message="Cliente no encontrado."
+        return render_template('login.html',message)  # Si no se encuentra el cliente en la base de datos, redirigir al login
     
     # Obtener las citas finalizadas del cliente desde la base de datos
     citas = app.db.cita_finalizada.find({"id_cliente": cliente_id})
@@ -74,8 +74,8 @@ def cliente():
     # Convertimos el cursor de MongoDB a una lista
     citas = list(citas)
 
-    # Renderizar la plantilla con los datos del cliente y las citas
-    return render_template('cliente.html', cliente=cliente_db, citas=citas)
+    message = request.args.get('message')  # Obtén el mensaje de los parámetros de la URL
+    return render_template('cliente.html', cliente=cliente_db, citas=citas, message=message)
 
 
 @app.route('/modificar-cliente')
@@ -93,8 +93,8 @@ def login():
         numero_cliente = request.form.get('numero_cliente', None)
         
         if not numero_cliente:
-            flash('Por favor ingresa tu número de cliente.', 'error')
-            return render_template('login.html')
+            message="Por favor ingresa tu número de cliente."
+            return render_template('login.html',message=message)
 
         # Verificar si el número de cliente existe en la base de datos MongoDB
         cliente = app.db.clientes.find_one({"id": numero_cliente})
@@ -117,8 +117,8 @@ def login():
             return redirect(url_for('reserva'))  # Redirigir a reservas si no hay una página previa
 
         else:
-            flash('Número de cliente inválido. Por favor, intente de nuevo o regístrese.', 'error')
-            return render_template('login.html')
+            message="Número de cliente inválido. Por favor, intente de nuevo o regístrese."
+            return render_template('login.html',message=message)
     
     return render_template('login.html')
 
@@ -128,7 +128,7 @@ def recuperar():
     cerrar_sesion()
     if request.method == 'POST':
         correo_cliente = request.form['correo_cliente']
-
+        
         # Verificar si el correo del cliente existe en la base de datos MongoDB
         cliente = app.db.clientes.find_one({"email": correo_cliente})
         
@@ -138,12 +138,12 @@ def recuperar():
             # Implementar la recuperación del ID
             recuperar(correo_cliente, cliente_id)
             # Redirigir a la página de login con un mensaje de éxito
-            flash('El ID de cliente ha sido enviado a tu correo electrónico.', 'success')
-            return redirect(url_for('login'))
+            message="El ID de cliente ha sido enviado a tu correo electrónico."
+            return render_template('login.html',message=message)
         else:
             # Si el cliente no existe redirigir con un mensaje de error
-            flash('Correo no encontrado. Por favor, intente de nuevo o regístrese.', 'error')
-            return redirect(url_for('recuperar'))  # Redirigir de nuevo a la página
+            message="Correo no encontrado. Por favor, intente de nuevo o regístrese."
+            return render_template('recuperar-cliente.html',message=message)  # Redirigir de nuevo a la página
         
     return render_template('recuperar-cliente.html')
 
@@ -214,11 +214,11 @@ def actualizar_cliente():
             'direccion': direccion,
             'comentarios': comentarios
         }
-        flash('Perfil actualizado con éxito.', 'success')
+        message='Perfil actualizado con éxito.'
     else:
-        flash('No se realizaron cambios en el perfil.', 'info')
+        message='No se realizaron cambios en el perfil.'
 
-    return redirect(url_for('cliente'))  # Redirigir a la página del cliente
+    return redirect(url_for('cliente',message=message))  # Redirigir a la página del cliente
 
 
 @app.route('/reserva', methods=['GET', 'POST'])
@@ -545,9 +545,9 @@ def resena():
     # Convertir ObjectId a string
     for review in reviews:
         review['_id'] = str(review['_id'])
-    
+    message = request.args.get('message')
     print(reviews)  # Depuración
-    return render_template('resena.html', reviews=reviews)
+    return render_template('resena.html', reviews=reviews,message=message)
 
 @app.route('/resena_cliente', methods=['GET'])
 def resena_cliente():
@@ -580,11 +580,10 @@ def enviar_resena():
             # Renderiza la página con las nuevas reseñas
             return redirect(url_for('resena'))
         except KeyError:
-            flash("Faltan datos en el formulario", "error")
             return redirect(url_for('resena'))
     else:
-        flash("Debes iniciar sesión para enviar una reseña.", "error")
-        return redirect(url_for('resena'))
+        message="Debes iniciar sesión para enviar una reseña."
+        return redirect(url_for('resena',message=message))
     
 from bson import ObjectId
 
@@ -602,11 +601,11 @@ def responder_resena(resena_id):
             {"_id": resena_object_id},
             {"$set": {"respuesta": respuesta}}
         )
-        flash('Respuesta añadida con éxito', 'success')
+        message='Respuesta añadida con éxito'
     else:
-        flash('Reseña no encontrada', 'danger')
+        message='Reseña no encontrada'
 
-    return redirect(url_for('resena'))
+    return redirect(url_for('resena',message=message))
 @app.route('/contacto', methods=['GET', 'POST'])
 def contacto():
     if request.method == 'POST':
@@ -851,7 +850,8 @@ def generar_disponibilidad():
 @app.route('/admin_servicios')
 def admin_servicios():
     servicios = list(servicios_collection.find())  # Recupera todos los servicios
-    return render_template('admin_servicios.html', servicios=servicios)
+    message = request.args.get('message')
+    return render_template('admin_servicios.html', servicios=servicios, message=message)
 
 
 # Ruta para modificar un servicio (mostrar formulario y actualizar)
@@ -861,7 +861,6 @@ def modificar_servicio(id):
     servicio = servicios_collection.find_one({"id": id})
     
     if not servicio:
-        flash("Servicio no encontrado.")
         return redirect(url_for('admin_servicios'))
 
     if request.method == 'POST':
@@ -890,8 +889,8 @@ def modificar_servicio(id):
                 "img_url": img_url  # Actualizar el campo de imagen
             }}
         )
-        flash("Servicio actualizado con éxito.")
-        return redirect(url_for('admin_servicios'))
+        message="Servicio actualizado con éxito."
+        return redirect(url_for('admin_servicios',message=message))
 
     return render_template('modificar_servicio.html', servicio=servicio)
 
@@ -903,11 +902,11 @@ def eliminar_servicio(id):
     servicio = servicios_collection.find_one({"_id": int(id)})
     if servicio:
         servicios_collection.delete_one({"_id": int(id)})
-        flash("Servicio eliminado con éxito.")
+        message="Servicio eliminado con éxito."
     else:
-        flash("Servicio no encontrado.")
+        message="Servicio no encontrado."
 
-    return redirect(url_for('admin_servicios'))
+    return redirect(url_for('admin_servicios',message=message))
 
 
 
@@ -922,13 +921,13 @@ def agregar_servicio():
 
         # Manejar la carga de la imagen
         if 'foto' not in request.files:
-            flash('No se ha seleccionado ninguna imagen.')
+            message='No se ha seleccionado ninguna imagen.'
             return redirect(request.url)
         
         foto = request.files['foto']
         
         if foto.filename == '':
-            flash('No se ha seleccionado ninguna imagen.')
+            message='No se ha seleccionado ninguna imagen.'
             return redirect(request.url)
 
         # Guardar la imagen en el servidor
@@ -952,8 +951,8 @@ def agregar_servicio():
             "descripcion": descripcion,
             "img_url": img_url
         })
-        flash("Servicio agregado correctamente.")
-        return redirect(url_for('admin_servicios'))  # Asegúrate de que 'admin_servicios' esté definido
+        message="Servicio agregado correctamente."
+        return redirect(url_for('admin_servicios',message=message))  # Asegúrate de que 'admin_servicios' esté definido
 
     return render_template('agregar_servicio.html')
 
@@ -963,10 +962,10 @@ def ver_servicio(id):
     # Obtener el servicio por ID
     servicio = servicios_collection.find_one({"_id": int(id)})
     if servicio is None:
-        flash("Servicio no encontrado.")
+        message="Servicio no encontrado."
         return redirect(url_for('admin_servicios'))
     
-    return render_template('ver_servicio.html', servicio=servicio)
+    return render_template('ver_servicio.html', servicio=servicio,message=message)
 
 
 #------------------------------------------------
@@ -982,7 +981,8 @@ def admin_estilistas():
         for estilista in estilistas:
             estilista['telefono'] = str(estilista['telefono'])  # Convertimos a cadena si es necesario
             lista_estilistas.append(estilista)
-        return render_template('admin_estilistas.html', estilistas=lista_estilistas)
+        message = request.args.get('message')
+        return render_template('admin_estilistas.html', estilistas=lista_estilistas,message=message)
 
 @app.route('/admin/añadir_estilista', methods=['GET', 'POST'])
 def añadir_estilista():
@@ -1100,17 +1100,14 @@ def eliminar_estilista(id):
             resultado_estilista = app.db.estilistas.delete_one({"_id": ObjectId(id)})
 
             if resultado_estilista.deleted_count > 0:
-                print("Estilista eliminado con éxito.")
-                flash('Estilista eliminado con éxito.', 'success')
+                message='Estilista eliminado con éxito.'
             else:
-                print("No se encontró ningún estilista con ese ID.")
-                flash('No se encontró ningún estilista con ese ID.', 'error')
+                message='No se encontró ningún estilista con ese ID.'
 
         else:
-            print("No se encontró ningún estilista con ese ID.")
-            flash('No se encontró ningún estilista con ese ID.', 'error')
+            message='No se encontró ningún estilista con ese ID.'
 
-        return redirect(url_for('admin_estilistas'))
+        return redirect(url_for('admin_estilistas',message=message))
     
 #------------------------------------------------
 # ADMIN_RESERVAS
@@ -1202,6 +1199,7 @@ def reservas():
 
 @app.route('/estilista/lista_reservas', methods=['GET', 'POST'])
 def lista_reservas_estilista():
+    message = request.args.get('message')
     if request.method == 'POST':
         fecha_seleccionada = request.form.get('fecha')
         estilista_id = session.get('estilista', {}).get('idestilista')
@@ -1220,7 +1218,7 @@ def lista_reservas_estilista():
             cliente_info = app.db.clientes.find_one({"id": reserva['cliente_id']})
             reserva['cliente'] = cliente_info if cliente_info else {}
         return render_template('estilista_reservas.html', reserva=lista_reservas, fecha_seleccionada=fecha_seleccionada,fechas_ocupadas=fechas_ocupadas)
-    return render_template('estilista_reservas.html', reserva=None)
+    return render_template('estilista_reservas.html', reserva=None,message=message)
 
 
 
@@ -1288,20 +1286,17 @@ def eliminar_cita(id):
             resultado_cita = app.db.cita.delete_one({"_id": ObjectId(id)})
 
             if resultado_cita.deleted_count > 0:
-                print("Cita eliminada con éxito.")
-                flash('Cita eliminada con éxito.', 'success')
+                message='Cita eliminada con éxito.'
 
                 # Enviar correo electrónico de aviso al cliente
                 if correo_cliente:
                     enviar_correo_aviso(correo_cliente, cliente.get('nombre'))  # Asegúrate de que el nombre también esté disponible
             else:
-                print("No se encontró ninguna cita con ese ID.")
-                flash('No se encontró ninguna cita con ese ID.', 'error')
+                message='No se encontró ninguna cita con ese ID.'
         else:
-            print("No se encontró ninguna cita con ese ID.")
-            flash('No se encontró ninguna cita con ese ID.', 'error')
+            message='No se encontró ninguna cita con ese ID.'
 
-        return redirect(url_for('lista_reservas_estilista'))
+        return redirect(url_for('lista_reservas_estilista',message=message))
     elif 'admin' in session and session['admin']['rol'] == 'admin':
         print(f"ID de la cita a eliminar: {id}")  # Agrega esta línea para depurar
 
@@ -1322,20 +1317,17 @@ def eliminar_cita(id):
             resultado_cita = app.db.cita.delete_one({"_id": ObjectId(id)})
 
             if resultado_cita.deleted_count > 0:
-                print("Cita eliminada con éxito.")
-                flash('Cita eliminada con éxito.', 'success')
+                message='Cita eliminada con éxito.'
 
                 # Enviar correo electrónico de aviso al cliente
                 if correo_cliente:
                     enviar_correo_aviso(correo_cliente, cliente.get('nombre'))  # Asegúrate de que el nombre también esté disponible
             else:
-                print("No se encontró ninguna cita con ese ID.")
-                flash('No se encontró ninguna cita con ese ID.', 'error')
+                message='No se encontró ninguna cita con ese ID.'
         else:
-            print("No se encontró ninguna cita con ese ID.")
-            flash('No se encontró ninguna cita con ese ID.', 'error')
+            message='No se encontró ninguna cita con ese ID.'
 
-        return redirect(url_for('admin_reservas'))
+        return redirect(url_for('admin_reservas',message=message))
     else:
             # Redirigir a la página de login si no hay sesión válida
             return redirect(url_for('admin_login'))
@@ -1352,7 +1344,6 @@ def finalizar_cita(id):
         cita = app.db.cita.find_one({"_id": ObjectId(id)})
 
         if not cita:
-            flash("Cita no encontrada.", "error")
             return redirect(url_for('lista_reservas_estilista'))
 
         # Obtener el ID del cliente
@@ -1360,7 +1351,6 @@ def finalizar_cita(id):
         idestilista = cita.get('idestilista')
 
         if not cliente_id:
-            flash("Cliente asociado a la cita no encontrado.", "error")
             return redirect(url_for('lista_reservas_estilista'))
 
         # Obtener la información del cliente
@@ -1392,7 +1382,6 @@ def finalizar_cita(id):
         cita = app.db.cita.find_one({"_id": ObjectId(id)})
 
         if not cita:
-            flash("Cita no encontrada.", "error")
             return redirect(url_for('lista_reservas'))
 
         # Obtener el ID del cliente
@@ -1400,7 +1389,6 @@ def finalizar_cita(id):
         idestilista = cita.get('idestilista')
 
         if not cliente_id:
-            flash("Cliente asociado a la cita no encontrado.", "error")
             return redirect(url_for('lista_reservas'))
 
         # Obtener la información del cliente
@@ -1474,13 +1462,13 @@ def finalizar():
 
             # Manejar la carga de la imagen
             if 'foto' not in request.files:
-                flash('No se ha seleccionado ninguna imagen.')
+                message='No se ha seleccionado ninguna imagen.'
                 return redirect(request.url)
             
             foto = request.files['foto']
             
             if foto.filename == '':
-                flash('No se ha seleccionado ninguna imagen.')
+                message='No se ha seleccionado ninguna imagen.'
                 return redirect(request.url)
 
             # Guardar la imagen en el servidor
@@ -1507,7 +1495,7 @@ def finalizar():
             print(f"Cita finalizada a guardar: {cita_finalizada}")
 
             app.db.cita_finalizada.insert_one(cita_finalizada)
-            flash('Cita finalizada y guardada exitosamente.', 'success')
+            message='Cita finalizada y guardada exitosamente.'
             # Actualizar el estado de la cita original en la colección cita
             result = app.db.cita.update_one(
                 {"idcita": ObjectId(idcita)},  # Filtrar por el ID de la cita
@@ -1520,16 +1508,15 @@ def finalizar():
             else:
                 print('Error al actualizar el estado de la cita.', 'error')
             if 'estilista' in session and session['estilista']['rol'] == 'estilista':
-                return redirect(url_for('reservas'))
+                return redirect(url_for('reservas',message=message))
             elif 'admin' in session and session['admin']['rol'] == 'admin':
-                return redirect(url_for('admin_reservas'))
+                return redirect(url_for('admin_reservas',message=message))
             else:
                 # Redirigir a la página de login si no hay sesión válida
                 return redirect(url_for('admin_login'))
             
             
         except Exception as e:
-            flash(f'Ocurrió un error al guardar los datos: {e}', 'error')
             return redirect(request.url)
     
     # Si el método es GET, obtén la reserva desde la base de datos
@@ -1537,18 +1524,15 @@ def finalizar():
     if 'estilista' in session and session['estilista']['rol'] == 'estilista':
         # Asumiendo que el id de la cita se pasa como parámetro
         if idcita is None:
-            flash('El parámetro idcita es necesario.', 'error')
             return redirect(url_for('reservas'))
         try:
             # Intenta convertir idcita a un entero
             idcita = int(idcita)
         except ValueError:
-            flash('El idcita debe ser un número válido.', 'error')
             return redirect(url_for('reservas'))
         # Buscar la reserva en la base de datos
         reserva = app.db.reservas.find_one({"id": idcita})
         if not reserva:
-            flash('Reserva no encontrada.', 'error')
             return redirect(url_for('reservas'))
 
         # Renderizar el formulario y pasar 'reserva' al template
@@ -1556,18 +1540,15 @@ def finalizar():
     elif 'admin' in session and session['admin']['rol'] == 'admin':
         # Asumiendo que el id de la cita se pasa como parámetro
         if idcita is None:
-            flash('El parámetro idcita es necesario.', 'error')
             return redirect(url_for('admin_reservas'))
         try:
             # Intenta convertir idcita a un entero
             idcita = int(idcita)
         except ValueError:
-            flash('El idcita debe ser un número válido.', 'error')
             return redirect(url_for('admin_reservas'))
         # Buscar la reserva en la base de datos
         reserva = app.db.reservas.find_one({"id": idcita})
         if not reserva:
-            flash('Reserva no encontrada.', 'error')
             return redirect(url_for('admin_reservas'))
 
         # Renderizar el formulario y pasar 'reserva' al template
