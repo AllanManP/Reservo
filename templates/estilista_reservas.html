@@ -10,7 +10,7 @@
 {% block content %}
 <main>
     <div class="container mt-5">
-        <h1>Ver Citas del Estilista</h1>
+        <h1 class="title">Ver Citas del Estilista</h1>
 
         <!-- Calendario -->
         <div id="calendar" ></div>
@@ -21,9 +21,9 @@
             <button type="submit" class="btn btn-primary">Ver Citas</button>
         </form>
 
-        <div class="accordion">
-            {% if reserva is not none %}
-                {% if reserva | length > 0 %}
+        {% if reserva is not none %}
+            {% if reserva | length > 0 %}
+                <div class="accordion">
                 <h1 id="selected-date-title">Citas del {{fecha_seleccionada}}</h1>
                     {% for reservas in reserva %}
                         <div class="accordion-item" id="{{ reservas._id }}">
@@ -57,8 +57,8 @@
                 {% else %}
                     <p>No hay citas disponibles para el estilista seleccionado en esta fecha.</p>
                 {% endif %}
+                </div>
             {% endif %}
-        </div>
         
 
     </div>

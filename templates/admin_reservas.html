@@ -1,6 +1,6 @@
 {% extends "admin_base.html" %}
 
-{% block title %}Agregar Estilista{% endblock %}
+{% block title %}Ver citas{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_reservas.css') }}">
@@ -9,12 +9,12 @@
 
 {% block content %}
 <main>
-    <div class="container mt-5">
-        <h1>Ver Citas del Estilista</h1>
+    <div>
+        <h1 class="title">Ver Citas del Estilista</h1>
     
         <!-- Formulario -->
         <form id="formCitas" class="mb-4" action="/admin/lista_reservas" method="POST">
-            <div class="mb-3">
+            <div class="form-group">
                 <label for="estilistaSelector" class="form-label">Estilista</label>
                 <select class="form-control" id="estilistaSelector" name="estilista_id" required>
                     <option value="">Seleccione un estilista</option>
@@ -23,17 +23,17 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="mb-3">
-                <label for="fecha" class="form-label">Fecha</label>
+            <div>
+                <label for="fecha" class="form-label"></label>
                 <input type="hidden" id="hiddenFecha" name="fecha" >
             </div>
             <!-- Calendario -->
         <div id="calendar"></div>
             <button type="submit" class="btn btn-primary">Ver Citas</button>
         </form>
-        <div class="accordion">
-            {% if reserva is not none %}
-                {% if reserva | length > 0 %}
+        {% if reserva is not none %}
+            {% if reserva | length > 0 %}
+                <div class="accordion">
                 <h1 id="selected-date-title">Citas del {{ fecha_seleccionada }}</h1>
                 {% for reservas in reserva %}
                         <div class="accordion-item" id="{{ reservas._id }}">
@@ -60,7 +60,7 @@
                                             <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar cita</button>
                                         </form>
                                     {% elif reservas.estado == 'Finalizada' %}
-                                        <p>Cita finalizada.</p>
+                                        <p style="color: #28a745;">-----Cita finalizada.-----</p>
                                     {% endif %}
                                 </div>
                             </div>
@@ -70,8 +70,8 @@
                 {% else %}
                     <p>No hay citas disponibles para el estilista seleccionado en esta fecha.</p>
                 {% endif %}
+            </div>
             {% endif %}
-        </div>
         
     
         
