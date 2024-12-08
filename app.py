@@ -756,6 +756,7 @@ def generar_disponibilidad_estilista():
     if 'estilista' not in session or session['estilista']['rol'] != 'estilista':
         return redirect(url_for('admin_login'))
     else:
+        
         estilistas = list(app.db.estilistas.find())
         return render_template('generar_disponibilidad.html', estilista=estilistas)
 
@@ -781,15 +782,24 @@ def generar_disponibilidad():
                 horas_disponibles.append(hora_actual.time().strftime('%H:%M'))
                 hora_actual += timedelta(hours=1)  # Incrementar por horas completas
 
-            # Insertar las horas disponibles en la colección 'disponibilidad' en MongoDB
-            for hora in horas_disponibles:
-                app.db.disponibilidad.insert_one({
-                    "estilista_id": estilista_id,
-                    "fecha": fecha,
-                    "hora": hora
-                })
-            estilistas = list(app.db.estilistas.find())
-            return render_template('generar_disponibilidad.html', estilista=estilistas)
+            # Comprobar que no exista fecha y estilista_id en la colección 'disponibilidad' en MongoDB
+            if app.db.disponibilidad.find_one({
+                "estilista_id": estilista_id,
+                "fecha": fecha
+            }):
+                estilistas = list(app.db.estilistas.find())
+                return render_template('generar_disponibilidad.html', estilista=estilistas, error="La fecha y hora seleccionada ya están ocupadas.")
+            else:
+                # Comprobar que la disponibilidad del estilista no superponga con otras horas en la misma fecha
+                # Insertar las horas disponibles en la colección 'disponibilidad' en MongoDB
+                for hora in horas_disponibles:
+                    app.db.disponibilidad.insert_one({
+                        "estilista_id": estilista_id,
+                        "fecha": fecha,
+                        "hora": hora
+                    })
+                estilistas = list(app.db.estilistas.find())
+                return render_template('generar_disponibilidad.html', estilista=estilistas, success="Fecha y Horas agregadas a disponibilidad")
         estilistas = list(app.db.estilistas.find())
         return render_template('generar_disponibilidad.html', estilista=estilistas)
 
@@ -813,16 +823,24 @@ def generar_disponibilidad():
                 horas_disponibles.append(hora_actual.time().strftime('%H:%M'))
                 hora_actual += timedelta(hours=1)  # Incrementar por horas completas
 
-            # Insertar las horas disponibles en la colección 'disponibilidad' en MongoDB
-            for hora in horas_disponibles:
-                app.db.disponibilidad.insert_one({
-                    "estilista_id": estilista_id,
-                    "fecha": fecha,
-                    "hora": hora
-                })
-
-            # Redirigir a una página de confirmación o a otra página
-            return redirect(url_for('generar_disponibilidad'))
+            # Comprobar que no exista fecha y estilista_id en la colección 'disponibilidad' en MongoDB
+            if app.db.disponibilidad.find_one({
+                "estilista_id": estilista_id,
+                "fecha": fecha
+            }):
+                estilistas = list(app.db.estilistas.find())
+                return render_template('generar_disponibilidad.html', estilista=estilistas, error="La fecha y hora seleccionada ya están ocupadas.")
+            else:
+                # Insertar las horas disponibles en la colección 'disponibilidad' en MongoDB
+                for hora in horas_disponibles:
+                    app.db.disponibilidad.insert_one({
+                        "estilista_id": estilista_id,
+                        "fecha": fecha,
+                        "hora": hora
+                    })
+                estilistas = list(app.db.estilistas.find())
+                # Redirigir a una página de confirmación o a otra página
+                return render_template('generar_disponibilidad.html', estilista=estilistas, success="Fecha y Horas agregadas a disponibilidad")
 
         return render_template('generar_disponibilidad.html')
     

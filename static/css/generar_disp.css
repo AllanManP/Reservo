@@ -9,7 +9,12 @@
     padding: 20px; /* Ajuste de padding para adaptarse al tamaño más pequeño */
     margin: 0 auto; /* Centra el contenedor horizontalmente */
 }
-
+.alert{
+    color: red !important;
+}
+.success{
+    color: green !important;
+}
 .dispo_box {
     display: flex;
     flex-direction: column; /* Para mantener los elementos en una sola columna */
