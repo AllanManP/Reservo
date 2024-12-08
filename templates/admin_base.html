@@ -48,7 +48,7 @@
 
         <div class="navbar-client">
             <div class="navbar-client-dropdown">
-                <i class="fas fa-user-circle" id="menu-cliente"></i> <!-- Ícono del cliente -->
+                <i class="fas fa-user-circle"></i> <!-- Ícono del cliente -->
                 <div class="dropdown-content">
                     <ul id="navbar-client-menu">
                         {% if session['admin'] %}
@@ -88,23 +88,18 @@
     </footer>
 
     <script>
-    // Mostrar/ocultar el menú del cliente al hacer clic en el icono
-    document.getElementById("menu-cliente").addEventListener("click", function(event) {
-        var menu = document.getElementById("navbar-client-menu");
-        menu.classList.toggle("show");
-        event.stopPropagation(); // Evitar que el clic en el icono cierre el menú
-    });
-
-    // Cerrar el menú al hacer clic fuera de él
-    document.addEventListener("click", function(event) {
-        var menu = document.getElementById("navbar-client-menu");
-        var menuIcon = document.getElementById("menu-cliente");
-
-        // Si el clic no es en el menú ni en el icono, ocultar el menú
-        if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
-            menu.classList.remove("show");
-        }
-    });
+        document.getElementById("menu-toggle").addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.getElementById("navbar-menu").classList.toggle("show");
+        });
+        document.getElementById("menu-cliente").addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.getElementById("navbar-client-menu").classList.toggle("show");
+        });
+        document.addEventListener("click", () => {
+            document.getElementById("navbar-menu").classList.remove("show");
+            document.getElementById("navbar-client-menu").classList.remove("show");
+        });
     </script>
 </body>
 </html>

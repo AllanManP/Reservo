@@ -37,12 +37,6 @@ body {
     align-items: center;
 }
 
-#navbar-client-menu {
-    display: none;
-}
-#navbar-client-menu.show {
-    display: block;
-}
 
 .navbar.fixed {
     top: 0;
