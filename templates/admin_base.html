@@ -88,14 +88,23 @@
     </footer>
 
     <script>
-        document.getElementById("menu-toggle").addEventListener("click", function() {
-            var menu = document.getElementById("navbar-menu");
-            menu.classList.toggle("show");
-        });
-        document.getElementById("menu-cliente").addEventListener("click", function() {
-            var menu = document.getElementById("navbar-client-menu");
-            menu.classList.toggle("show");
-        });
+    // Mostrar/ocultar el menú del cliente al hacer clic en el icono
+    document.getElementById("menu-cliente").addEventListener("click", function(event) {
+        var menu = document.getElementById("navbar-client-menu");
+        menu.classList.toggle("show");
+        event.stopPropagation(); // Evitar que el clic en el icono cierre el menú
+    });
+
+    // Cerrar el menú al hacer clic fuera de él
+    document.addEventListener("click", function(event) {
+        var menu = document.getElementById("navbar-client-menu");
+        var menuIcon = document.getElementById("menu-cliente");
+
+        // Si el clic no es en el menú ni en el icono, ocultar el menú
+        if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+            menu.classList.remove("show");
+        }
+    });
     </script>
 </body>
 </html>
