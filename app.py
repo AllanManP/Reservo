@@ -21,9 +21,9 @@ from bson.objectid import ObjectId
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar la sesión
 
-mongo_uri = os.getenv("MONGO_URI")
-cliente = MongoClient(mongo_uri)
-#cliente = MongoClient("mongodb+srv://allanmanriquez19:dTuYRiRENX7t8Msg@reservo.uuj9k.mongodb.net/")
+#mongo_uri = os.getenv("MONGO_URI")
+#cliente = MongoClient(mongo_uri)
+cliente = MongoClient("mongodb+srv://allanmanriquez19:dTuYRiRENX7t8Msg@reservo.uuj9k.mongodb.net/")
 
 app.db=cliente.reservo
 servicios_collection = app.db['servicios']
@@ -1105,15 +1105,7 @@ def admin_reservas():
     else:
         # Obtener todos los estilistas
         estilistas = list(app.db.estilistas.find())
-        
-        # Verificar si hay estilistas disponibles
-        if estilistas:
-            primer_estilista_id = estilistas[0]['_id']  # Obtener el ID del primer estilista
-        else:
-            primer_estilista_id = None
-        
-        # Pasar el ID del primer estilista a la función
-        fechas_ocupadas = obtener_todas_fechas_ocupadas()
+        fechas_ocupadas=obtener_todas_fechas_ocupadas()
         
         return render_template(
             'admin_reservas.html',
@@ -1123,28 +1115,28 @@ def admin_reservas():
         )
 
 
-@app.route('/admin/get_fechas_ocupadas', methods=['GET'])
-def get_fechas_ocupadas():
-    estilista_id = request.args.get('estilista_id')
-    if not estilista_id:
-        return jsonify({"error": "ID del estilista no proporcionado"}), 400
-
-    # Llamar a la función que obtiene las fechas ocupadas
-    fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
-    return jsonify({"fechas_ocupadas": fechas_ocupadas})
+@app.route('/admin/actualizar_fechas',methods=['GET'])
+def actualizar_fechas():
+    estilista_id=request.args.get('estilista_id')
+    if estilista_id:
+        fechas_ocupadas=obtener_fechas_ocupadas(estilista_id)
+    else:
+        fechas_ocupadas=obtener_todas_fechas_ocupadas()
+    return jsonify(fechas_ocupadas)
 
 @app.route('/admin/lista_reservas', methods=['GET', 'POST'])
 def lista_reservas():
     estilista_id = request.args.get('estilista_id')
-    fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
 
     if request.method == 'POST':
         estilista_id = request.form.get('estilista_id')
+        
+        fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)
         fecha = request.form.get('fecha')
         estilistas = list(app.db.estilistas.find())
 
         if not fecha or not estilista_id:
-            return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
+            return render_template('admin_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
         # Consultar citas del estilista en la fecha seleccionada
         reservas = app.db.cita.find({
             'idestilista': int(estilista_id),
@@ -1169,12 +1161,12 @@ def lista_reservas():
             'admin_reservas.html',
             reserva=reservas_con_info,
             estilista=estilistas,
-            fechas_ocupadas=fechas_ocupadas or []  # Evita errores al ser None
+            fechas_ocupadas=fechas_ocupadas
         )
 
     estilistas = list(app.db.estilistas.find())
     
-    return render_template('admin_reservas.html', reserva=None, estilista=estilistas, fechas_ocupadas=fechas_ocupadas)
+    return render_template('admin_reservas.html', reserva=None, estilista=estilistas)
 
 
 
@@ -1185,47 +1177,37 @@ def lista_reservas():
 
 @app.route('/estilista_reservas', methods=['GET'])
 def reservas():
-    fechas_ocupadas = obtener_todas_fechas_ocupadas()  # Obtener fechas ocupadas 
+    estilista_id = session.get('estilista', {}).get('idestilista')
+    fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)  # Obtener fechas ocupadas 
     return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
 
 @app.route('/estilista/lista_reservas', methods=['GET', 'POST'])
 def lista_reservas_estilista():
-    
-    fechas_ocupadas = obtener_todas_fechas_ocupadas()  # Obtener fechas ocupadas
-    
     if request.method == 'POST':
         fecha_seleccionada = request.form.get('fecha')
         estilista_id = session.get('estilista', {}).get('idestilista')
-
+        fechas_ocupadas = obtener_fechas_ocupadas(estilista_id)  # Obtener fechas ocupadas
         if not fecha_seleccionada or not estilista_id:
             return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
-
-
         # Obtener las reservas para el estilista y la fecha seleccionada
         reservas = app.db.cita.find({
             'idestilista': estilista_id,
             'fecha': fecha_seleccionada
         })
-        
         # Convertir reservas a lista
         lista_reservas = list(reservas)
-
         # Serializar reservas (incluyendo información del cliente)
         for reserva in lista_reservas:
             cliente_info = app.db.clientes.find_one({"id": reserva['cliente_id']})
             reserva['cliente'] = cliente_info if cliente_info else {}
-
         return render_template('estilista_reservas.html', reserva=lista_reservas, fecha_seleccionada=fecha_seleccionada,fechas_ocupadas=fechas_ocupadas)
-
-    return render_template('estilista_reservas.html', reserva=None, fechas_ocupadas=fechas_ocupadas)
+    return render_template('estilista_reservas.html', reserva=None)
 
 
 
 def obtener_fechas_ocupadas(estilista_id):
-    
     # Filtrar citas por el ID del estilista
-    citas = app.db.cita.find({'id': estilista_id})
-    
+    citas = app.db.cita.find({'idestilista': int(estilista_id)})
     fechas_ocupadas = []
     for cita in citas:
         # Convertir la fecha a un objeto datetime si es necesario
@@ -1235,7 +1217,10 @@ def obtener_fechas_ocupadas(estilista_id):
             fecha_obj = cita['fecha']
 
         # Convertir la fecha al formato requerido y añadirla a la lista
-        fechas_ocupadas.append(fecha_obj.strftime('%Y-%m-%d'))
+        fechas_ocupadas.append({
+            'fecha': fecha_obj.strftime('%Y-%m-%d'),
+            'estado': cita.get('estado','Pendiente')
+        })
 
     return fechas_ocupadas
 
@@ -1253,7 +1238,10 @@ def obtener_todas_fechas_ocupadas():
             fecha_obj = cita['fecha']
 
         # Convertir la fecha al formato requerido y añadirla a la lista
-        fechas_ocupadas.append(fecha_obj.strftime('%Y-%m-%d'))
+        fechas_ocupadas.append({
+            'fecha': fecha_obj.strftime('%Y-%m-%d'),
+            'estado': cita.get('estado','Pendiente')
+        })
 
     return fechas_ocupadas
 
@@ -1261,91 +1249,169 @@ def obtener_todas_fechas_ocupadas():
 
 @app.route('/estilista/eliminar_cita/<id>', methods=['POST'])
 def eliminar_cita(id):
-    # Verifica que solo los estilistas puedan acceder a esta función
-    if 'estilista' not in session or session['estilista']['rol'] != 'estilista':
-        return redirect(url_for('admin_login'))
+    if 'estilista' in session and session['estilista']['rol'] == 'estilista':
+        print(f"ID de la cita a eliminar: {id}")  # Agrega esta línea para depurar
 
-    print(f"ID de la cita a eliminar: {id}")  # Agrega esta línea para depurar
+        # Buscar la cita en la base de datos
+        cita = app.db.cita.find_one({"_id": ObjectId(id)})
 
-    # Buscar la cita en la base de datos
-    cita = app.db.cita.find_one({"_id": ObjectId(id)})
+        if cita:
+            # Obtener el ID del cliente
+            cliente_id = cita.get('cliente_id')  # Asegúrate de que este campo existe en tu documento
 
-    if cita:
-        # Obtener el ID del cliente
-        cliente_id = cita.get('cliente_id')  # Asegúrate de que este campo existe en tu documento
+            # Buscar el correo del cliente en la colección de clientes
+            cliente = app.db.clientes.find_one({"id": cliente_id})  # Ajusta el campo según tu esquema
 
-        # Buscar el correo del cliente en la colección de clientes
-        cliente = app.db.clientes.find_one({"id": cliente_id})  # Ajusta el campo según tu esquema
+            # Extraer el correo del cliente
+            correo_cliente = cliente.get('email') if cliente else None
 
-        # Extraer el correo del cliente
-        correo_cliente = cliente.get('email') if cliente else None
+            # Eliminar la cita usando su ObjectId
+            resultado_cita = app.db.cita.delete_one({"_id": ObjectId(id)})
 
-        # Eliminar la cita usando su ObjectId
-        resultado_cita = app.db.cita.delete_one({"_id": ObjectId(id)})
+            if resultado_cita.deleted_count > 0:
+                print("Cita eliminada con éxito.")
+                flash('Cita eliminada con éxito.', 'success')
 
-        if resultado_cita.deleted_count > 0:
-            print("Cita eliminada con éxito.")
-            flash('Cita eliminada con éxito.', 'success')
-
-            # Enviar correo electrónico de aviso al cliente
-            if correo_cliente:
-                enviar_correo_aviso(correo_cliente, cliente.get('nombre'))  # Asegúrate de que el nombre también esté disponible
+                # Enviar correo electrónico de aviso al cliente
+                if correo_cliente:
+                    enviar_correo_aviso(correo_cliente, cliente.get('nombre'))  # Asegúrate de que el nombre también esté disponible
+            else:
+                print("No se encontró ninguna cita con ese ID.")
+                flash('No se encontró ninguna cita con ese ID.', 'error')
         else:
             print("No se encontró ninguna cita con ese ID.")
             flash('No se encontró ninguna cita con ese ID.', 'error')
-    else:
-        print("No se encontró ninguna cita con ese ID.")
-        flash('No se encontró ninguna cita con ese ID.', 'error')
 
-    return redirect(url_for('lista_reservas_estilista'))
+        return redirect(url_for('lista_reservas_estilista'))
+    elif 'admin' in session and session['admin']['rol'] == 'admin':
+        print(f"ID de la cita a eliminar: {id}")  # Agrega esta línea para depurar
+
+        # Buscar la cita en la base de datos
+        cita = app.db.cita.find_one({"_id": ObjectId(id)})
+
+        if cita:
+            # Obtener el ID del cliente
+            cliente_id = cita.get('cliente_id')  # Asegúrate de que este campo existe en tu documento
+
+            # Buscar el correo del cliente en la colección de clientes
+            cliente = app.db.clientes.find_one({"id": cliente_id})  # Ajusta el campo según tu esquema
+
+            # Extraer el correo del cliente
+            correo_cliente = cliente.get('email') if cliente else None
+
+            # Eliminar la cita usando su ObjectId
+            resultado_cita = app.db.cita.delete_one({"_id": ObjectId(id)})
+
+            if resultado_cita.deleted_count > 0:
+                print("Cita eliminada con éxito.")
+                flash('Cita eliminada con éxito.', 'success')
+
+                # Enviar correo electrónico de aviso al cliente
+                if correo_cliente:
+                    enviar_correo_aviso(correo_cliente, cliente.get('nombre'))  # Asegúrate de que el nombre también esté disponible
+            else:
+                print("No se encontró ninguna cita con ese ID.")
+                flash('No se encontró ninguna cita con ese ID.', 'error')
+        else:
+            print("No se encontró ninguna cita con ese ID.")
+            flash('No se encontró ninguna cita con ese ID.', 'error')
+
+        return redirect(url_for('admin_reservas'))
+    else:
+            # Redirigir a la página de login si no hay sesión válida
+            return redirect(url_for('admin_login'))
+    
 
 
 
 
 @app.route('/estilista/finalizar_cita/<id>', methods=['GET'])
 def finalizar_cita(id):
-    # Verifica que solo los estilistas puedan acceder a esta función
-    if 'estilista' not in session or session['estilista']['rol'] != 'estilista':
-        return redirect(url_for('admin_login'))
+    if 'estilista' in session and session['estilista']['rol'] == 'estilista':
+            
+        # Buscar la cita en la base de datos
+        cita = app.db.cita.find_one({"_id": ObjectId(id)})
 
-    # Buscar la cita en la base de datos
-    cita = app.db.cita.find_one({"_id": ObjectId(id)})
+        if not cita:
+            flash("Cita no encontrada.", "error")
+            return redirect(url_for('lista_reservas_estilista'))
 
-    if not cita:
-        flash("Cita no encontrada.", "error")
-        return redirect(url_for('lista_reservas_estilista'))
+        # Obtener el ID del cliente
+        cliente_id = cita.get('cliente_id')
+        idestilista = cita.get('idestilista')
 
-    # Obtener el ID del cliente
-    cliente_id = cita.get('cliente_id')
-    idestilista = cita.get('idestilista')
+        if not cliente_id:
+            flash("Cliente asociado a la cita no encontrado.", "error")
+            return redirect(url_for('lista_reservas_estilista'))
 
-    if not cliente_id:
-        flash("Cliente asociado a la cita no encontrado.", "error")
-        return redirect(url_for('lista_reservas_estilista'))
+        # Obtener la información del cliente
+        cliente_info = app.db.clientes.find_one({"id": cliente_id})
 
-    # Obtener la información del cliente
-    cliente_info = app.db.clientes.find_one({"id": cliente_id})
+        # Obtener la información del cliente
+        estilista_info = app.db.estilistas.find_one({"id": idestilista})    
 
-    # Obtener la información del cliente
-    estilista_info = app.db.estilistas.find_one({"id": idestilista})    
+        # Obtener información adicional de la cita, como servicio, fecha, horas, etc.
+        servicio = cita.get('servicio', 'No disponible')
+        fecha = cita.get('fecha', 'No disponible')
+        hora_inicio = cita.get('hora_inicio', 'No disponible')
+        hora_final = cita.get('hora_final', 'No disponible')
 
-    # Obtener información adicional de la cita, como servicio, fecha, horas, etc.
-    servicio = cita.get('servicio', 'No disponible')
-    fecha = cita.get('fecha', 'No disponible')
-    hora_inicio = cita.get('hora_inicio', 'No disponible')
-    hora_final = cita.get('hora_final', 'No disponible')
+        # Redirigir al HTML `finalizar_cita.html` con los datos necesarios
+        return render_template('finalizar_cita.html',
+                            reserva=cita, 
+                            cita_id=id, 
+                            cliente_id=cliente_id, 
+                            cliente_info=cliente_info,
+                            estilista_info=estilista_info, 
+                            servicio=servicio, 
+                            fecha=fecha, 
+                            hora_inicio=hora_inicio, 
+                            hora_final=hora_final)
+    elif 'admin' in session and session['admin']['rol'] == 'admin':
 
-    # Redirigir al HTML `finalizar_cita.html` con los datos necesarios
-    return render_template('finalizar_cita.html',
-                           reserva=cita, 
-                           cita_id=id, 
-                           cliente_id=cliente_id, 
-                           cliente_info=cliente_info,
-                           estilista_info=estilista_info, 
-                           servicio=servicio, 
-                           fecha=fecha, 
-                           hora_inicio=hora_inicio, 
-                           hora_final=hora_final)
+        # Buscar la cita en la base de datos
+        cita = app.db.cita.find_one({"_id": ObjectId(id)})
+
+        if not cita:
+            flash("Cita no encontrada.", "error")
+            return redirect(url_for('lista_reservas'))
+
+        # Obtener el ID del cliente
+        cliente_id = cita.get('cliente_id')
+        idestilista = cita.get('idestilista')
+
+        if not cliente_id:
+            flash("Cliente asociado a la cita no encontrado.", "error")
+            return redirect(url_for('lista_reservas'))
+
+        # Obtener la información del cliente
+        cliente_info = app.db.clientes.find_one({"id": cliente_id})
+
+        # Obtener la información del cliente
+        estilista_info = app.db.estilistas.find_one({"id": idestilista})    
+
+        # Obtener información adicional de la cita, como servicio, fecha, horas, etc.
+        servicio = cita.get('servicio', 'No disponible')
+        fecha = cita.get('fecha', 'No disponible')
+        hora_inicio = cita.get('hora_inicio', 'No disponible')
+        hora_final = cita.get('hora_final', 'No disponible')
+
+        # Redirigir al HTML `finalizar_cita.html` con los datos necesarios
+        return render_template('finalizar_cita.html',
+                            reserva=cita, 
+                            cita_id=id, 
+                            cliente_id=cliente_id, 
+                            cliente_info=cliente_info,
+                            estilista_info=estilista_info, 
+                            servicio=servicio, 
+                            fecha=fecha, 
+                            hora_inicio=hora_inicio, 
+                            hora_final=hora_final)
+    else:
+            # Redirigir a la página de login si no hay sesión válida
+            return redirect(url_for('admin_login'))
+   
+
 
 
 import os
@@ -1367,9 +1433,6 @@ def allowed_file(filename):
 
 @app.route('/finalizar', methods=['GET', 'POST'])
 def finalizar():
-    if 'estilista' not in session or session['estilista']['rol'] != 'estilista':
-        return redirect(url_for('admin_login'))
-
     if request.method == 'POST':
         try:
             # Captura de los datos del formulario
@@ -1437,36 +1500,63 @@ def finalizar():
                 flash('Cita finalizada y guardada exitosamente.', 'success')
             else:
                 flash('Error al actualizar el estado de la cita.', 'error')
-
-            return redirect(url_for('lista_reservas_estilista'))
+            if 'estilista' in session and session['estilista']['rol'] == 'estilista':
+                return redirect(url_for('lista_reservas_estilista'))
+            elif 'admin' in session and session['admin']['rol'] == 'admin':
+                return redirect(url_for('lista_reservas'))
+            else:
+                # Redirigir a la página de login si no hay sesión válida
+                return redirect(url_for('admin_login'))
+            
             
         except Exception as e:
             flash(f'Ocurrió un error al guardar los datos: {e}', 'error')
             return redirect(request.url)
     
     # Si el método es GET, obtén la reserva desde la base de datos
-    idcita = request.args.get('idcita')  # Asumiendo que el id de la cita se pasa como parámetro
+    idcita = request.args.get('idcita')
+    if 'estilista' in session and session['estilista']['rol'] == 'estilista':
+        # Asumiendo que el id de la cita se pasa como parámetro
+        if idcita is None:
+            flash('El parámetro idcita es necesario.', 'error')
+            return redirect(url_for('lista_reservas_estilista'))
+        try:
+            # Intenta convertir idcita a un entero
+            idcita = int(idcita)
+        except ValueError:
+            flash('El idcita debe ser un número válido.', 'error')
+            return redirect(url_for('lista_reservas_estilista'))
+        # Buscar la reserva en la base de datos
+        reserva = app.db.reservas.find_one({"id": idcita})
+        if not reserva:
+            flash('Reserva no encontrada.', 'error')
+            return redirect(url_for('lista_reservas_estilista'))
 
-    if idcita is None:
-        flash('El parámetro idcita es necesario.', 'error')
-        return redirect(url_for('lista_reservas_estilista'))
+        # Renderizar el formulario y pasar 'reserva' al template
+        return render_template('finalizar_cita.html', reserva=reserva)
+    elif 'admin' in session and session['admin']['rol'] == 'admin':
+        # Asumiendo que el id de la cita se pasa como parámetro
+        if idcita is None:
+            flash('El parámetro idcita es necesario.', 'error')
+            return redirect(url_for('lista_reservas'))
+        try:
+            # Intenta convertir idcita a un entero
+            idcita = int(idcita)
+        except ValueError:
+            flash('El idcita debe ser un número válido.', 'error')
+            return redirect(url_for('lista_reservas'))
+        # Buscar la reserva en la base de datos
+        reserva = app.db.reservas.find_one({"id": idcita})
+        if not reserva:
+            flash('Reserva no encontrada.', 'error')
+            return redirect(url_for('lista_reservas'))
 
-    try:
-        # Intenta convertir idcita a un entero
-        idcita = int(idcita)
-    except ValueError:
-        flash('El idcita debe ser un número válido.', 'error')
-        return redirect(url_for('lista_reservas_estilista'))
+        # Renderizar el formulario y pasar 'reserva' al template
+        return render_template('finalizar_cita.html', reserva=reserva)
+    else:
+        # Redirigir a la página de login si no hay sesión válida
+        return redirect(url_for('admin_login'))
     
-    # Buscar la reserva en la base de datos
-    reserva = app.db.reservas.find_one({"id": idcita})
-
-    if not reserva:
-        flash('Reserva no encontrada.', 'error')
-        return redirect(url_for('lista_reservas_estilista'))
-
-    # Renderizar el formulario y pasar 'reserva' al template
-    return render_template('finalizar_cita.html', reserva=reserva)
 
 
 

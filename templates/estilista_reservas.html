@@ -65,40 +65,53 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var fechasReservadas = {{ fechas_ocupadas | tojson }}; // Fechas ocupadas en formato JSON
-    var fechaActual = new Date().toISOString().split('T')[0]; // Obtén la fecha actual en formato YYYY-MM-DD
-
-    // Convierte fechas ocupadas en eventos con colores según los criterios
-    var eventosReservados = fechasReservadas.map(fecha => {
-        let color;
-        if (fecha === fechaActual) {
-            color = '#ffc107'; // Amarillo para la fecha actual
-        } else if (fecha > fechaActual) {
-            color = '#dc3545'; // Rojo para fechas futuras
-        } else {
-            color = '#28a745'; // Verde para fechas pasadas
-        }
-
-        return {
-            title: '', // Sin título para que solo aparezca el color
-            start: fecha,
-            display: 'background', // Muestra el evento como fondo del día
-            color: color
-        };
-    });
-    
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            selectable: true,
-            events: eventosReservados, // Agregar eventos reservados como fondo
-            dateClick: function(info) {
-                document.getElementById('hiddenFecha').value = info.dateStr;
-                highlightSelectedDate(info.dateStr);
+        var calendarEl = document.getElementById('calendar');
+            var fechasReservadas = {{ fechas_ocupadas | tojson }}; // Fechas iniciales del primer estilista
+            var calendar = null;
+        
+            function renderCalendar(events) {
+                if (calendar) {
+                    calendar.destroy(); // Destruir calendario anterior si ya existe
+                }
+        
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    selectable: true,
+                    events: events,
+                    dateClick: function(info) {
+                        document.getElementById('hiddenFecha').value = info.dateStr;
+                        highlightSelectedDate(info.dateStr);
+                    }
+                });
+        
+                calendar.render();
             }
-        });
-    
-        calendar.render();
+        
+            // Convierte fechas ocupadas en eventos con colores según los criterios
+            function convertirFechasAEventos(fechas) {
+                var fechaActual = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+                return fechas.map(fecha => {
+                    let color;
+                    if (fecha.estado === 'Pendiente') {
+                        color = '#dc3545'; // Rojo
+                    } else if (fecha.estado === 'Finalizada') {
+                        color = '#28a745'; // Verde
+                    } else {
+                        color = '#ffc107'; // Amarillo o algún otro color para otros estados
+                    }
+            
+                    return {
+                        title: fecha.estado, // Mostrar el estado como título (opcional)
+                        start: fecha.fecha,
+                        display: 'background',
+                        color: color
+                    };
+                });
+            }
+        
+            // Renderizar calendario inicial con las fechas actuales
+            renderCalendar(convertirFechasAEventos(fechasReservadas));
+        
     
         function highlightSelectedDate(dateStr) {
             // Remueve la clase de selección de cualquier fecha previamente seleccionada
