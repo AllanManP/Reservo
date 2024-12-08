@@ -37,19 +37,7 @@ main {
     font-size: 16px;
 }
 
-.fbutton {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-}
 
-.fbutton:hover {
-    background-color: #45a049;
-}
 #calendar {
     max-width: 900px;
     margin: 0 auto;
