@@ -31,7 +31,7 @@
             {% if session['admin'] %}
             {% if session['admin']['rol'] == 'admin' %}
                     <li><a href="/admin_servicios">Servicios</a></li>
-                    <li><a href="/admin/reservas">Citas</a></li>
+                    <li><a href="/admin/reservas">Reserva</a></li>
                     <li><a href="/admin/estilistas">Estilistas</a></li>
                     <li><a href="/admin/generar_disponibilidad">Generar disponibilidad</a></li>
                     <li><a href="/resena">Reseñas</a></li>
@@ -46,23 +46,19 @@
             {% endif %}
         </ul>
 
-        <div class="navbar-client">
-            <div class="navbar-client-dropdown">
-                <i class="fas fa-user-circle"></i> <!-- Ícono del cliente -->
-                <div class="dropdown-content">
+        <i class="navbar-client fas fa-user-circle" id="navbar-client"></i> <!-- Ícono del cliente -->
+                
                     <ul id="navbar-client-menu">
                         {% if session['admin'] %}
-                            <li><a href="/cliente">{{ session['admin']['correo'] }}</a></li>
+                            <li><a href="#">{{ session['admin']['correo'] }}</a></li>
                             <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
                         {% endif %}
                         {% if session['estilista'] %}
-                            <li><a href="/cliente">{{ session['estilista']['correo'] }}</a></li>
+                            <li><a href="#">{{ session['estilista']['correo'] }}</a></li>
                             <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
                         {% endif %}
                     </ul>
-                </div>
-            </div>
-        </div>
+                
     </nav>
 
     <div class="content">
@@ -89,17 +85,20 @@
 
     <script>
         document.getElementById("menu-toggle").addEventListener("click", (e) => {
-        e.stopPropagation();
-        document.getElementById("navbar-menu").classList.toggle("show");
-        });
-        document.getElementById("menu-cliente").addEventListener("click", (e) => {
-        e.stopPropagation();
-        document.getElementById("navbar-client-menu").classList.toggle("show");
-        });
-        document.addEventListener("click", () => {
-            document.getElementById("navbar-menu").classList.remove("show");
-            document.getElementById("navbar-client-menu").classList.remove("show");
-        });
-    </script>
+          e.stopPropagation();
+          document.getElementById("navbar-menu").classList.toggle("show");
+          document.getElementById("navbar-client-menu").classList.remove("show");
+          });
+          document.getElementById("navbar-client").addEventListener("click", (e) => {
+              e.stopPropagation(); // Evita que el clic se propague al documento
+              const clientMenu = document.getElementById("navbar-client-menu");
+              clientMenu.classList.toggle("show");
+              document.getElementById("navbar-menu").classList.remove("show");
+          });
+          document.addEventListener("click", () => {
+              document.getElementById("navbar-menu").classList.remove("show");
+              document.getElementById("navbar-client-menu").classList.remove("show");
+          });  
+      </script>
 </body>
 </html>
