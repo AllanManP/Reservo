@@ -8,16 +8,66 @@
 
 {% block content %}
 <div class="container">
-    <h1>Dashboard - Información de Negocio</h1>
+    <h1 class="titulo">Dashboard - Información de Negocio</h1>
     <br><hr>
-    <h1>Suma de Montos Finales</h1>
-    <center><p>Total de monto final: ${{ total_monto_final }}</p></center>
+    <div class="card total-monto">
+        <h2>Suma de Montos Finales</h2>
+        <p><strong>Total:</strong> ${{ total_monto_final }}</p>
+    </div>
+    <hr>
+    <div class="card montos-mes">
+        <h2>Montos Finales por Mes</h2>
+        <table id="montosMesTable" class="styled-table">
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Monto Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in montos_por_mes %}
+                <tr>
+                    <td>{{ item._id }}</td>
+                    <td>${{ item.monto_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button onclick="exportTableToExcel('montosMesTable', 'Montos_Mensuales.xlsx')">
+            Descargar como Excel
+        </button>
+    </div>
     
-    <br><hr>
-    <!-- Tabla de Clientes con Más Citas -->
-    <div class="table-container">
+    <hr>
+    <div class="card montos-estilista-mes">
+        <h2>Montos Finales por Estilista y por Mes</h2>
+        <table id="montosEstilistaMesTable" class="styled-table">
+            <thead>
+                <tr>
+                    <th>Estilista</th>
+                    <th>Mes</th>
+                    <th>Monto Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in montos_por_estilista_por_mes %}
+                <tr>
+                    <td>{{ item._id.estilista }}</td>
+                    <td>{{ item._id.mes }}</td>
+                    <td>${{ item.monto_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button onclick="exportTableToExcel('montosEstilistaMesTable', 'Montos_Estilista_Mes.xlsx')">
+            Descargar como Excel
+        </button>
+    </div>
+    
+    <hr>
+    <div class="card">
         <h2>Clientes con Más Citas</h2>
-        <table>
+        <table id="clientesCitasTable" class="styled-table">
             <thead>
                 <tr>
                     <th>Cliente ID</th>
@@ -25,56 +75,60 @@
                     <th>Cantidad de Citas</th>
                 </tr>
             </thead>
-            
             <tbody>
                 {% for cliente in top_clientes_data %}
-                
                 <tr>
                     <td>{{ cliente.cliente_id }}</td>
                     <td>{{ cliente.nombre_cliente }}</td>
                     <td>{{ cliente.cantidad }}</td>
                 </tr>
                 {% endfor %}
-                
             </tbody>
         </table>
+        <button onclick="exportTableToExcel('clientesCitasTable', 'Clientes_Citas.xlsx')">
+            Descargar como Excel
+        </button>
     </div>
-    <br><hr>
-    <!-- Tabla de Servicios Más Requeridos -->
-<table class="table">
-    <thead>
-        <h2>Servicios más solicitados</h2>
-      <tr>
-        <th>Servicio</th>
-        <th>Cantidad</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for servicio in servicios_data %}
-        <tr>
-          <td>{{ servicio.nombre_servicio }}</td>
-          <td>{{ servicio.cantidad }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    
+    <hr>
+    <table id="serviciosSolicitadosTable" class="styled-table">
+        <thead>
+            <tr>
+                <th>Servicio</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for servicio in servicios_data %}
+            <tr>
+                <td>{{ servicio.nombre_servicio }}</td>
+                <td>{{ servicio.cantidad }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button onclick="exportTableToExcel('serviciosSolicitadosTable', 'Servicios_Solicitados.xlsx')">
+        Descargar como Excel
+    </button>
+    </div>
+    <br>
+    <hr>
+    <div class="card citas-estilista">
+        <h2>Citas por Estilista</h2>
+        <div class="chart-container">
+            <canvas id="estilistasChart"></canvas>
+        </div>
+    </div>
+    
 
- 
-  
-  
-  
+<script src="{{ url_for('static', filename='js/datos_negocio.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  
-</div>
-
-<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 <script>
-    // Datos para el gráfico
     const estilistasData = {{ estilistas_data | tojson }};
     const estilistasNames = estilistasData.map(e => e.nombre);
     const citasData = estilistasData.map(e => e.citas);
 
-    // Generar el gráfico de citas por estilista
     const ctx = document.getElementById('estilistasChart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
@@ -83,12 +137,13 @@
             datasets: [{
                 label: 'Citas por Estilista',
                 data: citasData,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
             }]
         },
         options: {
+            responsive: true,
             scales: {
                 y: {
                     beginAtZero: true
@@ -97,6 +152,8 @@
         }
     });
 </script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 {% endblock %}
-
-
