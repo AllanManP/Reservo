@@ -82,9 +82,9 @@
 
     <script>
       document.getElementById("menu-toggle").addEventListener("click", (e) => {
-        //e.stopPropagation();
-        //document.getElementById("navbar-menu").classList.toggle("show");
-        alert()
+        e.stopPropagation();
+        document.getElementById("navbar-menu").classList.toggle("show");
+       
         });
         document.getElementById("navbar-client").addEventListener("click", (e) => {
             e.stopPropagation(); // Evita que el clic se propague al documento
