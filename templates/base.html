@@ -23,7 +23,9 @@
         <a href="/"> 
             <img src="./static/img/logo.png" alt="Logo" class="navbar-logo">
         </a>
+        
         <i class="fas fa-bars" id="menu-toggle"></i> <!-- Ícono de hamburguesa -->
+        
         <ul id="navbar-menu">
             <li><a href="/">Inicio</a></li>
             <li><a href="/servicios">Servicios</a></li>
@@ -33,26 +35,21 @@
             <li><a href="/portafolio">Portafolio</a></li>
         </ul>
             <!-- Sección de cliente en la derecha del navbar -->
-        <div class="navbar-client">
-            <div class="navbar-client-dropdown">
-                <i class="fas fa-user-circle"></i> <!-- Ícono del cliente -->
+                <i class="navbar-client fas fa-user-circle" id="navbar-client"></i> <!-- Ícono del cliente -->
                 {% if 'cliente' in session %}
                     <!-- Si el cliente está logueado, muestra su nombre con un enlace a su perfil -->
-                    <div class="dropdown-content">
+                    
                         <ul id="navbar-client-menu">
                             <li><a href="/cliente">{{ session['cliente']['nombre'] }}</a></li> <!-- Nombre del cliente con enlace a su perfil -->
                             <li><a href="/salir">Cerrar sesion</a></li>
                         </ul>
-                    </div>
                 {% else %}
                     <!-- Si no ha iniciado sesión, muestra la opción de iniciar sesión -->
             
-                <div class="dropdown-content">
-                    <a href="{{ url_for('login', next=url_for('cliente')) }}">Iniciar Sesión</a>
-                </div>
+                <ul id="navbar-client-menu">
+                    <li><a href="{{ url_for('login', next=url_for('cliente')) }}">Iniciar Sesión</a></li>
+                </ul>
                 {% endif %}
-            </div>
-    </div>
     </nav>
 
 
@@ -85,12 +82,14 @@
 
     <script>
       document.getElementById("menu-toggle").addEventListener("click", (e) => {
-        e.stopPropagation();
-        document.getElementById("navbar-menu").classList.toggle("show");
+        //e.stopPropagation();
+        //document.getElementById("navbar-menu").classList.toggle("show");
+        alert()
         });
-        document.getElementById("menu-cliente").addEventListener("click", (e) => {
-        e.stopPropagation();
-        document.getElementById("navbar-client-menu").classList.toggle("show");
+        document.getElementById("navbar-client").addEventListener("click", (e) => {
+            e.stopPropagation(); // Evita que el clic se propague al documento
+            const clientMenu = document.getElementById("navbar-client-menu");
+            clientMenu.classList.toggle("show");
         });
         document.addEventListener("click", () => {
             document.getElementById("navbar-menu").classList.remove("show");
