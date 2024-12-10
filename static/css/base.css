@@ -30,14 +30,6 @@ body {
     transition: top 0.3s ease;
 }
 
-.navbar-client {
-    margin-left: auto; /* Empuja el icono de cliente a la derecha */
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-
 .navbar.fixed {
     top: 0;
 }
@@ -84,6 +76,22 @@ body {
     
 }
 
+
+.navbar ul li a:hover {
+    color: #830a38;
+}
+
+.navbar-client {
+    margin-left: auto; /* Empuja el icono de cliente a la derecha */
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+
+
 #navbar-client-menu li a{
     color: #830a38;
     text-decoration: none;
@@ -91,51 +99,46 @@ body {
     border: 0;
 }
 
-.navbar ul li a:hover {
-    color: #830a38;
-}
 
-/* Ícono de usuario */
-.navbar-client {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
 
-.navbar-client i {
-    font-size: 24px;
-    color: white;
-    cursor: pointer;
+/* Mostrar el menú al hacer clic 
+.navbar-client:hover .dropdown-content {
+    display: block;
 }
+*/
 
-.dropdown-content {
+
+#navbar-client-menu {
     display: none;
     position: absolute;
+    top: 100%; /* Aparece justo debajo del navbar-client */
     right: 0;
     background-color: #f9f9f9;
     min-width: 160px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    z-index: 1000; /* Asegura que esté sobre otros elementos */
     border-radius: 5px;
     overflow: hidden;
 }
 
-.dropdown-content a {
+#navbar-client-menu.show {
+    display: block;
+}
+
+
+#navbar-client-menu a {
     color: #333;
-    padding: 12px 16px;
+    padding: 1px 16px;
     text-decoration: none;
     display: block;
     transition: background-color 0.3s ease;
 }
 
-.dropdown-content a:hover {
+#navbar-client-menu a:hover {
     background-color: #ddd;
 }
 
-/* Mostrar el menú al hacer clic */
-.navbar-client:hover .dropdown-content {
-    display: block;
-}
+
 
 /* Ícono de menú hamburguesa */
 #menu-toggle {
