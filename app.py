@@ -1642,6 +1642,12 @@ def portafolio():
 
 @app.route('/admin/datos_negocio')
 def datos_negocio():
+    # Mapeo de meses
+    meses = {
+        1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril", 5: "Mayo", 6: "Junio",
+        7: "Julio", 8: "Agosto", 9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
+    }
+
     # Citas por estilista
     estilistas = list(app.db.estilistas.find({}, {"id": 1, "nombre": 1}))
     citas_por_estilista = app.db.cita.aggregate([
@@ -1661,16 +1667,12 @@ def datos_negocio():
         {"$sort": {"cantidad": -1}},
         {"$limit": 5}
     ])
-
-    # Obtener el nombre de los clientes
     clientes = {cliente["id"]: cliente["nombre"] for cliente in app.db.clientes.find({}, {"id": 1, "nombre": 1})}
-    
-    # Agregar nombre del cliente a los datos
     top_clientes_data = [
         {
             "cliente_id": cliente["_id"],
             "cantidad": cliente["cantidad"],
-            "nombre_cliente": clientes.get(cliente["_id"], "Desconocido")  # Obtener nombre del cliente
+            "nombre_cliente": clientes.get(cliente["_id"], "Desconocido")
         }
         for cliente in top_clientes
     ]
@@ -1681,31 +1683,58 @@ def datos_negocio():
         {"$sort": {"cantidad": -1}},
         {"$limit": 5}
     ])
-
-    # Obtener todos los servicios en un diccionario mapeando el nombre con el id y nombre
-    # Normalizar a minúsculas todos los nombres al construir el diccionario
     servicios = {servicio["nombre"].lower(): servicio["nombre"] for servicio in app.db.servicios.find({}, {"nombre": 1})}
-
-    
-
-
-    # Mapear los servicios requeridos con sus nombres y cantidades
     servicios_data = [
         {
-            "nombre_servicio": servicios.get(servicio["_id"].lower(), "Desconocido"),  # Convertir a minúsculas para buscar
-        "cantidad": servicio["cantidad"]
+            "nombre_servicio": servicios.get(servicio["_id"].lower(), "Desconocido"),
+            "cantidad": servicio["cantidad"]
         }
         for servicio in servicios_requeridos
     ]
 
+    # Montos finales por estilista y por mes
+    montos_por_estilista_por_mes = list(app.db.cita_finalizada.aggregate([
+        {
+            "$addFields": {
+                "mes": {"$month": {"$toDate": "$fecha"}}
+            }
+        },
+        {
+            "$group": {
+                "_id": {"estilista": "$Nombre Estilista", "mes": "$mes"},
+                "monto_total": {"$sum": "$monto_final"}
+            }
+        },
+        {"$sort": {"_id.estilista": 1, "_id.mes": 1}}
+    ]))
+    # Reemplazar números de mes por nombres
+    for item in montos_por_estilista_por_mes:
+        item["_id"]["mes"] = meses[item["_id"]["mes"]]
+
+    # Montos finales por mes
+    montos_por_mes = list(app.db.cita_finalizada.aggregate([
+        {
+            "$addFields": {
+                "mes": {"$month": {"$toDate": "$fecha"}}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$mes",
+                "monto_total": {"$sum": "$monto_final"}
+            }
+        },
+        {"$sort": {"_id": 1}}
+    ]))
+    # Reemplazar números de mes por nombres
+    for item in montos_por_mes:
+        item["_id"] = meses[item["_id"]]
 
     # Realizar la agregación para sumar todos los "monto_final"
     suma_montos = app.db.cita_finalizada.aggregate([
         {"$group": {"_id": None, "total": {"$sum": "$monto_final"}}}
     ])
-
-    # Extraer el valor de la suma
-    resultado = next(suma_montos, {"total": 0})  # Si no hay resultados, la suma es 0
+    resultado = next(suma_montos, {"total": 0})
     total_monto_final = resultado["total"]
 
     return render_template(
@@ -1713,7 +1742,9 @@ def datos_negocio():
         estilistas_data=estilistas_data,
         top_clientes_data=top_clientes_data,
         servicios_data=servicios_data,
-         total_monto_final=total_monto_final
+        total_monto_final=total_monto_final,
+        montos_por_estilista_por_mes=montos_por_estilista_por_mes,
+        montos_por_mes=montos_por_mes
     )
 
 
