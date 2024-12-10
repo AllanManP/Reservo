@@ -37,8 +37,6 @@
             <!-- Sección de cliente en la derecha del navbar -->
                 <i class="navbar-client fas fa-user-circle" id="navbar-client"></i> <!-- Ícono del cliente -->
                 {% if 'cliente' in session %}
-                    <!-- Si el cliente está logueado, muestra su nombre con un enlace a su perfil -->
-                    
                         <ul id="navbar-client-menu">
                             <li><a href="/cliente">{{ session['cliente']['nombre'] }}</a></li> <!-- Nombre del cliente con enlace a su perfil -->
                             <li><a href="/salir">Cerrar sesion</a></li>
@@ -81,20 +79,21 @@
     </footer>
 
     <script>
-      document.getElementById("menu-toggle").addEventListener("click", (e) => {
-        e.stopPropagation();
-        document.getElementById("navbar-menu").classList.toggle("show");
-       
-        });
-        document.getElementById("navbar-client").addEventListener("click", (e) => {
-            e.stopPropagation(); // Evita que el clic se propague al documento
-            const clientMenu = document.getElementById("navbar-client-menu");
-            clientMenu.classList.toggle("show");
-        });
-        document.addEventListener("click", () => {
-            document.getElementById("navbar-menu").classList.remove("show");
-            document.getElementById("navbar-client-menu").classList.remove("show");
-        });  
-    </script>
+        document.getElementById("menu-toggle").addEventListener("click", (e) => {
+          e.stopPropagation();
+          document.getElementById("navbar-menu").classList.toggle("show");
+          document.getElementById("navbar-client-menu").classList.remove("show");
+          });
+          document.getElementById("navbar-client").addEventListener("click", (e) => {
+              e.stopPropagation(); // Evita que el clic se propague al documento
+              const clientMenu = document.getElementById("navbar-client-menu");
+              clientMenu.classList.toggle("show");
+              document.getElementById("navbar-menu").classList.remove("show");
+          });
+          document.addEventListener("click", () => {
+              document.getElementById("navbar-menu").classList.remove("show");
+              document.getElementById("navbar-client-menu").classList.remove("show");
+          });  
+      </script>
 </body>
 </html>
