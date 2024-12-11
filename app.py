@@ -583,7 +583,7 @@ def enviar_resena():
             return redirect(url_for('resena'))
     else:
         message="Debes iniciar sesión para enviar una reseña."
-        return redirect(url_for('resena',message=message))
+        return redirect(url_for('resena_cliente',message=message))
     
 from bson import ObjectId
 
