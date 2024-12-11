@@ -583,8 +583,35 @@ def enviar_resena():
             return redirect(url_for('resena'))
     else:
         message="Debes iniciar sesión para enviar una reseña."
+        return redirect(url_for('resena',message=message))
+
+
+@app.route('/enviar_resena_cliente', methods=['POST'])
+def enviar_resena_cliente():
+    if 'cliente' in session:
+        try:
+            rating = int(request.form['rating'])
+            comment = request.form['comment']
+            nombre=session['cliente']['nombre']
+            # Aquí puedes guardar la reseña en la base de datos o en una lista
+            nueva_resena = {'rating': rating, 'comment': comment,'nombre':nombre}
+
+            # Supongamos que tienes una lista para almacenar las reseñas
+            #reviews = app.db.reviews
+            app.db.reviews.insert_one({
+                'rating': rating, 
+                'comment': comment,
+                'nombre':nombre,
+                'creacion': datetime.now().strftime('%d-%m-%Y'),
+            })
+            # Renderiza la página con las nuevas reseñas
+            return redirect(url_for('resena_cliente'))
+        except KeyError:
+            return redirect(url_for('resena_cliente'))
+    else:
+        message="Debes iniciar sesión para enviar una reseña."
         return redirect(url_for('resena_cliente',message=message))
-    
+
 from bson import ObjectId
 
 @app.route('/responder_resena/<resena_id>', methods=['POST'])
